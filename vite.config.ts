@@ -15,16 +15,23 @@ export default defineConfig({
     }),
     tailwindcss(),
     sveltekit({
+      adapter: adapter(),
       compilerOptions: {
         runes: ({ filename }) => (filename.split(/[/\\]/).includes("node_modules") ? undefined : true),
         experimental: { async: true },
       },
-      adapter: adapter(),
-
       experimental: {
         remoteFunctions: true,
         tracing: { server: true },
         instrumentation: { server: true },
+      },
+      typescript: {
+        config: (config) => {
+          return {
+            ...config,
+            include: [...config.include, "prisma.config.ts", "vite.config.ts"],
+          };
+        },
       },
     }),
   ],
