@@ -1,50 +1,59 @@
-import { defineConfig } from 'vitest/config';
-import { playwright } from '@vitest/browser-playwright';
-import tailwindcss from '@tailwindcss/vite';
-import adapter from '@sveltejs/adapter-auto';
-import { sveltekit } from '@sveltejs/kit/vite';
+import { sentrySvelteKit } from "@sentry/sveltekit";
+import adapter from "@sveltejs/adapter-vercel";
+import { sveltekit } from "@sveltejs/kit/vite";
+import tailwindcss from "@tailwindcss/vite";
+import { playwright } from "@vitest/browser-playwright";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-	plugins: [
-		tailwindcss(),
-		sveltekit({
-			compilerOptions: {
-				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
-				runes: ({ filename }) => filename.split(/[/\\]/).includes('node_modules') ? undefined : true
-			},
+  plugins: [
+    sentrySvelteKit({
+      adapter: "vercel",
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+    }),
+    tailwindcss(),
+    sveltekit({
+      compilerOptions: {
+        runes: ({ filename }) => (filename.split(/[/\\]/).includes("node_modules") ? undefined : true),
+        experimental: { async: true },
+      },
+      adapter: adapter(),
 
-			// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
-			// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-			// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-			adapter: adapter()
-		})
-	],
-	test: {
-		expect: { requireAssertions: true },
-		projects: [
-			{
-				extends: './vite.config.ts',
-				test: {
-					name: 'client',
-					browser: {
-						enabled: true,
-						provider: playwright(),
-						instances: [{ browser: 'chromium', headless: true }]
-					},
-					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
-					exclude: ['src/lib/server/**']
-				}
-			},
+      experimental: {
+        remoteFunctions: true,
+        tracing: { server: true },
+        instrumentation: { server: true },
+      },
+    }),
+  ],
+  test: {
+    expect: { requireAssertions: true },
+    projects: [
+      {
+        extends: "./vite.config.ts",
+        test: {
+          name: "client",
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            instances: [{ browser: "chromium", headless: true }],
+          },
+          include: ["src/**/*.svelte.{test,spec}.{js,ts}"],
+          exclude: ["src/lib/server/**"],
+        },
+      },
 
-			{
-				extends: './vite.config.ts',
-				test: {
-					name: 'server',
-					environment: 'node',
-					include: ['src/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
-				}
-			}
-		]
-	}
+      {
+        extends: "./vite.config.ts",
+        test: {
+          name: "server",
+          environment: "node",
+          include: ["src/**/*.{test,spec}.{js,ts}"],
+          exclude: ["src/**/*.svelte.{test,spec}.{js,ts}"],
+        },
+      },
+    ],
+  },
 });

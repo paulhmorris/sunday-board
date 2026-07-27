@@ -1,5 +1,8 @@
 {
-	"files.associations": {
-		"*.css": "tailwindcss"
-	}
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "js/ts.experimental.useTsgo": false,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSaveMode": "file"
 }
