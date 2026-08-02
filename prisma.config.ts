@@ -1,10 +1,10 @@
-import { loadEnv } from "vite";
 import { defineConfig } from "prisma/config";
+import { loadEnv } from "vite";
 
 const env = loadEnv(process.env["NODE_ENV"] ?? "development", process.cwd(), "");
 
 export default defineConfig({
-  schema: "prisma/schema.prisma",
+  schema: "prisma/",
   migrations: {
     path: "prisma/migrations",
   },

@@ -1,2 +1,15 @@
 @import "tailwindcss";
 @plugin '@tailwindcss/forms';
+
+/* temporary */
+label {
+  @apply block text-sm font-medium;
+}
+
+h1 {
+  @apply text-2xl font-semibold;
+}
+
+a {
+  @apply underline;
+}

@@ -1,14 +1,19 @@
 import { getRequestEvent } from "$app/server";
-import { db } from "$lib/db.server";
-import { betterAuth } from "better-auth";
+import { env } from "$env/dynamic/private";
+import { db } from "$lib/server/db";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { betterAuth } from "better-auth/minimal";
 import { sveltekitCookies } from "better-auth/svelte-kit";
 
 export const auth = betterAuth({
+  baseURL: env.ORIGIN,
+  plugins: [
+    sveltekitCookies(getRequestEvent), // make sure this is the last plugin in the array
+  ],
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
-  plugins: [sveltekitCookies(getRequestEvent)],
+  secret: env.BETTER_AUTH_SECRET,
   session: {
     cookieCache: {
       enabled: true,

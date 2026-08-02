@@ -15,7 +15,12 @@
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
     "test:unit": "vitest",
-    "test": "npm run test:unit -- --run"
+    "test": "npm run test:unit -- --run",
+    "db:push": "prisma push",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate",
+    "db:studio": "prisma studio",
+    "auth:schema": "better-auth generate --config src/lib/server/auth.ts --output prisma/auth.prisma --yes"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.0",
@@ -34,15 +39,20 @@
     "@sveltejs/vite-plugin-svelte": "^7.2.0",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^26.1.1",
+    "@types/node": "^24",
     "@vitest/browser-playwright": "^4.1.10",
+    "auth": "^1.6.23",
+    "better-auth": "^1.6.23",
     "oxfmt": "^0.60.0",
     "oxlint": "^1.75.0",
     "playwright": "^1.62.0",
+    "postgres": "^3.4.9",
     "svelte": "^5.56.8",
     "svelte-check": "^4.7.4",
+    "sveltekit-superforms": "^2.30.2",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
+    "valibot": "^1.4.2",
     "vite": "^8.1.5",
     "vitest": "^4.1.10",
     "vitest-browser-svelte": "^3.0.0"
@@ -54,6 +64,8 @@
     "@sentry/cli@2.58.6": true,
     "esbuild@0.28.1": true,
     "prisma@7.9.0": true,
-    "@prisma/engines@7.9.0": true
+    "@prisma/engines@7.9.0": true,
+    "esbuild@0.18.20": true,
+    "esbuild@0.25.12": true
   }
 }
