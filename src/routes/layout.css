@@ -13,3 +13,11 @@ h1 {
 a {
   @apply underline;
 }
+
+button {
+  @apply inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent bg-neutral-800 bg-clip-padding px-2.5 text-sm font-medium whitespace-nowrap text-white transition-all outline-none select-none focus-visible:ring-3;
+}
+
+.field-error {
+  @apply mt-1 text-xs font-medium text-red-600;
+}

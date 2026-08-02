@@ -1,27 +1,28 @@
 <script lang="ts">
-  import { signUpEmail } from "../auth.remote";
-  import { signUpEmailSchema } from "../auth.schema";
+    import { nanoid } from "nanoid";
+    import { signUpEmail } from "../auth.remote";
+    import { signUpEmailSchema } from "../auth.schema";
 
   const registerForm = signUpEmail
-    .for(crypto.randomUUID())
+    .for(nanoid())
     .preflight(signUpEmailSchema);
   const { name, email, password } = registerForm.fields;
 </script>
 
-<div class="flex min-h-screen items-center justify-center">
+<div class="flex min-h-full items-center justify-center">
   <div class="w-full max-w-sm space-y-6">
     <h1 class="text-center">Sign up</h1>
 
-    {#if registerForm.result?.data?.message}
-      <p class="text-sm text-red-600">{registerForm.result.data.message}</p>
-    {/if}
+    {#each registerForm.fields.allIssues() ?? [] as issue (issue.message)}
+      <p class="text-sm text-red-600">{issue.message}</p>
+    {/each}
 
     <form {...registerForm} class="space-y-4">
       <div>
         <label for="name">Name</label>
         <input id="name" {...name.as("text")} autocomplete="name" />
         {#each name.issues() ?? [] as issue (issue.message)}
-          <p class="mt-1 text-sm text-red-600">{issue.message}</p>
+          <p class="field-error">{issue.message}</p>
         {/each}
       </div>
 
@@ -29,7 +30,7 @@
         <label for="email">Email</label>
         <input id="email" {...email.as("email")} autocomplete="email" />
         {#each email.issues() ?? [] as issue (issue.message)}
-          <p class="mt-1 text-sm text-red-600">{issue.message}</p>
+          <p class="field-error">{issue.message}</p>
         {/each}
       </div>
 
@@ -41,7 +42,7 @@
           autocomplete="new-password"
         />
         {#each password.issues() ?? [] as issue (issue.message)}
-          <p class="mt-1 text-sm text-red-600">{issue.message}</p>
+          <p class="field-error">{issue.message}</p>
         {/each}
       </div>
 

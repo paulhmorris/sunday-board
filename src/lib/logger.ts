@@ -8,7 +8,17 @@ export class Logger {
   constructor(private readonly module: string) {}
 
   private log(level: LogLevel, message: string, attributes?: Attributes) {
-    Sentry.logger[level](message, { module: this.module, ...attributes });
+    Sentry.logger[level](this.module + ": " + message, { module: this.module, ...attributes });
+
+    if (["trace", "debug", "info"].includes(level)) {
+      console.log(this.module + ": " + message, attributes);
+    }
+    if (level === "warn") {
+      console.warn(this.module + ": " + message, attributes);
+    }
+    if (level === "error" || level === "fatal") {
+      console.error(this.module + ": " + message, attributes);
+    }
   }
 
   trace(message: string, attributes?: Attributes) {

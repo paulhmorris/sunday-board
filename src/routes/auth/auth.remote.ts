@@ -2,7 +2,8 @@ import { form, getRequestEvent } from "$app/server";
 import { Logger } from "$lib/logger";
 import { Sentry } from "$lib/sentry";
 import { auth } from "$lib/server/auth";
-import { fail, redirect } from "@sveltejs/kit";
+import { delay } from "$lib/utils";
+import { invalid, redirect } from "@sveltejs/kit";
 import { isAPIError } from "better-auth/api";
 
 import { signInEmailSchema, signUpEmailSchema } from "./auth.schema";
@@ -10,17 +11,19 @@ import { signInEmailSchema, signUpEmailSchema } from "./auth.schema";
 const logger = new Logger("Auth");
 
 export const signInEmail = form(signInEmailSchema, async (data) => {
+  await delay(1000);
+  logger.debug("form data", data);
   try {
     await auth.api.signInEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
     });
-  } catch (error) {
-    if (isAPIError(error)) {
-      logger.warn("Sign in failed", { message: error.message });
-      return fail(400, { message: "Invalid email or password" });
+  } catch (e) {
+    if (isAPIError(e)) {
+      logger.warn("Sign in failed", { message: e.message });
+      invalid();
     }
-    Sentry.captureException(error);
-    return fail(500, { message: "Unexpected error" });
+    Sentry.captureException(e);
+    invalid("Unexpected error");
   }
 });
 
@@ -29,13 +32,13 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
     await auth.api.signUpEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
     });
-  } catch (error) {
-    if (isAPIError(error)) {
-      logger.warn("Registration failed", { message: error.message });
-      return fail(400, { message: "Registration failed" });
+  } catch (e) {
+    if (isAPIError(e)) {
+      logger.warn("Registration failed", { message: e.message });
+      invalid("Registration failed");
     }
-    Sentry.captureException(error);
-    return fail(500, { message: "Unexpected error" });
+    Sentry.captureException(e);
+    invalid("Unexpected error");
   }
 });
 
