@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { nanoid } from "nanoid";
-    import { signUpEmail } from "../auth.remote";
-    import { signUpEmailSchema } from "../auth.schema";
+  import { Form, FormControl, Input, Label } from "$lib/components/form";
+  import { nanoid } from "nanoid";
 
-  const registerForm = signUpEmail
-    .for(nanoid())
-    .preflight(signUpEmailSchema);
+  import { signUpEmail } from "../auth.remote";
+  import { signUpEmailSchema } from "../auth.schema";
+
+  const registerForm = signUpEmail.for(nanoid()).preflight(signUpEmailSchema);
   const { name, email, password } = registerForm.fields;
 </script>
 
@@ -13,48 +13,34 @@
   <div class="w-full max-w-sm space-y-6">
     <h1 class="text-center">Sign up</h1>
 
-    {#each registerForm.fields.allIssues() ?? [] as issue (issue.message)}
-      <p class="text-sm text-red-600">{issue.message}</p>
-    {/each}
+    <Form form={registerForm} class="space-y-4">
+      <FormControl>
+        <Label>Name</Label>
+        <Input field={name} autocomplete="name" />
+      </FormControl>
 
-    <form {...registerForm} class="space-y-4">
-      <div>
-        <label for="name">Name</label>
-        <input id="name" {...name.as("text")} autocomplete="name" />
-        {#each name.issues() ?? [] as issue (issue.message)}
-          <p class="field-error">{issue.message}</p>
-        {/each}
-      </div>
+      <FormControl>
+        <Label>Email</Label>
+        <Input field={email} type="email" autocomplete="email" description="We'll send a verification link here" />
+      </FormControl>
 
-      <div>
-        <label for="email">Email</label>
-        <input id="email" {...email.as("email")} autocomplete="email" />
-        {#each email.issues() ?? [] as issue (issue.message)}
-          <p class="field-error">{issue.message}</p>
-        {/each}
-      </div>
-
-      <div>
-        <label for="password" class="block text-sm font-medium">Password</label>
-        <input
-          id="password"
-          {...password.as("password")}
+      <FormControl>
+        <Label>Password</Label>
+        <Input
+          field={password}
+          type="password"
           autocomplete="new-password"
+          description="At least 8 characters, with a number and a special character"
         />
-        {#each password.issues() ?? [] as issue (issue.message)}
-          <p class="field-error">{issue.message}</p>
-        {/each}
-      </div>
+      </FormControl>
 
       <button type="submit" disabled={!!registerForm.pending} class="w-full">
         {registerForm.pending ? "Signing up..." : "Sign up"}
       </button>
-    </form>
+    </Form>
 
     <p class="text-center text-sm">
-      Already have an account? <a href="/auth/sign-in" class="underline"
-        >Sign in</a
-      >
+      Already have an account? <a href="/auth/sign-in">Sign in</a>
     </p>
   </div>
 </div>
