@@ -1,3 +1,4 @@
+import { initAnalytics } from "$lib/analytics";
 import * as Sentry from "@sentry/sveltekit";
 import type { RequestEvent } from "@sveltejs/kit";
 
@@ -8,6 +9,8 @@ Sentry.init({
   tracesSampleRate: 1.0,
   enableLogs: true,
 });
+
+initAnalytics();
 
 function errorHandler({ error, event }: { error: unknown; event: RequestEvent }) {
   console.error("An error occurred on the client:", error, event);
