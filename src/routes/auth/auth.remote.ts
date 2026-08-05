@@ -16,12 +16,12 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
     await auth.api.signInEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
     });
-  } catch (e) {
-    if (isAPIError(e)) {
-      logger.warn("Sign in failed", { message: e.message });
+  } catch (error) {
+    if (isAPIError(error)) {
+      logger.warn("Sign in failed", { message: error.message });
       invalid();
     }
-    Sentry.captureException(e);
+    Sentry.captureException(error);
     invalid("Unexpected error");
   }
 });
@@ -32,12 +32,12 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
     await auth.api.signUpEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
     });
-  } catch (e) {
-    if (isAPIError(e)) {
-      logger.warn("Registration failed", { message: e.message });
+  } catch (error) {
+    if (isAPIError(error)) {
+      logger.warn("Registration failed", { message: error.message });
       invalid("Registration failed");
     }
-    Sentry.captureException(e);
+    Sentry.captureException(error);
     invalid("Unexpected error");
   }
 });
