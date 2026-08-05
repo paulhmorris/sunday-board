@@ -3,6 +3,8 @@
   import { type Snippet, untrack } from "svelte";
   import type { HTMLInputAttributes } from "svelte/elements";
 
+  import { cn } from "$lib/utils";
+
   import { createControlIds, getFieldGroupContext } from "./context";
   import FieldMessages from "./FieldMessages.svelte";
   import { asField, createField } from "./field.svelte";
@@ -52,7 +54,7 @@
   }
 </script>
 
-<div class={["option", className]}>
+<div class={cn("flex items-center gap-2 text-sm", className)}>
   <input
     {...attributes()}
     {...rest}
@@ -61,20 +63,11 @@
     aria-describedby={group ? undefined : control.describedBy}
     aria-errormessage={!group && control.invalid ? ids.errorId : undefined}
     {...control.events({ onblur, onchange, oninput })}
+    class="size-4 shrink-0 rounded-[5px] border-transparent bg-input/90 text-primary outline-none transition-shadow focus:ring-3 focus:ring-ring/30 focus:ring-offset-0 checked:border-transparent aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 disabled:cursor-not-allowed disabled:opacity-50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
   />
-  <label for={ids.id}>{@render children()}</label>
+  <label for={ids.id} class="select-none">{@render children()}</label>
 </div>
 
 {#if !group}
   <FieldMessages {control} {description} />
 {/if}
-
-<style>
-  .option {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--spacing) * 2);
-    font-size: var(--text-sm);
-    line-height: var(--text-sm--line-height);
-  }
-</style>

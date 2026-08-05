@@ -2,6 +2,7 @@
   import { Form, FormControl, Input, Label } from "$lib/components/form";
   import { nanoid } from "nanoid";
 
+  import { Button } from "$lib/components/ui/button";
   import { signInEmail } from "../auth.remote";
   import { signInEmailSchema } from "../auth.schema";
 
@@ -21,12 +22,16 @@
 
       <FormControl>
         <Label>Password</Label>
-        <Input field={password} type="password" autocomplete="current-password" />
+        <Input
+          field={password}
+          type="password"
+          autocomplete="current-password"
+        />
       </FormControl>
 
-      <button type="submit" disabled={!!loginForm.pending} class="w-full">
+      <Button type="submit" disabled={!!loginForm.pending} class="w-full">
         {loginForm.pending ? "Signing in..." : "Sign in"}
-      </button>
+      </Button>
     </Form>
 
     <p class="text-center text-sm">

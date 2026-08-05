@@ -2,6 +2,8 @@
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
+  import { cn } from "$lib/utils";
+
   import { createControlIds, setControlContext } from "./context";
 
   type Props = HTMLAttributes<HTMLDivElement> & {
@@ -29,13 +31,6 @@
   });
 </script>
 
-<div {...rest} class={["control", className]}>
+<div {...rest} class={cn("flex w-full flex-col", className)}>
   {@render children()}
 </div>
-
-<style>
-  .control {
-    display: flex;
-    flex-direction: column;
-  }
-</style>

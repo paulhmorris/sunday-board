@@ -12,7 +12,6 @@ const logger = new Logger("Auth");
 
 export const signInEmail = form(signInEmailSchema, async (data) => {
   await delay(1000);
-  logger.debug("form data", data);
   try {
     await auth.api.signInEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
@@ -28,6 +27,7 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
 });
 
 export const signUpEmail = form(signUpEmailSchema, async (data) => {
+  await delay(1000);
   try {
     await auth.api.signUpEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
@@ -43,6 +43,7 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
 });
 
 export const signOut = form(async () => {
+  await delay(1000);
   const { request } = getRequestEvent();
   await auth.api.signOut({ headers: request.headers });
   redirect(303, "/auth/sign-in");

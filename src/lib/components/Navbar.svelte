@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import Button from "$lib/components/ui/button/button.svelte";
   import { signOut } from "../../routes/auth/auth.remote";
 
   const pageModules = import.meta.glob("/src/routes/**/+page.svelte");
@@ -30,9 +31,9 @@
       <li>
         <a
           href={route}
-          class="block rounded px-2 py-1 text-sm no-underline hover:bg-gray-100 {page
+          class="block rounded px-2 py-1 text-sm no-underline dark:hover:bg-muted {page
             .url.pathname === route
-            ? 'bg-gray-100 font-medium'
+            ? 'bg-gray-100 dark:bg-muted font-medium'
             : ''}"
         >
           {route}
@@ -44,7 +45,7 @@
   <div class="space-y-2">
     {#if page.data.user}
       <form {...signOut}>
-        <button type="submit" class="w-full text-left text-sm">Sign out</button>
+        <Button type="submit" class="w-full text-left text-sm">Sign out</Button>
       </form>
 
       <a href="/me" class="flex items-center gap-2 no-underline">
