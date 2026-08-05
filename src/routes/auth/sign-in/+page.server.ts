@@ -1,8 +1,5 @@
-import { redirect } from "@sveltejs/kit";
+import { requireGuest } from "$lib/server/auth-guards";
 
-export async function load(event) {
-  if (event.locals.user) {
-    return redirect(302, "/");
-  }
-  return {};
+export async function load({ locals }) {
+  requireGuest(locals);
 }
