@@ -1,5 +1,5 @@
 import { form, getRequestEvent } from "$app/server";
-import { EVENTS } from "$lib/analytics-events";
+import { EVENTS } from "$lib/analytics/events";
 import { Logger } from "$lib/logger";
 import { identifyUser, trackEvent } from "$lib/server/analytics";
 import { Sentry } from "$lib/sentry";

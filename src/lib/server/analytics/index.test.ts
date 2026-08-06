@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { identifyUser, resetAnalytics, trackEvent, trackPageView } from "./analytics";
+import { identifyUser, resetAnalytics, trackEvent, trackPageView } from "./index";
 
 // Tests run outside a production build, so the module falls back to
 // NoopAnalyticsProvider and never touches the network.

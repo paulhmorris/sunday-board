@@ -1,4 +1,4 @@
-import type { AnalyticsEvent } from "$lib/analytics-events";
+import type { AnalyticsEvent } from "$lib/analytics/events";
 
 // Zero-dependency module: safe to import from both client and server code
 // without dragging posthog-js or posthog-node into the wrong bundle.

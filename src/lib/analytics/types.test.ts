@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { NoopAnalyticsProvider } from "./analytics.types";
+import { NoopAnalyticsProvider } from "./types";
 
 describe("NoopAnalyticsProvider", () => {
   it("implements every AnalyticsProvider method as a no-op that never throws", () => {

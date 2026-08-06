@@ -1,5 +1,5 @@
-import type { AnalyticsEvent } from "$lib/analytics-events";
-import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics.types";
+import type { AnalyticsEvent } from "$lib/analytics/events";
+import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
 import { Sentry } from "$lib/sentry";
 import { dev } from "$app/environment";
 import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_KEY } from "$env/static/public";
