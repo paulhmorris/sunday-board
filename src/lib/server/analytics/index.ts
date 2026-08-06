@@ -1,6 +1,5 @@
 import type { AnalyticsEvent } from "$lib/analytics/events";
 import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
-import { Sentry } from "$lib/sentry";
 import { dev } from "$app/environment";
 import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_KEY } from "$env/static/public";
 import { PostHog } from "posthog-node";
@@ -46,12 +45,20 @@ export function trackPageView(url: string, properties?: AnalyticsProperties) {
   provider.pageView(url, properties);
 }
 
+/**
+ * Deliberately does NOT call `Sentry.setUser()` here, unlike the client
+ * version. `Sentry.setUser()` writes to the current isolation scope, which is
+ * only request-scoped if Sentry's Node auto-instrumentation has correctly set
+ * up per-request AsyncLocalStorage isolation for every path that can reach
+ * this function — not something to gamble a shared Node process on. PostHog's
+ * `identify()` is safe to call here because it's a stateless, one-shot event
+ * carrying an explicit distinctId; the shared client holds no per-request
+ * "current user" state.
+ */
 export function identifyUser(userId: string, traits?: AnalyticsProperties) {
   provider.identify(userId, traits);
-  Sentry.setUser({ id: userId, ...traits });
 }
 
 export function resetAnalytics() {
   provider.reset();
-  Sentry.setUser(null);
 }
