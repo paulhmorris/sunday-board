@@ -1,8 +1,8 @@
 import { form, getRequestEvent } from "$app/server";
 import { EVENTS } from "$lib/analytics/events";
 import { Logger } from "$lib/logger";
-import { identifyUser, trackEvent } from "$lib/server/analytics";
 import { Sentry } from "$lib/sentry";
+import { identifyUser, trackEvent } from "$lib/server/analytics";
 import { auth } from "$lib/server/auth";
 import { delay } from "$lib/utils";
 import { invalid, redirect } from "@sveltejs/kit";
@@ -12,6 +12,7 @@ import { signInEmailSchema, signUpEmailSchema } from "./auth.schema";
 
 const logger = new Logger("Auth");
 
+/** Returns the user so the client can identify them too — see `identifyUser` in `$lib/analytics`. */
 export const signInEmail = form(signInEmailSchema, async (data) => {
   await delay(1000);
   logger.debug("form data", data);
@@ -21,6 +22,7 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
     });
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedIn, { distinctId: user.id });
+    return { user: { id: user.id, email: user.email, name: user.name } };
   } catch (e) {
     if (isAPIError(e)) {
       logger.warn("Sign in failed", { message: e.message });
@@ -31,6 +33,7 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
   }
 });
 
+/** Returns the user so the client can identify them too — see `identifyUser` in `$lib/analytics`. */
 export const signUpEmail = form(signUpEmailSchema, async (data) => {
   try {
     const { user } = await auth.api.signUpEmail({
@@ -38,6 +41,7 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
     });
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedUp, { distinctId: user.id });
+    return { user: { id: user.id, email: user.email, name: user.name } };
   } catch (e) {
     if (isAPIError(e)) {
       logger.warn("Registration failed", { message: e.message });

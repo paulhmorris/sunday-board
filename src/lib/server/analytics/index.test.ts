@@ -1,16 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { identifyUser, resetAnalytics, trackEvent, trackPageView } from "./index";
+import { identifyUser, resetAnalytics, trackEvent } from "./index";
 
 // Tests run outside a production build, so the module falls back to
 // NoopAnalyticsProvider and never touches the network.
 describe("server analytics (dev/test fallback)", () => {
   it("trackEvent does not throw without a distinctId", () => {
     expect(() => trackEvent("signed_in")).not.toThrow();
-  });
-
-  it("trackPageView does not throw", () => {
-    expect(() => trackPageView("https://example.com", { distinctId: "user-1" })).not.toThrow();
   });
 
   it("identifyUser does not throw and does not require PostHog config", () => {

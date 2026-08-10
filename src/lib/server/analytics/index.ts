@@ -1,7 +1,7 @@
-import type { AnalyticsEvent } from "$lib/analytics/events";
-import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
 import { dev } from "$app/environment";
 import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_KEY } from "$env/static/public";
+import type { AnalyticsEvent } from "$lib/analytics/events";
+import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
 import { PostHog } from "posthog-node";
 
 class PostHogServerProvider implements AnalyticsProvider {
@@ -14,11 +14,6 @@ class PostHogServerProvider implements AnalyticsProvider {
 
   identify(userId: string, traits?: AnalyticsProperties) {
     this.client.identify({ distinctId: userId, properties: traits });
-  }
-
-  pageView(url: string, properties?: AnalyticsProperties) {
-    const distinctId = (properties?.distinctId as string | undefined) ?? "anonymous";
-    this.client.capture({ distinctId, event: "$pageview", properties: { $current_url: url, ...properties } });
   }
 
   reset() {
@@ -39,10 +34,6 @@ const provider: AnalyticsProvider =
  */
 export function trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperties) {
   provider.trackEvent(event, properties);
-}
-
-export function trackPageView(url: string, properties?: AnalyticsProperties) {
-  provider.pageView(url, properties);
 }
 
 /**

@@ -1,8 +1,8 @@
+import { dev } from "$app/environment";
+import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_KEY } from "$env/static/public";
 import type { AnalyticsEvent } from "$lib/analytics/events";
 import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
 import { Sentry } from "$lib/sentry";
-import { dev } from "$app/environment";
-import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_KEY } from "$env/static/public";
 import posthog from "posthog-js";
 
 class PostHogBrowserProvider implements AnalyticsProvider {
@@ -12,10 +12,6 @@ class PostHogBrowserProvider implements AnalyticsProvider {
 
   identify(userId: string, traits?: AnalyticsProperties) {
     posthog.identify(userId, traits);
-  }
-
-  pageView(url: string, properties?: AnalyticsProperties) {
-    posthog.capture("$pageview", { $current_url: url, ...properties });
   }
 
   reset() {
@@ -29,7 +25,8 @@ export function initAnalytics() {
   if (!dev && PUBLIC_POSTHOG_KEY) {
     posthog.init(PUBLIC_POSTHOG_KEY, {
       api_host: PUBLIC_POSTHOG_HOST,
-      capture_pageview: false, // we call trackPageView() manually on SvelteKit navigation
+      // SvelteKit's client router navigates via history.pushState, which this captures.
+      capture_pageview: "history_change",
       capture_pageleave: true,
     });
     provider = new PostHogBrowserProvider();
@@ -40,10 +37,10 @@ export function trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperti
   provider.trackEvent(event, properties);
 }
 
-export function trackPageView(url: string, properties?: AnalyticsProperties) {
-  provider.pageView(url, properties);
-}
-
+/**
+ * Call at the point a user signs in or signs up — PostHog's guidance is to identify at the
+ * auth transition, which also binds the browser's existing anonymous distinct_id to them.
+ */
 export function identifyUser(userId: string, traits?: AnalyticsProperties) {
   provider.identify(userId, traits);
   Sentry.setUser({ id: userId, ...traits });

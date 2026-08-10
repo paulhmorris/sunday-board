@@ -1,6 +1,13 @@
 <script lang="ts">
+  import { resetAnalytics } from "$lib/analytics";
   import { page } from "$app/state";
   import { signOut } from "../../routes/auth/auth.remote";
+
+  /** Held in a const so the submit attachment isn't recreated on every render. */
+  const signOutForm = signOut.enhance(async (form) => {
+    // Resolves after the redirect lands, so the next person on this browser starts anonymous.
+    if (await form.submit()) resetAnalytics();
+  });
 
   const pageModules = import.meta.glob("/src/routes/**/+page.svelte");
 
@@ -43,7 +50,7 @@
 
   <div class="space-y-2">
     {#if page.data.user}
-      <form {...signOut}>
+      <form {...signOutForm}>
         <button type="submit" class="w-full text-left text-sm">Sign out</button>
       </form>
 
