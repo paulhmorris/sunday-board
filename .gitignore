@@ -1,6 +1,5 @@
 tmp/
 node_modules
-docs/
 
 # Output
 .output

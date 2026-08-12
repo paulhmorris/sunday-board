@@ -2,6 +2,8 @@
   import { type Snippet, untrack } from "svelte";
   import type { HTMLFieldsetAttributes } from "svelte/elements";
 
+  import { cn } from "$lib/utils";
+
   import { setTouchSink } from "./context";
   import FieldMessages from "./FieldMessages.svelte";
   import { asField, createField, type FieldController } from "./field.svelte";
@@ -31,23 +33,8 @@
   setTouchSink({ touch: control.touch });
 </script>
 
-<fieldset {...rest} {...control.attributes} class={["fieldset", className]}>
-  <legend class="legend">{legend}</legend>
+<fieldset {...rest} {...control.attributes} class={cn("flex w-full flex-col gap-1.5", className)}>
+  <legend class="mb-1 text-sm font-medium">{legend}</legend>
   {@render children()}
   <FieldMessages {control} {description} />
 </fieldset>
-
-<style>
-  .fieldset {
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--spacing) * 1.5);
-  }
-
-  .legend {
-    margin-bottom: var(--spacing);
-    font-size: var(--text-sm);
-    line-height: var(--text-sm--line-height);
-    font-weight: var(--font-weight-medium);
-  }
-</style>

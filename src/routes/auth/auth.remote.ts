@@ -15,7 +15,6 @@ const logger = new Logger("Auth");
 /** Returns the user so the client can identify them too — see `identifyUser` in `$lib/analytics`. */
 export const signInEmail = form(signInEmailSchema, async (data) => {
   await delay(1000);
-  logger.debug("form data", data);
   try {
     const { user } = await auth.api.signInEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
@@ -23,18 +22,19 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedIn, { distinctId: user.id });
     return { user: { id: user.id, email: user.email, name: user.name } };
-  } catch (e) {
-    if (isAPIError(e)) {
-      logger.warn("Sign in failed", { message: e.message });
+  } catch (error) {
+    if (isAPIError(error)) {
+      logger.warn("Sign in failed", { message: error.message });
       invalid();
     }
-    Sentry.captureException(e);
+    Sentry.captureException(error);
     invalid("Unexpected error");
   }
 });
 
 /** Returns the user so the client can identify them too — see `identifyUser` in `$lib/analytics`. */
 export const signUpEmail = form(signUpEmailSchema, async (data) => {
+  await delay(1000);
   try {
     const { user } = await auth.api.signUpEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
@@ -42,12 +42,12 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedUp, { distinctId: user.id });
     return { user: { id: user.id, email: user.email, name: user.name } };
-  } catch (e) {
-    if (isAPIError(e)) {
-      logger.warn("Registration failed", { message: e.message });
+  } catch (error) {
+    if (isAPIError(error)) {
+      logger.warn("Registration failed", { message: error.message });
       invalid("Registration failed");
     }
-    Sentry.captureException(e);
+    Sentry.captureException(error);
     invalid("Unexpected error");
   }
 });

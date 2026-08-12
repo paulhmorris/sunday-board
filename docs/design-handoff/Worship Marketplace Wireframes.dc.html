@@ -1,0 +1,3032 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics=""
+        ><meta name="design_doc_mode" content="canvas" />
+        <link rel="stylesheet" href="_ds/modernist-8fa486d5-4161-44c0-b4a4-e7045bfb8b89/styles.css" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&amp;family=EB+Garamond:ital,wght@0,500;0,600;1,500&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: #f0eee9;
+            font-family: Archivo, system-ui, sans-serif;
+          }
+          a {
+            color: #b4260f;
+          }
+          a:hover {
+            color: #ec3013;
+          }
+          .dv-turn {
+            padding: 44px 48px 36px;
+            border-bottom: 2px solid #201e1d;
+            scroll-margin-top: 16px;
+          }
+          .dv-thd {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin: 0 0 26px;
+          }
+          .dv-tid {
+            font:
+              600 10px ui-monospace,
+              Menlo,
+              monospace;
+            padding: 3px 7px;
+            background: #201e1d;
+            color: #fff;
+            text-decoration: none;
+          }
+          .dv-tname {
+            font:
+              600 14px/1.2 Archivo,
+              sans-serif;
+            color: #201e1d;
+          }
+          .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 56px;
+          }
+          .dv-opt {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            scroll-margin-top: 16px;
+          }
+          .dv-oid {
+            font:
+              600 10.5px ui-monospace,
+              Menlo,
+              monospace;
+            padding: 3px 7px;
+            background: rgba(0, 0, 0, 0.09);
+            color: #201e1d;
+            text-decoration: none;
+          }
+          .dv-opt:target .dv-oid {
+            background: #ec3013;
+            color: #fff;
+          }
+          .dv-olabel {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font: 600 15px/1.3 Archivo;
+            color: #201e1d;
+          }
+          .tg {
+            font:
+              600 9px ui-monospace,
+              monospace;
+            letter-spacing: 0.08em;
+            padding: 3px 6px;
+            border: 1.5px solid #201e1d;
+            white-space: nowrap;
+          }
+          .tgr {
+            border-color: #ec3013;
+            color: #b4260f;
+          }
+          .row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+          }
+          .col {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+          }
+          .stepn {
+            font:
+              600 10px ui-monospace,
+              monospace;
+            color: rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.06em;
+          }
+          .arw {
+            align-self: flex-start;
+            font: 400 20px Archivo;
+            color: #201e1d;
+            padding: 0 13px;
+            margin-top: 74px;
+          }
+          .s {
+            background: #fff;
+            border: 2px solid #201e1d;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            padding: 14px;
+          }
+          .m {
+            width: 274px;
+          }
+          .d {
+            width: 520px;
+          }
+          .dd {
+            width: 660px;
+          }
+          .ln {
+            height: 9px;
+            background: #dcd9d6;
+          }
+          .hd {
+            font: 600 15px Archivo;
+            color: #201e1d;
+          }
+          .hd2 {
+            font: 600 12px Archivo;
+            color: #201e1d;
+            letter-spacing: 0.02em;
+          }
+          .sub {
+            font: 400 11px/1.4 Archivo;
+            color: rgba(0, 0, 0, 0.55);
+          }
+          .btn {
+            border: 2px solid #201e1d;
+            padding: 7px 10px;
+            font:
+              600 10px ui-monospace,
+              monospace;
+            letter-spacing: 0.06em;
+            text-align: left;
+          }
+          .btnp {
+            background: #201e1d;
+            color: #fff;
+          }
+          .btnr {
+            background: #ec3013;
+            border-color: #ec3013;
+            color: #fff;
+          }
+          .btng {
+            border-color: #a9a5a2;
+            color: rgba(0, 0, 0, 0.5);
+          }
+          .fld {
+            border: 1.5px solid #a9a5a2;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font: 400 10px Archivo;
+            color: rgba(0, 0, 0, 0.45);
+          }
+          .chip {
+            border: 1.5px solid #201e1d;
+            padding: 4px 7px;
+            font:
+              600 9px ui-monospace,
+              monospace;
+          }
+          .chipo {
+            border-color: #a9a5a2;
+            color: rgba(0, 0, 0, 0.5);
+          }
+          .chipf {
+            background: #201e1d;
+            color: #fff;
+          }
+          .card {
+            border: 1.5px solid #c9c5c2;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+          }
+          .note {
+            font:
+              500 15px/1.35 "EB Garamond",
+              Garamond,
+              serif;
+            color: #b4260f;
+            max-width: 274px;
+          }
+          .note.w {
+            max-width: 520px;
+          }
+          .note.ww {
+            max-width: 660px;
+          }
+          .q {
+            font:
+              500 15px/1.35 "EB Garamond",
+              Garamond,
+              serif;
+            color: #12539c;
+            max-width: 274px;
+          }
+          .q.w {
+            max-width: 520px;
+          }
+          .q.ww {
+            max-width: 660px;
+          }
+          .mon {
+            font:
+              500 15px/1.4 "EB Garamond",
+              Garamond,
+              serif;
+            color: #201e1d;
+            border-left: 3px solid #ec3013;
+            padding-left: 9px;
+            max-width: 660px;
+          }
+          .hr2 {
+            height: 2px;
+            background: #201e1d;
+          }
+          .hr1 {
+            height: 1.5px;
+            background: #dcd9d6;
+          }
+          .dv-next {
+            margin: 28px 0 0;
+            font: 12px/1.6 Archivo;
+            color: rgba(0, 0, 0, 0.55);
+          }
+          .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+          }
+          .grid3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 9px;
+          }
+          .rw {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+          }
+          .sp {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+          }
+          .bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #201e1d;
+            padding-bottom: 8px;
+            margin: -2px 0 2px;
+          }
+          .brand {
+            font:
+              700 11px ui-monospace,
+              monospace;
+            letter-spacing: 0.1em;
+          }
+          .ph {
+            background: #e6e3e0;
+            border: 1.5px dashed #a9a5a2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font:
+              600 9px ui-monospace,
+              monospace;
+            color: rgba(0, 0, 0, 0.4);
+          }
+        </style></helmet
+      >
+
+      <section class="dv-turn" id="t0">
+        <div class="dv-thd">
+          <a class="dv-tid" href="#t0">0</a
+          ><span class="dv-tname">How to read this — legend, principles, open decisions</span>
+        </div>
+        <div class="row" style="gap: 32px; flex-wrap: wrap">
+          <div class="s d">
+            <div class="hd">Legend</div>
+            <div class="hr2"></div>
+            <div class="rw" style="align-items: center">
+              <span class="tg">PHASE 1</span><span class="sub">Early Access scope</span>
+            </div>
+            <div class="rw" style="align-items: center">
+              <span class="tg tgr">PHASE 2</span><span class="sub">Launch / core loop scope</span>
+            </div>
+            <div class="note">Red italics = behavior rule the screen has to enforce.</div>
+            <div class="q">Blue italics = decision I need from you before this can be built.</div>
+            <div class="mon">$ Vertical red bar = monetization opportunity (spec'd or newly proposed).</div>
+            <div class="hr1"></div>
+            <div class="sub">
+              Form factor: musician flows are drawn at phone width, church + admin flows at desktop width — musicians
+              live in the Facebook group on their phones; churches post from an office computer. Both are responsive in
+              reality; this split just shows each at its likely-primary size.
+            </div>
+          </div>
+          <div class="s d">
+            <div class="hd">Two principles held constant across every screen</div>
+            <div class="hr2"></div>
+            <div class="hd2">1. Pay types are visually equal</div>
+            <div class="sub">
+              Paid / Volunteer render as the same neutral chip, same weight, same order everywhere. No color coding (no
+              green = paid), no icons, no "Paid" first, no count badges implying one is more common or desirable. There
+              is no sort-by-pay control anywhere in the UI — not disabled, not present.
+            </div>
+            <div class="hr1"></div>
+            <div class="hd2">2. No theology, denomination, or affiliation anywhere</div>
+            <div class="sub">
+              No field, no filter, no tag, no facet. A church may mention it in free-text description only. Style tags
+              (contemporary, gospel, liturgical, traditional…) are musical style, and the wireframes keep them labeled
+              "Musical style" to avoid drift into denominational shorthand.
+            </div>
+            <div class="hr1"></div>
+            <div class="q">
+              Decision: "liturgical" and "gospel" are musical styles that in practice correlate with tradition. Keep
+              them, or trim the list to purely musical descriptors (e.g. hymns, contemporary, acoustic)?
+            </div>
+          </div>
+        </div>
+        <p class="dv-next">
+          Try next: "expand 2f into more detail" · "show me an alternate feed layout" · "wireframe the Phase 3 directory
+          too"
+        </p>
+      </section>
+
+      <section class="dv-turn" id="t1">
+        <div class="dv-thd">
+          <a class="dv-tid" href="#t1">1</a
+          ><span class="dv-tname">Phase 1 — Early Access: waitlist, signup, profiles, verification</span>
+        </div>
+        <div class="stack">
+          <div class="dv-opt" id="1a">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#1a">1a</a>Landing — pre-launch waitlist<span class="tg">PHASE 1</span>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · LANDING (PRE-LAUNCH)</div>
+                <div class="s dd">
+                  <div class="bar">
+                    <span class="brand">NTX WORSHIP</span>
+                    <div class="rw">
+                      <span class="chip chipo">HOW WE STARTED</span><span class="chip">JOIN WAITLIST</span>
+                    </div>
+                  </div>
+                  <div class="hd" style="font-size: 26px; line-height: 1.1">
+                    Churches and musicians in North Texas,<br />finding each other without the group thread.
+                  </div>
+                  <div class="sub" style="max-width: 440px">
+                    Free to post. Free to apply. Free to be accepted. Built for the North Texas Worship Musicians
+                    community.
+                  </div>
+                  <div class="hr2"></div>
+                  <div class="grid2" style="align-items: end">
+                    <div class="col">
+                      <div class="sub">I'm a musician looking for services</div>
+                      <div class="fld">Email address</div>
+                      <div class="btn btnr">JOIN THE WAITLIST</div>
+                    </div>
+                    <div class="col">
+                      <div class="sub">I'm a church looking for musicians</div>
+                      <div class="fld">Email address</div>
+                      <div class="btn btnp">JOIN THE WAITLIST</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="grid3">
+                    <div class="card">
+                      <div class="hd2">Post a service</div>
+                      <div class="ln"></div>
+                      <div class="ln" style="width: 70%"></div>
+                    </div>
+                    <div class="card">
+                      <div class="hd2">Apply to a role</div>
+                      <div class="ln"></div>
+                      <div class="ln" style="width: 70%"></div>
+                    </div>
+                    <div class="card">
+                      <div class="hd2">Play together</div>
+                      <div class="ln"></div>
+                      <div class="ln" style="width: 70%"></div>
+                    </div>
+                  </div>
+                  <div class="rw"><span class="chip">FOUNDING MEMBER BADGE — WHILE EARLY ACCESS IS OPEN</span></div>
+                </div>
+                <div class="note ww">
+                  Two separate capture fields, not one — the waitlist has to know which side you're on so the launch
+                  email is the right email. Counter ("184 musicians, 22 churches waiting") only once numbers are
+                  non-embarrassing.
+                </div>
+                <div class="mon">
+                  $ Tip jar lives in the footer from day one as "Help keep this platform free" — establishes the framing
+                  before there's anything to pay for.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · CONFIRMED</div>
+                <div class="s m">
+                  <div class="brand">NTX WORSHIP</div>
+                  <div class="hr2"></div>
+                  <div class="hd">You're on the list.</div>
+                  <div class="sub">
+                    We'll email marcus@… the day accounts open. You'll get the Founding Member badge.
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="btn">SHARE IN THE FB GROUP</div>
+                  <div class="btn btng">READ HOW WE STARTED</div>
+                </div>
+                <div class="note">
+                  Decided: the landing page has three states in sequence — waitlist only → profiles open, no feed (step
+                  03) → full feed (step 04). Same URL, same layout, CTA and proof section swap.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · LANDING (EARLY ACCESS — PROFILES OPEN, NO FEED)</div>
+                <div class="s dd">
+                  <div class="bar">
+                    <span class="brand">NTX WORSHIP</span>
+                    <div class="rw">
+                      <span class="chip chipo">HOW WE STARTED</span><span class="chip chipo">LOG IN</span
+                      ><span class="chip">CREATE PROFILE</span>
+                    </div>
+                  </div>
+                  <div class="rw"><span class="chip">EARLY ACCESS</span></div>
+                  <div class="hd" style="font-size: 24px; line-height: 1.1">
+                    Set up your profile now. Services open soon.
+                  </div>
+                  <div class="sub" style="max-width: 460px">
+                    We're letting churches and musicians build profiles first, so the board isn't empty on day one.
+                    Everyone who joins now keeps a Founding Member badge.
+                  </div>
+                  <div class="hr2"></div>
+                  <div class="grid2">
+                    <div class="card">
+                      <div class="hd2">Musicians</div>
+                      <div class="sub">
+                        Roles, style, bio, links — about five minutes. You'll be ready to apply the day services go
+                        live.
+                      </div>
+                      <div class="btn btnr">CREATE MUSICIAN PROFILE → <a class="dv-oid" href="#1b">1b</a></div>
+                    </div>
+                    <div class="card">
+                      <div class="hd2">Churches</div>
+                      <div class="sub">Name your church and region now, so you can post the moment we open it up.</div>
+                      <div class="btn btnp">CREATE CHURCH PROFILE → <a class="dv-oid" href="#1b">1b</a></div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sp">
+                    <div class="sub">184 musicians · 22 churches · North Texas</div>
+                    <div class="sub">Nothing to apply to yet — we'll email you the day it opens.</div>
+                  </div>
+                </div>
+                <div class="note ww">
+                  This is the state you'll actually launch on: signup and profiles live, no feed, no posting. The honest
+                  "nothing to apply to yet" line is what keeps the first cohort from bouncing and assuming it's broken.
+                </div>
+                <div class="note ww">
+                  Profile-count numbers do double duty here as the only available proof of life — they replace the feed
+                  preview that step 04 uses.
+                </div>
+                <div class="q ww">
+                  Should churches be able to draft services during Early Access (saved, not published, auto-posting on
+                  launch day)? It's how you seed a non-empty board on day one instead of asking churches to come back
+                  and post.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · LANDING (POST-LAUNCH, LOGGED OUT)</div>
+                <div class="s dd">
+                  <div class="bar">
+                    <span class="brand">NTX WORSHIP</span>
+                    <div class="rw">
+                      <span class="chip chipo">BROWSE SERVICES</span><span class="chip chipo">LOG IN</span
+                      ><span class="chip">SIGN UP</span>
+                    </div>
+                  </div>
+                  <div class="hd" style="font-size: 24px; line-height: 1.1">
+                    17 open services in North Texas right now.
+                  </div>
+                  <div class="grid2">
+                    <div class="card">
+                      <div class="sp">
+                        <div class="hd2">Sunday Drummer — Grace Fellowship</div>
+                        <span class="chip chipo">PAID</span>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">DENTON</span><span class="chip chipo">DRUMS</span
+                        ><span class="chip chipo">CONTEMPORARY</span>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="sp">
+                        <div class="hd2">Worship Leader — Trinity Bible, Plano</div>
+                        <span class="chip chipo">PAID</span>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">PLANO</span><span class="chip chipo">VOCALS</span
+                        ><span class="chip chipo">KEYS</span>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="sp">
+                        <div class="hd2">Bassist, Wed rehearsals — Cornerstone</div>
+                        <span class="chip chipo">VOLUNTEER</span>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">ARLINGTON</span><span class="chip chipo">BASS</span>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="sp">
+                        <div class="hd2">Keys — Northgate Church, Frisco</div>
+                        <span class="chip chipo">PAID</span>
+                      </div>
+                      <div class="rw"><span class="chip chipo">FRISCO</span><span class="chip chipo">KEYS</span></div>
+                    </div>
+                  </div>
+                  <div class="hr2"></div>
+                  <div class="sp">
+                    <div class="sub">Browsing is open to everyone. Applying needs a free account.</div>
+                    <div class="btn btnr">CREATE FREE ACCOUNT</div>
+                  </div>
+                </div>
+                <div class="note ww">
+                  Post-launch, the landing page IS the feed preview — the strongest possible proof the board isn't
+                  empty. Pay-type chips here are identical in style; nothing sorts by them.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1b">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#1b">1b</a>Sign up — both account types + mandatory phone verification<span
+                class="tg"
+                >PHASE 1</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · PICK ACCOUNT TYPE</div>
+                <div class="s m">
+                  <div class="brand">NTX WORSHIP</div>
+                  <div class="hr2"></div>
+                  <div class="hd">What brings you here?</div>
+                  <div class="card">
+                    <div class="hd2">I'm a musician</div>
+                    <div class="sub">Browse services, apply to roles.</div>
+                  </div>
+                  <div class="card">
+                    <div class="hd2">I'm a church</div>
+                    <div class="sub">Post services, review applicants.</div>
+                  </div>
+                  <div class="sub">You can be both later — a church can add you as a co-admin.</div>
+                </div>
+                <div class="note">One choice, no back-out cost: both types share steps 02–04 identically.</div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · ACCOUNT + AGE</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">SIGN UP</span><span class="stepn">1 / 3</span></div>
+                  <div class="hr2"></div>
+                  <div class="fld">Full name</div>
+                  <div class="fld">Email</div>
+                  <div class="fld">Password</div>
+                  <div class="hr1"></div>
+                  <div class="rw" style="align-items: flex-start">
+                    <span class="chip">☐</span>
+                    <div class="sub">I'm 16 or older</div>
+                  </div>
+                  <div class="rw" style="align-items: flex-start">
+                    <span class="chip">☐</span>
+                    <div class="sub">
+                      I agree to the Terms &amp; Privacy Policy, and I understand this platform does not run background
+                      checks — vetting is the church's responsibility.
+                    </div>
+                  </div>
+                  <div class="btn btnr">CONTINUE</div>
+                </div>
+                <div class="note">
+                  The no-vetting disclaimer is a checkbox here, not buried in ToS — and it reappears at accept time (see
+                  <a class="dv-oid" href="#2f">2f</a>).
+                </div>
+                <div class="q">
+                  Age is self-attested only. Fine? Nothing else is feasible for free, but worth an explicit yes.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · PHONE ENTRY</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">SIGN UP</span><span class="stepn">2 / 3</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Verify your phone</div>
+                  <div class="sub">
+                    One phone, one account. It keeps duplicate and fake accounts out. Your number is never shown to
+                    anyone.
+                  </div>
+                  <div class="fld">(214) 555-0134</div>
+                  <div class="btn btnr">SEND CODE</div>
+                </div>
+                <div class="note">
+                  Mandatory for both types. Framed as anti-fake-account, not as verification of you — reduces drop-off.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · CODE</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">SIGN UP</span><span class="stepn">2 / 3</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Enter the 6-digit code</div>
+                  <div class="grid3" style="grid-template-columns: repeat(6, 1fr); gap: 5px">
+                    <div class="fld" style="justify-content: center">4</div>
+                    <div class="fld" style="justify-content: center">1</div>
+                    <div class="fld" style="justify-content: center">9</div>
+                    <div class="fld" style="justify-content: center">—</div>
+                    <div class="fld" style="justify-content: center"></div>
+                    <div class="fld" style="justify-content: center"></div>
+                  </div>
+                  <div class="sub">Resend in 0:42 · Change number</div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="hd2" style="color: #b4260f">That number is already on an account</div>
+                    <div class="sub">Log in instead, or contact us if this looks wrong.</div>
+                  </div>
+                </div>
+                <div class="note">
+                  Error state shown inline: the dedup collision is the whole point of this step, so it needs a real path
+                  out (login / support), not a dead end.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">05 · BRANCH</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">SIGN UP</span><span class="stepn">3 / 3</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Verified. Let's build your profile.</div>
+                  <div class="rw">
+                    <span class="chip">FOUNDING MEMBER</span><span class="chip chipo">NEW HERE</span>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="btn btnr">MUSICIAN PROFILE → <a class="dv-oid" href="#1c">1c</a></div>
+                  <div class="btn btnp">CHURCH PROFILE → <a class="dv-oid" href="#1d">1d</a></div>
+                </div>
+                <div class="note">
+                  Badges awarded before profile work, so the reward is visible while you're doing the effort.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1c">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#1c">1c</a>Musician profile creation + optional Facebook verification<span
+                class="tg"
+                >PHASE 1</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · ROLES (FIXED TAXONOMY)</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">YOUR PROFILE</span><span class="stepn">1 / 4</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">How do you serve?</div>
+                  <div class="sub">Pick all that apply. Churches filter by these.</div>
+                  <div class="rw">
+                    <span class="chip chipf">DRUMS</span><span class="chip chipo">BASS</span
+                    ><span class="chip chipf">VOCALS</span><span class="chip chipo">KEYS</span
+                    ><span class="chip chipo">ACOUSTIC GTR</span><span class="chip chipo">ELECTRIC GTR</span>
+                  </div>
+                  <div class="rw" style="margin-top: 6px">
+                    <span class="chip chipo" style="border-style: dashed">MORE ▾</span>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub" style="font-style: italic; color: #7a7673">
+                    Expanded: Worship Leader, Sound / AV, Strings, Horns, Banjo / Steel, Other…
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">Selected: Drums, Vocals</div>
+                  <div class="sub" style="margin-top: 2px">Note for this role (optional)</div>
+                  <div class="fld">e.g. "Comfortable leading if needed"</div>
+                  <div class="btn btnr">CONTINUE</div>
+                </div>
+                <div class="note">
+                  Top row = most common roles; "More" expands the full fixed taxonomy — multi-select, no free text on
+                  the base list so filters stay reliable. Each selected role can carry a short optional comment (e.g.
+                  "worship leader" is one role among many, not a separate track). "Other" opens one text field but does
+                  NOT become a filterable value.
+                </div>
+                <div class="q">
+                  Confirm full taxonomy + default expanded set — is this list complete, and is the common/expanded split
+                  right?
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · REGION + STYLE</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">YOUR PROFILE</span><span class="stepn">2 / 4</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd2">Regions you'll serve</div>
+                  <div class="rw">
+                    <span class="chip chipf">NORTH TEXAS</span><span class="chip chipo">+ ADD REGION</span>
+                  </div>
+                  <div class="sub">More regions coming as we grow.</div>
+                  <div class="hr1"></div>
+                  <div class="hd2">Musical style</div>
+                  <div class="rw">
+                    <span class="chip chipf">CONTEMPORARY</span><span class="chip chipf">GOSPEL</span
+                    ><span class="chip chipo">TRADITIONAL</span><span class="chip chipo">LITURGICAL</span
+                    ><span class="chip chipo">ACOUSTIC</span>
+                  </div>
+                  <div class="sub">Style is a preference, not a requirement — it never blocks you from applying.</div>
+                  <div class="btn btnr">CONTINUE</div>
+                </div>
+                <div class="note">
+                  Region is a lookup value, no radius/geocoding. With one region live, this step is near-trivial —
+                  consider merging it into step 03 until region #2 exists.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · BIO + LINKS</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">YOUR PROFILE</span><span class="stepn">3 / 4</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd2">Bio</div>
+                  <div class="card">
+                    <div class="ln"></div>
+                    <div class="ln"></div>
+                    <div class="ln" style="width: 55%"></div>
+                    <div class="sub">142 / 600</div>
+                  </div>
+                  <div class="hd2">Profile links</div>
+                  <div class="fld">youtube.com/@marcuswebbdrums</div>
+                  <div class="fld">instagram.com/…</div>
+                  <div class="rw"><span class="chip chipo">+ ADD LINK</span></div>
+                  <div class="hr1"></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Profile strength</div>
+                      <span class="stepn">3 OF 4 DONE</span>
+                    </div>
+                    <div class="ln" style="background: #ec3013; width: 75%"></div>
+                    <div class="sub">Profiles with a bio and links get replied to more often.</div>
+                  </div>
+                  <div class="btn btnr">CONTINUE</div>
+                </div>
+                <div class="note">
+                  Completeness meter is the spec's "positive signal for new users" — a nudge, never a badge, and never
+                  shown as a score to churches.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · OPTIONAL VERIFY</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">YOUR PROFILE</span><span class="stepn">4 / 4</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Optional: link Facebook</div>
+                  <div class="card">
+                    <div class="hd2">Show churches who you are</div>
+                    <div class="sub">
+                      Link your Facebook so churches can see a familiar face and name. We post nothing on your behalf
+                      and only check that your account is real.
+                    </div>
+                    <div class="btn btnp">LINK FACEBOOK</div>
+                  </div>
+                  <div class="btn btng">SKIP — DO THIS LATER</div>
+                </div>
+                <div class="note">
+                  Backed off account-age/verified-badge claims — reliably gettable signals are verified email + oldest
+                  profile-photo date, not account age. This step is now framed as "recognize me," not verification tier.
+                  Explicit "we post nothing" — the #1 objection. Skipping must be equally sized and never re-nagged more
+                  than once.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">05 · PROFILE (DONE) / EDGE CASE</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">MARCUS WEBB</span><span class="chip chipo">EDIT</span></div>
+                  <div class="hr2"></div>
+                  <div class="rw">
+                    <div class="ph" style="width: 56px; height: 56px">PHOTO</div>
+                    <div class="col" style="gap: 5px">
+                      <div class="hd">Marcus Webb</div>
+                      <div class="sub">Denton · North Texas</div>
+                      <div class="rw">
+                        <span class="chip">FOUNDING MEMBER</span><span class="chip chipo">NEW HERE</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="rw"><span class="chip chipo">DRUMS</span><span class="chip chipo">VOCALS</span></div>
+                  <div class="rw">
+                    <span class="chip chipo">CONTEMPORARY</span><span class="chip chipo">GOSPEL</span>
+                  </div>
+                  <div class="ln"></div>
+                  <div class="ln"></div>
+                  <div class="ln" style="width: 60%"></div>
+                  <div class="rw"><span class="chip chipo">YOUTUBE</span><span class="chip chipo">INSTAGRAM</span></div>
+                  <div class="hr1"></div>
+                  <div class="sp">
+                    <div class="sub">Actively looking for services</div>
+                    <span class="chip">ON ◗</span>
+                  </div>
+                  <div class="hr1"></div>
+                </div>
+                <div class="note">
+                  Additive-only: no grayed-out badge rack. "New here" is the neutral tag standing in for absence.
+                </div>
+                <div class="q">
+                  Is "Actively Looking" visible in Phase 1 even though the directory it feeds is Phase 3? I've drawn it
+                  on — harmless, and it seeds data.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1d">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#1d">1d</a>Church profile creation + optional website verification<span class="tg"
+                >PHASE 1</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · CHURCH DETAILS</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">CHURCH PROFILE</span><span class="stepn">1 / 3</span></div>
+                  <div class="hr2"></div>
+                  <div class="grid2">
+                    <div class="col">
+                      <div class="hd2">Church name</div>
+                      <div class="fld">Grace Fellowship Denton</div>
+                    </div>
+                    <div class="col">
+                      <div class="hd2">City</div>
+                      <div class="fld">Denton</div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="hd2">Region</div>
+                    <div class="rw"><span class="chip chipf">NORTH TEXAS</span></div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="col">
+                    <div class="hd2">About your church <span class="sub">(optional)</span></div>
+                    <div class="card">
+                      <div class="ln"></div>
+                      <div class="ln"></div>
+                      <div class="ln" style="width: 45%"></div>
+                    </div>
+                    <div class="sub">
+                      Anything you'd want a musician to know before applying — service times, band size, room, gear
+                      provided.
+                    </div>
+                  </div>
+                  <div class="btn btnr">CONTINUE</div>
+                </div>
+                <div class="note w">
+                  No denomination, affiliation, or statement-of-faith field — by design. The About box is the only place
+                  any of that can appear, at the church's own choice.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · OPTIONAL WEBSITE VERIFY</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">CHURCH PROFILE</span><span class="stepn">2 / 3</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Optional: verify your website</div>
+                  <div class="sub">
+                    Add your church's website, then verify it. Verified churches show a badge musicians can see when
+                    browsing the profile.
+                  </div>
+                  <div class="grid2">
+                    <div class="col">
+                      <div class="hd2">Website</div>
+                      <div class="fld">gracefellowshipdenton.org</div>
+                    </div>
+                    <div class="col">
+                      <div class="hd2">Email at that domain</div>
+                      <div class="fld">worship@gracefellowshipdenton.org</div>
+                    </div>
+                  </div>
+                  <div class="rw">
+                    <div class="btn btnr">SEND VERIFICATION LINK</div>
+                    <div class="btn btng">SKIP FOR NOW</div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="hd2" style="color: #b4260f">No website yet?</div>
+                    <div class="sub">
+                      Skip this — you can still post services, and you can verify later once you have one.
+                    </div>
+                  </div>
+                </div>
+                <div class="note w">
+                  Small churches genuinely don't have a website yet. The skip copy must not read as "you're not a real
+                  church" — hence the explicit "you can still post."
+                </div>
+                <div class="q ww">
+                  Resolved: no trust-stat exclusion (was spec §13) — that would punish smaller churches. Badge is
+                  additive-only and visible on the profile: verified shows a checkmark, unverified shows nothing. No
+                  penalty, no admin-only hiding.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · CHURCH HOME (EMPTY STATE)</div>
+                <div class="s d">
+                  <div class="bar">
+                    <span class="brand">GRACE FELLOWSHIP DENTON</span>
+                    <div class="rw">
+                      <span class="chip chipo">PROFILE</span><span class="chip chipo">NOTIFICATIONS</span
+                      ><span class="chip">POST A SERVICE</span>
+                    </div>
+                  </div>
+                  <div class="rw">
+                    <span class="chip">FOUNDING MEMBER</span><span class="chip chipo">NEW HERE</span
+                    ><span class="chip">VERIFIED CHURCH</span>
+                  </div>
+                  <div class="hr2"></div>
+                  <div class="card" style="border-style: dashed; align-items: flex-start">
+                    <div class="hd">No services posted yet</div>
+                    <div class="sub">
+                      Post your first service and it'll be visible to every musician in North Texas. First posts get a
+                      quick review from us before they go live — usually under a few hours.
+                    </div>
+                    <div class="btn btnr">POST YOUR FIRST SERVICE → <a class="dv-oid" href="#2c">2c</a></div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sp">
+                    <div class="sub">4 posts left this month</div>
+                    <div class="sub">
+                      Team: 1 admin · <span style="text-decoration: underline">Invite a co-admin</span> →
+                      <a class="dv-oid" href="#1e">1e</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="note w">
+                  Manual first-post review is disclosed up front, with a time expectation, so the church doesn't think
+                  posting is broken.
+                </div>
+                <div class="mon">
+                  $ Post cap ("4 left this month") is surfaced as a neutral counter from day one — it's the spam control
+                  now and the natural upgrade surface later. Do NOT style it as a limit-you-can-buy-out-of yet.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1e">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#1e">1e</a>Co-admin invite + musician / church view switcher<span class="tg"
+                >PHASE 1</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · CHURCH SENDS INVITE</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">TEAM</span><span class="chip chipo">CLOSE</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Invite a co-admin</div>
+                  <div class="sub">
+                    Co-admins can post services and review applicants for Grace Fellowship. They keep their own musician
+                    account and switch between the two.
+                  </div>
+                  <div class="fld">elena@… (or share the link)</div>
+                  <div class="rw">
+                    <div class="btn btnr">SEND INVITE</div>
+                    <div class="btn btng">COPY LINK · ntxw.org/j/4K9P2</div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">Pending: none · Admins: Pastor Dale (owner)</div>
+                </div>
+                <div class="note w">
+                  No approval queue per spec — the link is the authority. That means the link must be revocable and
+                  single-church scoped.
+                </div>
+                <div class="note w">
+                  Confirmed: co-admins have full rights except deleting the church account (can't remove the owner, no
+                  cap exception).
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · MUSICIAN ACCEPTS</div>
+                <div class="s m">
+                  <div class="brand">INVITATION</div>
+                  <div class="hr2"></div>
+                  <div class="hd">Grace Fellowship Denton invited you to help manage their account.</div>
+                  <div class="sub">
+                    You'll be able to post services and review applicants for them. Your musician profile stays separate
+                    and private from this.
+                  </div>
+                  <div class="btn btnr">ACCEPT</div>
+                  <div class="btn btng">DECLINE</div>
+                </div>
+                <div class="note">
+                  Explicit separation statement — otherwise musicians fear the church can see their applications
+                  elsewhere.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · VIEW SWITCHER</div>
+                <div class="s m">
+                  <div class="bar"><span class="brand">NTX WORSHIP</span><span class="chip">ELENA ▾</span></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Elena Ruiz — Musician</div>
+                      <span class="chip">CURRENT</span>
+                    </div>
+                  </div>
+                  <div class="card"><div class="hd2">Grace Fellowship Denton — Church admin</div></div>
+                  <div class="hr1"></div>
+                  <div class="sub">Account settings · Log out</div>
+                </div>
+                <div class="note">
+                  One persistent switcher in the header, always the same place. Switching swaps the whole nav and
+                  notification list, not just a filter.
+                </div>
+                <div class="note">
+                  Confirmed: co-admins are hard-blocked from applying to their own church's roles — they remove/fill the
+                  role directly instead of applying.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="1f">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#1f">1f</a>Admin — musician &amp; church tables, Early Access stats<span
+                class="tg"
+                >PHASE 1</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · ADMIN OVERVIEW</div>
+                <div class="s dd">
+                  <div class="bar">
+                    <span class="brand">ADMIN</span>
+                    <div class="rw">
+                      <span class="chip">OVERVIEW</span><span class="chip chipo">MUSICIANS</span
+                      ><span class="chip chipo">CHURCHES</span>
+                    </div>
+                  </div>
+                  <div class="hd2">Early Access — Day 12</div>
+                  <div class="hr2"></div>
+                  <div class="grid3">
+                    <div class="card">
+                      <div class="stepn">MUSICIANS</div>
+                      <div class="hd" style="font-size: 22px">184</div>
+                      <div class="sub">+14 this week</div>
+                    </div>
+                    <div class="card">
+                      <div class="stepn">CHURCHES</div>
+                      <div class="hd" style="font-size: 22px">22</div>
+                      <div class="sub">+3 this week</div>
+                    </div>
+                    <div class="card">
+                      <div class="stepn">REGIONS LIVE</div>
+                      <div class="hd" style="font-size: 22px">1</div>
+                      <div class="sub">North Texas only</div>
+                    </div>
+                  </div>
+                  <div class="grid3">
+                    <div class="card">
+                      <div class="stepn">PROFILES COMPLETE</div>
+                      <div class="hd" style="font-size: 22px">61%</div>
+                      <div class="sub">Bio + links + roles filled in</div>
+                    </div>
+                    <div class="card">
+                      <div class="stepn">PHONE VERIFIED</div>
+                      <div class="hd" style="font-size: 22px">100%</div>
+                      <div class="sub">Required at signup</div>
+                    </div>
+                    <div class="card">
+                      <div class="stepn">OPTIONAL VERIFIED</div>
+                      <div class="hd" style="font-size: 22px">38 / 22</div>
+                      <div class="sub">FB-linked musicians / domain-verified churches</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="rw" style="align-items: center"><span class="hd2">By region</span></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="sub">North Texas</div>
+                      <div class="sub">184 musicians · 22 churches</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-style: dashed">
+                    <div class="hd2">Top instruments/roles claimed</div>
+                    <div class="rw">
+                      <span class="chip chipo">VOCALS · 91</span><span class="chip chipo">KEYS · 58</span
+                      ><span class="chip chipo">DRUMS · 52</span><span class="chip chipo">ACOUSTIC GTR · 47</span
+                      ><span class="chip chipo">ELECTRIC GTR · 31</span><span class="chip chipo">BASS · 24</span>
+                    </div>
+                    <div class="sub">
+                      Read this against church-side role demand once posting opens — it's your best pre-launch signal
+                      for supply/demand gaps by role.
+                    </div>
+                  </div>
+                </div>
+                <div class="note ww">
+                  This is the one screen that answers "are we ready to open the feed" — completion rate and role-supply
+                  mix matter more pre-launch than raw counts.
+                </div>
+                <div class="mon">
+                  $ Role-gap data here (e.g. too few bassists, surplus of vocalists) is exactly what you'd sell as a "we
+                  need X" push to churches once posting opens — not ad money, but it's a real lever worth remembering
+                  when you get there.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · MUSICIANS TABLE</div>
+                <div class="s dd">
+                  <div class="bar">
+                    <span class="brand">ADMIN</span>
+                    <div class="rw">
+                      <span class="chip chipo">OVERVIEW</span><span class="chip">MUSICIANS · 184</span
+                      ><span class="chip chipo">CHURCHES</span>
+                    </div>
+                  </div>
+                  <div class="rw">
+                    <span class="fld" style="width: 180px">Search name / email</span
+                    ><span class="chip chipo">ROLE ▾</span><span class="chip chipo">REGION ▾</span
+                    ><span class="chip chipo">VERIFIED ▾</span><span class="chip chipo">PROFILE: COMPLETE ▾</span
+                    ><span class="chip chipo">SORT: NEWEST ▾</span>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 3px">
+                        <div class="rw" style="align-items: center">
+                          <span class="hd2">Marcus Webb</span><span class="chip">VERIFIED</span
+                          ><span class="chip chipo">FOUNDING MEMBER</span>
+                        </div>
+                        <div class="sub">Denton · Drums, Vocals · Joined 2d ago · Profile complete</div>
+                      </div>
+                      <span class="chip chipo">VIEW</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 3px">
+                        <div class="hd2">Elena Ruiz</div>
+                        <div class="sub">Plano · Drums, Keys · Joined 1d ago · Bio missing</div>
+                      </div>
+                      <span class="chip chipo">VIEW</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 3px">
+                        <div class="hd2">Daniel Kim</div>
+                        <div class="sub">Denton · Drums · Joined 4h ago · Phone unverified — signup incomplete</div>
+                      </div>
+                      <span class="chip chipo">VIEW</span>
+                    </div>
+                  </div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="sp">
+                      <div class="col" style="gap: 3px">
+                        <div class="rw" style="align-items: center">
+                          <span class="hd2">J. Alvarez</span
+                          ><span class="chip" style="background: #ec3013; border-color: #ec3013; color: #fff"
+                            >FLAGGED</span
+                          >
+                        </div>
+                        <div class="sub">Fort Worth · Vocals · Shared-device signal with Praise House DFW</div>
+                      </div>
+                      <span class="chip chipo">VIEW</span>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">Showing 4 of 184 · Export CSV</div>
+                </div>
+                <div class="note w">
+                  Row surfaces exactly what a reviewer acts on: verification gaps, incomplete signups, flags — not a raw
+                  data dump. Flagged rows link straight to <a class="dv-oid" href="#2i">2i</a>.
+                </div>
+                <div class="q w">
+                  Can admin edit or suspend an account from here (e.g. Daniel never finished phone verification and is
+                  stuck)? I'd add "remind" and "delete stale unverified signup" actions — confirm scope.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · CHURCHES TABLE</div>
+                <div class="s dd">
+                  <div class="bar">
+                    <span class="brand">ADMIN</span>
+                    <div class="rw">
+                      <span class="chip chipo">OVERVIEW</span><span class="chip chipo">MUSICIANS</span
+                      ><span class="chip">CHURCHES · 22</span>
+                    </div>
+                  </div>
+                  <div class="rw">
+                    <span class="fld" style="width: 180px">Search name / city</span
+                    ><span class="chip chipo">REGION ▾</span><span class="chip chipo">DOMAIN VERIFIED ▾</span
+                    ><span class="chip chipo">SORT: NEWEST ▾</span>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 3px">
+                        <div class="rw" style="align-items: center">
+                          <span class="hd2">Grace Fellowship Denton</span
+                          ><span class="chip chipo">FOUNDING MEMBER</span>
+                        </div>
+                        <div class="sub">Denton · Joined 3d ago · Domain unverified · 1 admin</div>
+                      </div>
+                      <span class="chip chipo">VIEW</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 3px">
+                        <div class="rw" style="align-items: center">
+                          <span class="hd2">Cornerstone Arlington</span><span class="chip">VERIFIED</span>
+                        </div>
+                        <div class="sub">Arlington · Joined 6d ago · Domain verified · 1 admin</div>
+                      </div>
+                      <span class="chip chipo">VIEW</span>
+                    </div>
+                  </div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="sp">
+                      <div class="col" style="gap: 3px">
+                        <div class="hd2">Praise House DFW</div>
+                        <div class="sub">Fort Worth · Joined 1d ago · Domain unverified · Self-dealing signal open</div>
+                      </div>
+                      <span class="chip chipo">VIEW</span>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">Showing 3 of 22 · Export CSV</div>
+                </div>
+                <div class="note w">
+                  Same shape as the musicians table on purpose — one mental model for both entity types. Domain-verified
+                  is the one church-specific column that matters pre-launch.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · ROW DETAIL</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">MARCUS WEBB</span><span class="chip chipo">✕</span></div>
+                  <div class="hr2"></div>
+                  <div class="grid2">
+                    <div class="col" style="gap: 4px">
+                      <div class="stepn">ACCOUNT</div>
+                      <div class="sub">marcus@… · (214) 555-0134 · Joined Jul 14</div>
+                      <div class="sub">Phone verified · FB linked, 6yr old (Verified)</div>
+                    </div>
+                    <div class="col" style="gap: 4px">
+                      <div class="stepn">PROFILE</div>
+                      <div class="sub">Denton · Drums, Vocals · Contemporary, Gospel</div>
+                      <div class="sub">Bio + 2 links + photo · Complete</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">No services open yet — this musician has no applications to show.</div>
+                  <div class="hr1"></div>
+                  <div class="rw">
+                    <span class="btn btng">SEND PASSWORD RESET</span
+                    ><span class="btn btng">IMPERSONATE (VIEW-ONLY)</span
+                    ><span class="btn" style="border-color: #ec3013; color: #b4260f">SUSPEND ACCOUNT</span>
+                  </div>
+                </div>
+                <div class="note w">
+                  One detail-drawer shape reused for both musicians and churches, swapping the profile block. Suspend is
+                  destructive-styled and sits apart from the other two actions.
+                </div>
+                <div class="q w">
+                  Is view-only impersonation ("log in as") in scope for Phase 1, or is it a Phase 2+ support tool? It's
+                  the fastest way to debug a stuck signup but is also the single riskiest admin capability from a trust
+                  standpoint — flagging for your call.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="dv-next">
+          Try next: "expand 1c with the edit-profile screens" · "combine 1c steps 01–02 into one screen" · "show me an
+          alternate signup that defers phone verification"
+        </p>
+      </section>
+
+      <section class="dv-turn" id="t2">
+        <div class="dv-thd">
+          <a class="dv-tid" href="#t2">2</a><span class="dv-tname">Phase 2 — Launch: the core loop</span>
+        </div>
+        <div class="stack">
+          <div class="dv-opt" id="2a">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2a">2a</a>Public service feed + filters<span class="tg tgr">PHASE 2</span>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · FEED (LOGGED OUT OR IN)</div>
+                <div class="s" style="width: 940px; gap: 5px">
+                  <div class="bar">
+                    <span class="brand">NTX WORSHIP</span>
+                    <div class="rw">
+                      <span class="chip chipo">MY APPLICATIONS</span><span class="chip chipo">NOTIFICATIONS · 2</span
+                      ><span class="chip">MARCUS ▾</span>
+                    </div>
+                  </div>
+                  <div class="sp">
+                    <div class="hd">Open services</div>
+                    <div class="sub">17 results · North Texas</div>
+                  </div>
+                  <div class="hr2"></div>
+                  <div class="rw">
+                    <span class="chip chipo">REGION: NORTH TEXAS ▾</span><span class="chip chipf">ROLE: DRUMS ✕</span
+                    ><span class="chip chipo">STYLE ▾</span><span class="chip chipo">PAY TYPE ▾</span
+                    ><span class="chip chipo">TYPE: ONE-TIME / ONGOING ▾</span><span class="chip chipo">CLEAR ALL</span>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-color: #ec3013; padding: 7px; gap: 3px">
+                    <div class="sp">
+                      <div class="col" style="gap: 3px">
+                        <div class="rw">
+                          <span class="chip">FEATURED</span><span class="chip chipo">ONE-TIME</span
+                          ><span class="chip chipo">PAID</span>
+                        </div>
+                        <div class="hd2">Easter Sunday Drummer — Northgate Church</div>
+                        <div class="sub">Frisco · Sun Apr 5, 9:00am · Posted 2d ago</div>
+                      </div>
+                      <div class="btn btnr">VIEW</div>
+                    </div>
+                  </div>
+                  <div class="grid3" style="gap: 7px">
+                    <div class="card" style="padding: 8px; gap: 5px">
+                      <div class="rw"><span class="chip chipo">ONE-TIME</span><span class="chip chipo">PAID</span></div>
+                      <div class="hd2">Sunday Drummer — Grace Fellowship Denton</div>
+                      <div class="sub">Denton · Sun Mar 22, 10:30am · 2 slots · 3 applicants</div>
+                      <div class="rw"><span class="chip chipo">DRUMS</span><span class="chip chipo">BASS</span></div>
+                      <div class="btn btnp" style="width: 100%; box-sizing: border-box">VIEW</div>
+                    </div>
+                    <div class="card" style="padding: 8px; gap: 5px">
+                      <div class="rw">
+                        <span class="chip chipo">ONGOING</span><span class="chip chipo">VOLUNTEER</span
+                        ><span class="chip">VERIFIED</span>
+                      </div>
+                      <div class="hd2">House Drummer — Cornerstone Arlington</div>
+                      <div class="sub">Arlington · Sundays 9am + Weds 7pm · 1 slot</div>
+                      <div class="rw"><span class="chip chipo">DRUMS</span><span class="chip chipo">GOSPEL</span></div>
+                      <div class="btn btnp" style="width: 100%; box-sizing: border-box">VIEW</div>
+                    </div>
+                    <div class="card" style="padding: 8px; gap: 5px">
+                      <div class="rw">
+                        <span class="chip chipo">ONE-TIME</span><span class="chip chipo">VOLUNTEER</span>
+                      </div>
+                      <div class="hd2">Fill-in Drummer, Youth Night — Mesquite First</div>
+                      <div class="sub">Mesquite · Wed Mar 25, 6:30pm · 1 slot</div>
+                      <div class="btn btnp" style="width: 100%; box-sizing: border-box">VIEW</div>
+                    </div>
+                    <div class="card" style="padding: 8px; gap: 5px">
+                      <div class="rw"><span class="chip chipo">ONE-TIME</span><span class="chip chipo">PAID</span></div>
+                      <div class="hd2">Bassist Needed, Good Friday — Redeemer Plano</div>
+                      <div class="sub">Plano · Fri Apr 3, 7:00pm · 1 slot</div>
+                      <div class="btn btnp" style="width: 100%; box-sizing: border-box">VIEW</div>
+                    </div>
+                    <div class="card" style="padding: 8px; gap: 5px">
+                      <div class="rw"><span class="chip chipo">ONGOING</span><span class="chip chipo">PAID</span></div>
+                      <div class="hd2">Keys, Sunday Service — Hillside Carrollton</div>
+                      <div class="sub">Carrollton · Sundays 9 + 11am · 1 slot</div>
+                      <div class="btn btnp" style="width: 100%; box-sizing: border-box">VIEW</div>
+                    </div>
+                    <div class="card" style="padding: 8px; gap: 5px">
+                      <div class="rw"><span class="chip chipo">ONE-TIME</span><span class="chip chipo">PAID</span></div>
+                      <div class="hd2">Vocalist, Good Friday Service — Redeemer Plano</div>
+                      <div class="sub">Plano · Fri Apr 3, 7:00pm · 1 slot</div>
+                      <div class="btn btnp" style="width: 100%; box-sizing: border-box">VIEW</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">
+                    Newest first. There is no sort-by-pay — pay type is shown, amounts are private until you apply.
+                  </div>
+                </div>
+                <div class="note ww">Denser card rhythm — tighter padding, 6 results in view instead of 4.</div>
+                <div class="mon">
+                  $ Featured/boost slot: one pinned card at the top of filtered results, clearly labeled, flat one-time
+                  fee, runs until filled or expired. Cap it at 1–2 per filtered view or the top of the board stops
+                  feeling honest.
+                </div>
+                <div class="mon">
+                  $ New idea — sponsor card: a single clearly-marked local placement (music store, lesson instructor,
+                  sound tech) inserted after result 5, never above organic results. Same card shell, "SPONSOR" chip,
+                  styled unmistakably as an ad.
+                </div>
+                <div class="mon">
+                  $ New idea — weekly digest email ("12 new services this week in North Texas"). It's the highest-value
+                  real estate you'll own, sponsorable, and it drags musicians back without any push infrastructure.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · FEED, MOBILE + FILTER SHEET</div>
+                <div class="s m">
+                  <div class="bar"><span class="brand">NTX WORSHIP</span><span class="chip">☰</span></div>
+                  <div class="sp">
+                    <div class="hd2">17 open services</div>
+                    <span class="chip">FILTER · 1</span>
+                  </div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">ONE-TIME</span><span class="chip chipo">PAID</span></div>
+                    <div class="hd2">Sunday Drummer — Grace Fellowship</div>
+                    <div class="sub">Denton · Sun Mar 22 · 2 slots</div>
+                  </div>
+                  <div class="card">
+                    <div class="rw">
+                      <span class="chip chipo">ONGOING</span><span class="chip chipo">VOLUNTEER</span>
+                    </div>
+                    <div class="hd2">House Drummer — Cornerstone</div>
+                    <div class="sub">Arlington · Sundays + Weds</div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="sp">
+                      <div class="hd2">Filters</div>
+                      <span class="chip chipo">✕</span>
+                    </div>
+                    <div class="sub">Region</div>
+                    <div class="rw"><span class="chip chipf">NORTH TEXAS</span></div>
+                    <div class="sub">Role</div>
+                    <div class="rw">
+                      <span class="chip chipf">DRUMS</span><span class="chip chipo">BASS</span
+                      ><span class="chip chipo">VOCALS</span><span class="chip chipo">KEYS</span
+                      ><span class="chip chipo">GTR</span>
+                    </div>
+                    <div class="sub">Pay type</div>
+                    <div class="rw"><span class="chip chipo">PAID</span><span class="chip chipo">VOLUNTEER</span></div>
+                    <div class="sub">Musical style</div>
+                    <div class="rw">
+                      <span class="chip chipo">CONTEMPORARY</span><span class="chip chipo">GOSPEL</span
+                      ><span class="chip chipo">TRADITIONAL</span><span class="chip chipo">LITURGICAL</span>
+                    </div>
+                    <div class="btn btnr">SHOW 17 SERVICES</div>
+                  </div>
+                </div>
+                <div class="note">
+                  Filters live in a sheet on mobile with the result count on the apply button — the only honest way to
+                  fit five facets on a phone.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · EMPTY / OVER-FILTERED</div>
+                <div class="s m">
+                  <div class="bar"><span class="brand">NTX WORSHIP</span><span class="chip">☰</span></div>
+                  <div class="rw">
+                    <span class="chip chipf">ROLE: BANJO ✕</span><span class="chip chipf">VOLUNTEER ✕</span>
+                  </div>
+                  <div class="card" style="border-style: dashed">
+                    <div class="hd2">Nothing matches those filters yet</div>
+                    <div class="sub">There are 17 open services in North Texas. Try removing a filter.</div>
+                    <div class="btn btnp">REMOVE PAY TYPE FILTER</div>
+                    <div class="btn btng">NOTIFY ME WHEN A BANJO ROLE IS POSTED</div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="hd2">Open right now</div>
+                  <div class="card">
+                    <div class="hd2">Sunday Drummer — Grace Fellowship</div>
+                    <div class="sub">Denton · Sun Mar 22</div>
+                  </div>
+                </div>
+                <div class="note">
+                  Never a bare empty state: always show the unfiltered count, a one-tap way to widen, and real results
+                  below.
+                </div>
+                <div class="q">
+                  "Notify me when X is posted" is a saved-search alert — not in the spec. Worth adding at launch? It's
+                  the cheapest possible retention loop, and later becomes the priority-alerts monetization hook.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · COLD-START EMPTY BOARD</div>
+                <div class="s m">
+                  <div class="bar"><span class="brand">NTX WORSHIP</span><span class="chip">☰</span></div>
+                  <div class="card" style="border-style: dashed">
+                    <div class="hd2">The board is quiet today</div>
+                    <div class="sub">
+                      Every open service in North Texas has been filled. New ones get posted most weeks.
+                    </div>
+                    <div class="btn btnr">EMAIL ME WHEN SOMETHING'S POSTED</div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="hd2">Recently filled</div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Keys — Northgate Frisco</div>
+                        <div class="sub">Filled 2 days ago</div>
+                      </div>
+                      <span class="chip chipo">FILLED</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Bassist — Cornerstone</div>
+                        <div class="sub">Filled last week</div>
+                      </div>
+                      <span class="chip chipo">FILLED</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="note">
+                  Showing recently-filled services proves the platform works even when there's nothing to apply to —
+                  critical for the first months.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2b">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2b">2b</a>Service detail — pay type shown, amount withheld<span class="tg tgr"
+                >PHASE 2</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · ONE-TIME SERVICE</div>
+                <div class="s d">
+                  <div class="bar"><span class="brand">NTX WORSHIP</span><span class="chip">MARCUS ▾</span></div>
+                  <div class="rw">
+                    <span class="chip chipo">ONE-TIME</span><span class="chip chipo">PAID</span
+                    ><span class="chip chipo">OPEN</span>
+                  </div>
+                  <div class="hd" style="font-size: 20px">Sunday Morning Drummer &amp; Bassist</div>
+                  <div class="sp">
+                    <div class="col" style="gap: 4px">
+                      <div class="hd2">Grace Fellowship Denton</div>
+                      <div class="sub">Denton · North Texas · Founding Member</div>
+                    </div>
+                    <span class="chip chipo">VIEW CHURCH</span>
+                  </div>
+                  <div class="hr2"></div>
+                  <div class="grid2">
+                    <div class="col" style="gap: 4px">
+                      <div class="stepn">DATE &amp; TIME</div>
+                      <div class="hd2">Sun Mar 22, 10:30am</div>
+                      <div class="sub">Rehearsal Thu 7pm</div>
+                    </div>
+                    <div class="col" style="gap: 4px">
+                      <div class="stepn">PAY</div>
+                      <div class="hd2">Paid</div>
+                      <div class="sub">Amount shown when you apply</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="col" style="gap: 4px">
+                    <div class="stepn">DESCRIPTION</div>
+                    <div class="ln"></div>
+                    <div class="ln"></div>
+                    <div class="ln" style="width: 70%"></div>
+                  </div>
+                  <div class="rw">
+                    <span class="chip chipo">CONTEMPORARY</span><span class="chip chipo">GEAR PROVIDED</span>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="stepn">ROLE SLOTS · 2</div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Drummer</div>
+                        <div class="sub">Open · 3 applicants</div>
+                      </div>
+                      <div class="btn btnr">APPLY TO THIS SLOT</div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Bassist</div>
+                        <div class="sub">Open · 1 applicant</div>
+                      </div>
+                      <div class="btn btnp">APPLY TO THIS SLOT</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub" style="text-decoration: underline">Report this service</div>
+                </div>
+                <div class="note w">
+                  Pay type sits in the same slot the amount would occupy, with the reveal condition stated plainly — so
+                  it reads as "later," not "hidden."
+                </div>
+                <div class="note w">
+                  Apply is per slot, and both slots are individually applyable — Marcus plays drums and can also cover
+                  bass. See the multi-slot rule in <a class="dv-oid" href="#2f">2f</a>.
+                </div>
+                <div class="q w">
+                  Should applicant counts be public? Shown here as "3 applicants." It's useful signal but suppresses
+                  applications to popular slots and embarrasses slots with zero. My default: hide from public, show only
+                  to the church.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · ONGOING SERVICE</div>
+                <div class="s d">
+                  <div class="rw">
+                    <span class="chip chipo">ONGOING</span><span class="chip chipo">VOLUNTEER</span
+                    ><span class="chip">VERIFIED CHURCH</span>
+                  </div>
+                  <div class="hd" style="font-size: 20px">House Drummer — regular rotation</div>
+                  <div class="hd2">Cornerstone Arlington</div>
+                  <div class="hr2"></div>
+                  <div class="grid2">
+                    <div class="col" style="gap: 4px">
+                      <div class="stepn">TYPICAL SCHEDULE</div>
+                      <div class="hd2">Sundays 9am + Wednesdays 7pm</div>
+                      <div class="sub">Free text — no fixed date</div>
+                    </div>
+                    <div class="col" style="gap: 4px">
+                      <div class="stepn">PAY</div>
+                      <div class="hd2">Volunteer</div>
+                      <div class="sub">Details shown when you apply</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Drummer</div>
+                        <div class="sub">Open</div>
+                      </div>
+                      <div class="btn btnr">APPLY TO THIS SLOT</div>
+                    </div>
+                  </div>
+                  <div class="sub">Listed until Apr 12 — ongoing services are renewed monthly by the church.</div>
+                </div>
+                <div class="note w">
+                  Ongoing swaps date for free-text schedule and shows the renewal date, so a musician knows the listing
+                  is current.
+                </div>
+                <div class="q w">
+                  Volunteer roles have no amount to reveal. Does the apply step still gate anything for them, or go
+                  straight through? I've drawn "Details shown when you apply" so the pattern stays identical across pay
+                  types — never a shortcut that makes volunteer feel like a lesser flow.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · FILLED / EXPIRED / CANCELED</div>
+                <div class="s d">
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="rw"><span class="chip chipf">FILLED</span></div>
+                    <div class="hd2">Sunday Morning Drummer — Grace Fellowship</div>
+                    <div class="sub">All role slots have been filled. Nothing to apply to here.</div>
+                    <div class="btn btnp">SEE OPEN SERVICES IN DENTON</div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">EXPIRED</span></div>
+                    <div class="hd2">Youth Night Fill-in — Mesquite First</div>
+                    <div class="sub">This service date has passed.</div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="rw">
+                      <span class="chip" style="background: #ec3013; border-color: #ec3013; color: #fff">CANCELED</span>
+                    </div>
+                    <div class="hd2">Easter Drummer — Northgate Frisco</div>
+                    <div class="sub">
+                      The church canceled this service on Mar 18. Everyone who applied was notified.
+                    </div>
+                  </div>
+                </div>
+                <div class="note w">
+                  Dead services stay reachable at their URL with an explanation and a way forward — links get shared
+                  into the Facebook group and will outlive the post.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2c">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2c">2c</a>Church — post a service (role slots + pay)<span class="tg tgr"
+                >PHASE 2</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · TYPE</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">NEW SERVICE</span><span class="stepn">1 / 4</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">What kind of service is this?</div>
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="sp">
+                      <div class="hd2">One-time</div>
+                      <span class="chip">SELECTED</span>
+                    </div>
+                    <div class="sub">
+                      A specific date — a Sunday, a holiday service, a fill-in. Expires 24 hours after it happens.
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="hd2">Ongoing / permanent</div>
+                    <div class="sub">
+                      A regular spot on the team. You'll confirm it's still open once a month to keep it listed.
+                    </div>
+                  </div>
+                  <div class="btn btnr">CONTINUE</div>
+                </div>
+                <div class="note w">
+                  Type first — it changes the date field, expiry rules, and half the copy downstream. Expiry is
+                  explained at the point of choosing, not in a help doc.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · DETAILS</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">NEW SERVICE</span><span class="stepn">2 / 4</span></div>
+                  <div class="hr2"></div>
+                  <div class="col">
+                    <div class="hd2">Title</div>
+                    <div class="fld">Sunday Morning Drummer &amp; Bassist</div>
+                  </div>
+                  <div class="grid2">
+                    <div class="col">
+                      <div class="hd2">Date</div>
+                      <div class="fld">Sun Mar 22, 2026</div>
+                    </div>
+                    <div class="col">
+                      <div class="hd2">Start time</div>
+                      <div class="fld">10:30am</div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="hd2">Description</div>
+                    <div class="card">
+                      <div class="ln"></div>
+                      <div class="ln"></div>
+                      <div class="ln" style="width: 50%"></div>
+                    </div>
+                    <div class="sub">Song list, rehearsal time, gear provided, what to expect.</div>
+                  </div>
+                  <div class="col">
+                    <div class="hd2">Musical style</div>
+                    <div class="rw">
+                      <span class="chip chipf">CONTEMPORARY</span><span class="chip chipo">GOSPEL</span
+                      ><span class="chip chipo">TRADITIONAL</span><span class="chip chipo">LITURGICAL</span>
+                    </div>
+                  </div>
+                  <div class="btn btnr">CONTINUE</div>
+                </div>
+                <div class="note w">
+                  For an ongoing service, Date/Time is replaced by a single free-text "Typical schedule" field — same
+                  position, no date picker.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · PAY TYPE</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">NEW SERVICE</span><span class="stepn">3 / 4</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Pay</div>
+                  <div class="sub">
+                    Applies to every role slot on this service. The amount is set per slot on the next step. Need to pay
+                    roles differently? Set a different amount per slot, or post them as separate services.
+                  </div>
+                  <div class="grid2">
+                    <div class="card"><div class="hd2">Paid</div></div>
+                    <div class="card" style="border-color: #201e1d; border-width: 2px">
+                      <div class="sp">
+                        <div class="hd2">Volunteer</div>
+                        <span class="chip">✓</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sub">
+                    Both are normal and equally welcome here. Musicians filter by type, and neither is ranked above the
+                    other.
+                  </div>
+                  <div class="btn btnr">CONTINUE</div>
+                </div>
+                <div class="note w">
+                  The equality statement is copy inside the form, at the exact moment of choosing — this is where a
+                  church decides whether "volunteer" is embarrassing to post.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · ROLE SLOTS</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">NEW SERVICE</span><span class="stepn">4 / 4</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Who do you need?</div>
+                  <div class="sub">One slot per person. Two drummers? Add the drummer slot twice.</div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="stepn">SLOT 1</div>
+                        <div class="hd2">Drummer</div>
+                        <div class="rw">
+                          <div class="fld" style="width: 90px">$150</div>
+                          <span class="chip chipo">PER SERVICE ▾</span>
+                        </div>
+                      </div>
+                      <span class="chip chipo">REMOVE</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="stepn">SLOT 2</div>
+                        <div class="hd2">Bassist</div>
+                        <div class="rw">
+                          <div class="fld" style="width: 90px">$150</div>
+                          <span class="chip chipo">PER SERVICE ▾</span>
+                        </div>
+                      </div>
+                      <span class="chip chipo">REMOVE</span>
+                    </div>
+                  </div>
+                  <div class="rw"><span class="chip">+ ADD ROLE SLOT</span></div>
+                  <div class="sub">
+                    Amount shown per slot only if Paid. Musicians see it when they open the apply form for that slot —
+                    not on the feed.
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-style: dashed">
+                    <div class="hd2">Review before you post</div>
+                    <div class="sub">One-time · Sun Mar 22, 10:30am · Paid, $150/slot (private) · 2 slots · Denton</div>
+                  </div>
+                  <div class="rw">
+                    <div class="btn btnr">POST SERVICE</div>
+                    <div class="btn btng">SAVE DRAFT</div>
+                  </div>
+                  <div class="sub">
+                    This is your first post, so we'll review it before it goes live — usually within a few hours. 3
+                    posts left this month.
+                  </div>
+                </div>
+                <div class="note w">
+                  Slot = one seat, stated explicitly. Without that sentence churches will post "Drummer" and expect
+                  three.
+                </div>
+                <div class="q w">
+                  Can a slot name be free text, or only taxonomy values? Free text breaks role filtering. I've drawn
+                  taxonomy-only with an "Other" escape hatch that isn't filterable.
+                </div>
+                <div class="mon">
+                  $ At this exact moment — post button, review pending — is the only non-annoying place to offer Boost
+                  ("get this in front of drummers first, $X, until it's filled"). Offer it once, post-creation, never as
+                  a modal blocking the free path.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">05 · POSTED / PENDING REVIEW · EDIT · CANCEL</div>
+                <div class="s d">
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="rw"><span class="chip">PENDING REVIEW</span></div>
+                    <div class="hd2">Sunday Morning Drummer &amp; Bassist</div>
+                    <div class="sub">
+                      Not visible to musicians yet. First posts only — after this, your posts go live instantly.
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sp">
+                    <div class="hd2">Live services</div>
+                    <div class="sub">3 posts left this month</div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 5px">
+                        <div class="rw">
+                          <span class="chip chipo">OPEN</span><span class="chip chipo">ONE-TIME</span>
+                        </div>
+                        <div class="hd2">Easter Sunday Drummer</div>
+                        <div class="sub">Sun Apr 5 · 4 applicants across 1 slot · Expires Apr 6</div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">EDIT</span><span class="chip chipo">CANCEL</span
+                        ><span class="chip">REVIEW APPLICANTS</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 5px">
+                        <div class="rw"><span class="chip chipo">ONGOING</span></div>
+                        <div class="hd2">House Keys Player</div>
+                        <div class="sub">Listing expires in 4 days unless renewed</div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip btnr" style="background: #ec3013; border-color: #ec3013; color: #fff"
+                          >RENEW</span
+                        ><span class="chip chipo">EDIT</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="hd2" style="color: #b4260f">Cancel this service?</div>
+                    <div class="sub">
+                      All 4 applicants will be notified that it was canceled. Their applications move to "Service
+                      canceled" — nothing is deleted.
+                    </div>
+                    <div class="rw"><div class="btn btnr">YES, CANCEL &amp; NOTIFY</div></div>
+                  </div>
+                </div>
+                <div class="note w">
+                  The cancel confirmation names the number of people who'll be notified. That number is the friction —
+                  it's what makes churches think twice.
+                </div>
+                <div class="q w">
+                  Renewal: silent expiry, or an email reminder + one-click renew? Drawn as an in-app nudge; I'd add the
+                  email, since an unrenewed ongoing listing is exactly the stale inventory this rule exists to prevent.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2d">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2d">2d</a>Musician — apply to a slot (the pay reveal)<span class="tg tgr"
+                >PHASE 2</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · DETAIL, LOGGED OUT</div>
+                <div class="s m">
+                  <div class="rw"><span class="chip chipo">ONE-TIME</span><span class="chip chipo">PAID</span></div>
+                  <div class="hd2">Sunday Morning Drummer &amp; Bassist</div>
+                  <div class="sub">Grace Fellowship Denton · Sun Mar 22</div>
+                  <div class="hr1"></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Drummer</div>
+                      <div
+                        class="btn btnr"
+                        style="
+                          background-color: var(--color-surface);
+                          border-color: var(--color-neutral-500);
+                          color: var(--color-neutral-500);
+                        "
+                      >
+                        APPLY
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card" style="border-style: dashed">
+                    <div class="sub">
+                      Applying takes a free account and a verified phone number — about two minutes.
+                    </div>
+                    <div class="btn btnp">CREATE ACCOUNT TO APPLY</div>
+                  </div>
+                </div>
+                <div class="note">
+                  The gate states the cost in time before asking. Signup must return the musician straight back to this
+                  slot, apply form open.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · APPLY — PAY REVEALED</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">APPLY · DRUMMER</span><span class="chip chipo">✕</span></div>
+                  <div class="hr2"></div>
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="stepn">THIS ROLE PAYS</div>
+                    <div class="hd" style="font-size: 24px">$150</div>
+                    <div class="sub">
+                      Per musician, for this service. Set by the church — arrangements and payment are between you and
+                      them.
+                    </div>
+                  </div>
+                  <div class="sub">Grace Fellowship Denton · Sun Mar 22, 10:30am · Rehearsal Thu 7pm</div>
+                  <div class="hr1"></div>
+                  <div class="hd2">Note to the church <span class="sub">(optional)</span></div>
+                  <div class="card">
+                    <div class="ln"></div>
+                    <div class="ln" style="width: 60%"></div>
+                    <div class="sub">0 / 300 · No links</div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="btn btnr">SUBMIT APPLICATION</div>
+                  <div class="btn btng">NOT FOR ME — BACK TO FEED</div>
+                </div>
+                <div class="note">
+                  The reveal is the top of the apply screen, before any effort is spent writing a note. Backing out is a
+                  normal-weight option — never a shame-y "are you sure?".
+                </div>
+                <div class="note">
+                  Links stripped from the note (the only free-text surface); character counter shows the limit up front.
+                </div>
+                <div class="note">
+                  Amounts are not confidential — they're already shared openly in the Facebook group. Hiding them until
+                  apply isn't about privacy; it's so pay isn't the primary sort, visually or mechanically (no
+                  sort-by-pay, no feed-level amount).
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · DOUBLE-BOOK WARNING</div>
+                <div class="s m">
+                  <div class="sp"><span class="brand">APPLY · DRUMMER</span><span class="chip chipo">✕</span></div>
+                  <div class="hr2"></div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="hd2" style="color: #b4260f">You're already booked that morning</div>
+                    <div class="sub">
+                      You've been accepted as Drummer at Northgate Frisco on Sun Mar 22, 9:00am. You can still apply —
+                      we just want you to see it.
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="btn btnr">APPLY ANYWAY</div>
+                  <div class="btn btng">CANCEL</div>
+                </div>
+                <div class="note">
+                  Warning, not a block — per spec. Only fires for accepted applications on conflicting one-time dates.
+                </div>
+                <div class="q">
+                  Ongoing services have no date, so conflicts can't be detected for them. Should an ongoing acceptance
+                  warn on any new application? I'd say no — too noisy.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · SUBMITTED</div>
+                <div class="s m">
+                  <div class="brand">APPLICATION SENT</div>
+                  <div class="hr2"></div>
+                  <div class="hd">You applied for Drummer at Grace Fellowship.</div>
+                  <div class="rw"><span class="chip">APPLIED</span></div>
+                  <div class="sub">We'll email you the moment they respond. Most churches reply within a few days.</div>
+                  <div class="hr1"></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Also open on this service</div>
+                        <div class="sub">Bassist — you play bass too</div>
+                      </div>
+                      <div class="btn btnp">APPLY</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="btn btng">VIEW MY APPLICATIONS → <a class="dv-oid" href="#2e">2e</a></div>
+                </div>
+                <div class="note">
+                  Cross-sell of the second slot happens here, since applying to multiple slots on one service is
+                  explicitly allowed.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2e">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2e">2e</a>Musician — my applications, withdraw, and every status state<span
+                class="tg tgr"
+                >PHASE 2</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · MY APPLICATIONS</div>
+                <div class="s m">
+                  <div class="bar"><span class="brand">MY APPLICATIONS</span><span class="chip">☰</span></div>
+                  <div class="rw">
+                    <span class="chip chipf">ACTIVE · 3</span><span class="chip chipo">PAST · 5</span>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Drummer</div>
+                        <div class="sub">Grace Fellowship · Sun Mar 22 · $150</div>
+                      </div>
+                      <span class="chip">APPLIED</span>
+                    </div>
+                    <div class="sub" style="text-decoration: underline">Withdraw</div>
+                  </div>
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Drummer</div>
+                        <div class="sub">Northgate Frisco · Sun Apr 5 · $200</div>
+                      </div>
+                      <span class="chip chipf">ACCEPTED</span>
+                    </div>
+                    <div class="sub">Church contact: worship@northgate.org · (972) 555-0188</div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Bassist</div>
+                        <div class="sub">Cornerstone Arlington · Ongoing · Volunteer</div>
+                      </div>
+                      <span class="chip">APPLIED</span>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">Amounts are visible here because you already applied.</div>
+                </div>
+                <div class="note">
+                  Contact details appear only on an accepted application — the one place they're exposed, and the moment
+                  the platform's job ends.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · WITHDRAW</div>
+                <div class="s m">
+                  <div class="brand">WITHDRAW</div>
+                  <div class="hr2"></div>
+                  <div class="hd2">Withdraw your application for Drummer at Grace Fellowship?</div>
+                  <div class="sub">The church will be notified. You can apply again while the slot is still open.</div>
+                  <div class="btn btnr">WITHDRAW</div>
+                  <div class="btn btng">KEEP IT</div>
+                </div>
+                <div class="note">
+                  Confirmed: withdrawal on an accepted application is allowed only while the service is still open. Once
+                  the service closes, it's between the musician and church directly — the church can reopen the slot and
+                  re-list it if needed.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · PAST / RESOLVED STATES</div>
+                <div class="s m">
+                  <div class="bar"><span class="brand">MY APPLICATIONS</span><span class="chip">☰</span></div>
+                  <div class="rw">
+                    <span class="chip chipo">ACTIVE · 3</span><span class="chip chipf">PAST · 5</span>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Keys — Northgate</div>
+                      <span class="chip chipo">NOT SELECTED</span>
+                    </div>
+                    <div class="sub">The church filled this slot with someone else.</div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Drummer — Mesquite First</div>
+                      <span class="chip chipo">FILLED</span>
+                    </div>
+                    <div class="sub">
+                      All slots were filled. <span style="text-decoration: underline">See what else is open</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Bassist — Trinity Bible</div>
+                      <span class="chip chipo">CANCELED</span>
+                    </div>
+                    <div class="sub">The church canceled this service on Mar 18.</div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Vocals — Grace Fellowship</div>
+                      <span class="chip chipo">AUTO-WITHDRAWN</span>
+                    </div>
+                    <div class="sub">
+                      You were accepted as Drummer on this same service, so this application closed automatically.
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Drummer — Cornerstone</div>
+                      <span class="chip chipo">COMPLETED</span>
+                    </div>
+                    <div class="sub">Feb 8 · <span style="text-decoration: underline">Leave feedback</span></div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Keys — Trinity Bible</div>
+                      <span class="chip chipo">WITHDRAWN BY YOU</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="hd2">Drummer — Northgate</div>
+                      <span class="chip chipo">EXPIRED</span>
+                    </div>
+                    <div class="sub">The church never responded and the date passed.</div>
+                  </div>
+                </div>
+                <div class="note">
+                  Eight terminal states, each with a reason line. "Rejected" is never the word used to the musician —
+                  "Not selected" / "Service filled" carry the same information without the sting.
+                </div>
+                <div class="q">
+                  "Expired — church never responded" is a real state the spec doesn't name. Confirm it exists, and
+                  whether non-response feeds the church's response-time stat (I think it should).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2f">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2f">2f</a>Church — review applicants per slot, accept / reject,
+              auto-withdraw<span class="tg tgr">PHASE 2</span>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · APPLICANTS BY SLOT</div>
+                <div class="s dd">
+                  <div class="bar">
+                    <span class="brand">GRACE FELLOWSHIP DENTON</span><span class="chip">PASTOR DALE ▾</span>
+                  </div>
+                  <div class="sp">
+                    <div class="col" style="gap: 4px">
+                      <div class="hd">Sunday Morning Drummer &amp; Bassist</div>
+                      <div class="sub">One-time · Sun Mar 22, 10:30am · Paid · Open</div>
+                    </div>
+                    <div class="rw"><span class="chip chipo">EDIT</span><span class="chip chipo">CANCEL</span></div>
+                  </div>
+                  <div class="hr2"></div>
+                  <div class="sp">
+                    <div class="hd2">Slot 1 — Drummer</div>
+                    <div class="sub">Open · 3 applicants</div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="rw" style="align-items: center">
+                        <div class="ph" style="width: 40px; height: 40px">PH</div>
+                        <div class="col" style="gap: 4px">
+                          <div class="rw" style="align-items: center">
+                            <span class="hd2">Marcus Webb</span><span class="chip">VERIFIED</span
+                            ><span class="chip chipo">FOUNDING MEMBER</span>
+                          </div>
+                          <div class="sub">Denton · Drums, Vocals · Contemporary, Gospel · Applied 2d ago</div>
+                        </div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">VIEW PROFILE</span><span class="chip chipo">REJECT</span
+                        ><span class="chip" style="background: #ec3013; border-color: #ec3013; color: #fff"
+                          >ACCEPT</span
+                        >
+                      </div>
+                    </div>
+                    <div class="card" style="border: 0; padding: 0">
+                      <div class="sub">
+                        "Been playing at Denton churches for six years — happy to come to Thursday rehearsal."
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="rw" style="align-items: center">
+                        <div class="ph" style="width: 40px; height: 40px">PH</div>
+                        <div class="col" style="gap: 4px">
+                          <div class="rw" style="align-items: center">
+                            <span class="hd2">Elena Ruiz</span><span class="chip chipo">NEW HERE</span>
+                          </div>
+                          <div class="sub">Plano · Drums, Keys · Applied 1d ago · No note</div>
+                        </div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">VIEW PROFILE</span><span class="chip chipo">REJECT</span
+                        ><span class="chip">ACCEPT</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="rw" style="align-items: center">
+                        <div class="ph" style="width: 40px; height: 40px">PH</div>
+                        <div class="col" style="gap: 4px">
+                          <div class="hd2">Daniel Kim</div>
+                          <div class="sub">Denton · Drums · Applied 4h ago</div>
+                        </div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">VIEW PROFILE</span><span class="chip chipo">REJECT</span
+                        ><span class="chip">ACCEPT</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sp">
+                    <div class="hd2">Slot 2 — Bassist</div>
+                    <div class="sub">Open · 1 applicant</div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="rw" style="align-items: center">
+                        <div class="ph" style="width: 40px; height: 40px">PH</div>
+                        <div class="col" style="gap: 4px">
+                          <div class="rw" style="align-items: center">
+                            <span class="hd2">Marcus Webb</span><span class="chip">VERIFIED</span
+                            ><span class="chip chipo">ALSO APPLIED: DRUMMER</span>
+                          </div>
+                          <div class="sub">Denton · Drums, Vocals · Applied 2d ago</div>
+                        </div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">VIEW PROFILE</span><span class="chip chipo">REJECT</span
+                        ><span class="chip">ACCEPT</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="note ww">
+                  Slots are separate lists on one page — the church reasons about "who plays drums," not about a flat
+                  applicant pile. Marcus appears in both, tagged so nobody double-books him by accident.
+                </div>
+                <div class="note ww">
+                  Badges here are additive only: Verified and Founding Member show, absence shows "New here." No stat
+                  block for anyone in Phase 2 — earned badges need data that won't exist yet.
+                </div>
+                <div class="note ww">
+                  Confirmed: hard requirement. A musician's profile instruments must match the slot to apply — profiles
+                  are editable anytime, but the match is enforced at apply time, not a soft filter or warning.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · ACCEPT — AUTO-WITHDRAW WARNING</div>
+                <div class="s d">
+                  <div class="sp"><span class="brand">ACCEPT MARCUS WEBB</span><span class="chip chipo">✕</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd">Accept Marcus Webb as your Drummer?</div>
+                  <div class="sub">He'll be notified right away and you'll both see each other's contact details.</div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="hd2" style="color: #b4260f">This also closes their other application here</div>
+                    <div class="rw" style="align-items: center">
+                      <span class="chip chipo" style="text-decoration: line-through">SLOT 2 — BASSIST</span
+                      ><span class="sub">will be withdrawn automatically</span>
+                    </div>
+                    <div class="sub">
+                      A musician can only hold one slot on a team. Your Bassist slot goes back to its other applicants —
+                      right now there are none.
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">
+                    Reminder: we don't run background checks. Vetting whoever plays at your church is up to you.
+                  </div>
+                  <div class="rw">
+                    <div class="btn btnr">ACCEPT &amp; NOTIFY</div>
+                    <div class="btn btng">BACK</div>
+                  </div>
+                </div>
+                <div class="note w">
+                  This is the auto-withdraw moment, spelled out with the affected slot struck through and named — and it
+                  warns that Bassist will be left with zero applicants, which is the actual consequence the church cares
+                  about.
+                </div>
+                <div class="note w">The liability reminder appears here, at acceptance, per spec §12.</div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · AFTER ACCEPT</div>
+                <div class="s d">
+                  <div class="sp">
+                    <div class="col" style="gap: 4px">
+                      <div class="hd">Sunday Morning Drummer &amp; Bassist</div>
+                      <div class="sub">1 of 2 slots filled · Still Open</div>
+                    </div>
+                    <span class="chip chipo">PARTIALLY FILLED</span>
+                  </div>
+                  <div class="hr2"></div>
+                  <div class="sp">
+                    <div class="hd2">Slot 1 — Drummer</div>
+                    <span class="chip chipf">FILLED</span>
+                  </div>
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="sp">
+                      <div class="col" style="gap: 4px">
+                        <div class="hd2">Marcus Webb</div>
+                        <div class="sub">marcus@… · (214) 555-0134</div>
+                      </div>
+                      <div class="col" style="gap: 4px; align-items: flex-end">
+                        <div class="rw">
+                          <span class="chip chipo">MESSAGE</span><span class="chip chipo">UNDO</span>
+                        </div>
+                        <div class="sub">Undo available for 4:37</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sub">2 other applicants were notified that this slot was filled.</div>
+                  <div class="hr1"></div>
+                  <div class="sp">
+                    <div class="hd2">Slot 2 — Bassist</div>
+                    <span class="chip chipo">OPEN · 0 APPLICANTS</span>
+                  </div>
+                  <div class="card" style="border-style: dashed">
+                    <div class="sub">
+                      Marcus's bassist application closed when you accepted him as drummer. Nobody else has applied yet.
+                    </div>
+                    <div class="btn btnp">SHARE THIS SERVICE</div>
+                  </div>
+                </div>
+                <div class="note w">
+                  Auto-withdraw is restated as history, not just as a pre-warning — so it's explicable weeks later.
+                </div>
+                <div class="note w">
+                  Confirmed: "Undo" is real for 5 minutes after accepting — the church can back out with no
+                  notifications sent. After 5 minutes it locks in and un-accepting notifies everyone (the musician
+                  un-booked, and the withdrawn applicants) instead.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · REJECT · NO APPLICANTS YET</div>
+                <div class="s d">
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="hd2">Pass on Daniel Kim?</div>
+                    <div class="sub">
+                      He'll be told the slot went to someone else. He won't see a reason and you don't have to give one.
+                    </div>
+                    <div class="rw">
+                      <div class="btn btnp">PASS</div>
+                      <div class="btn btng">BACK</div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sp">
+                    <div class="hd2">Slot 2 — Bassist</div>
+                    <span class="chip chipo">OPEN</span>
+                  </div>
+                  <div class="card" style="border-style: dashed">
+                    <div class="hd2">No applicants yet</div>
+                    <div class="sub">
+                      Posted 4 hours ago. Most services get their first applicant within a day or two.
+                    </div>
+                    <div class="rw">
+                      <div class="btn btnp">COPY LINK 🔗</div>
+                      <div class="btn btng">EDIT THE SLOT</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="note w">
+                  Reject requires no reason and sends no reason — the low-conflict path a small community needs.
+                </div>
+                <div class="mon">
+                  $ The zero-applicant empty state is the highest-intent Boost moment there is. Offer it here as a fix
+                  for a real problem, not as a generic upsell.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2g">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2g">2g</a>Notifications — in-app + email, every status transition<span
+                class="tg tgr"
+                >PHASE 2</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · MUSICIAN INBOX</div>
+                <div class="s m">
+                  <div class="bar"><span class="brand">NOTIFICATIONS</span><span class="chip">☰</span></div>
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="rw"><span class="chip chipf">ACCEPTED</span></div>
+                    <div class="hd2">Northgate Frisco accepted you as Drummer</div>
+                    <div class="sub">Sun Apr 5, 9:00am · Contact details are now on your application · 2h ago</div>
+                  </div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">FILLED</span></div>
+                    <div class="hd2">The Keys slot at Mesquite First was filled</div>
+                    <div class="sub">See what else is open in Mesquite · 1d ago</div>
+                  </div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">NOT SELECTED</span></div>
+                    <div class="hd2">Trinity Bible went with another drummer</div>
+                    <div class="sub">3d ago</div>
+                  </div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="rw">
+                      <span class="chip" style="background: #ec3013; border-color: #ec3013; color: #fff">CANCELED</span>
+                    </div>
+                    <div class="hd2">Grace Fellowship canceled Easter Sunday Drummer</div>
+                    <div class="sub">You had been accepted for this. 4d ago</div>
+                  </div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">FEEDBACK</span></div>
+                    <div class="hd2">How did Sunday at Cornerstone go?</div>
+                    <div class="sub">Private, 10 seconds → <a class="dv-oid" href="#2h">2h</a> · 5d ago</div>
+                  </div>
+                </div>
+                <div class="note">
+                  Cancellation on an accepted application is the highest-severity notification in the system and is the
+                  only one styled in red.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · CHURCH INBOX</div>
+                <div class="s d">
+                  <div class="bar"><span class="brand">NOTIFICATIONS</span><span class="chip">PASTOR DALE ▾</span></div>
+                  <div class="card" style="border-color: #201e1d; border-width: 2px">
+                    <div class="rw"><span class="chip chipf">NEW APPLICANT</span></div>
+                    <div class="hd2">Marcus Webb applied for Drummer — Sunday Morning</div>
+                    <div class="sub">2 of 3 applicants unreviewed · 2h ago</div>
+                  </div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">WITHDRAWN</span></div>
+                    <div class="hd2">Elena Ruiz withdrew her application for Bassist</div>
+                    <div class="sub">1d ago</div>
+                  </div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">EXPIRING</span></div>
+                    <div class="hd2">House Keys Player expires in 4 days</div>
+                    <div class="sub">Renew to keep it listed · 2d ago</div>
+                  </div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">APPROVED</span></div>
+                    <div class="hd2">Your first post is live</div>
+                    <div class="sub">3d ago</div>
+                  </div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">FEEDBACK</span></div>
+                    <div class="hd2">How did Marcus do on Mar 22?</div>
+                    <div class="sub">Private, 10 seconds → <a class="dv-oid" href="#2h">2h</a></div>
+                  </div>
+                </div>
+                <div class="note w">
+                  Every notification carries the object name and a next action. Email mirrors these one-for-one — same
+                  copy, deep link, no separate template voice.
+                </div>
+                <div class="q w">
+                  Notification volume: immediate email per applicant, or a daily digest for churches? A popular Easter
+                  post could fire 12 emails in an evening. I'd default to immediate for accept/reject/cancel, digest for
+                  new applicants.
+                </div>
+                <div class="mon">
+                  $ Priority alerts (instant vs. digest) is the cleanest future subscription hook — worth building the
+                  timing switch now even if both tiers are free at launch.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · EMAIL</div>
+                <div class="s m">
+                  <div class="sub">from: NTX Worship</div>
+                  <div class="hd2">You're in — Northgate Frisco accepted you</div>
+                  <div class="hr2"></div>
+                  <div class="sub">Marcus,</div>
+                  <div class="ln"></div>
+                  <div class="ln" style="width: 80%"></div>
+                  <div class="card">
+                    <div class="hd2">Drummer · Northgate Church, Frisco</div>
+                    <div class="sub">Sun Apr 5, 9:00am · $200 · worship@northgate.org</div>
+                  </div>
+                  <div class="btn btnr">VIEW YOUR APPLICATION</div>
+                  <div class="sub">
+                    Pay arrangements are between you and the church. NTX Worship isn't a party to them.
+                  </div>
+                </div>
+                <div class="note">Email + in-app only — no SMS in MVP, even though phone numbers are on file.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2h">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2h">2h</a>Post-service feedback — two directions, different reason lists<span
+                class="tg tgr"
+                >PHASE 2</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · PROMPT (EITHER DIRECTION)</div>
+                <div class="s m">
+                  <div class="brand">PRIVATE FEEDBACK</div>
+                  <div class="hr2"></div>
+                  <div class="hd">How did Sunday at Cornerstone Arlington go?</div>
+                  <div class="sub">
+                    Private — only our team sees this. Never shown to the church, never public, never a star rating.
+                  </div>
+                  <div class="rw" style="gap: 12px">
+                    <div class="btn btnp" style="flex: 1; text-align: center; padding: 16px">👍 GOOD</div>
+                    <div class="btn" style="flex: 1; text-align: center; padding: 16px">👎 NOT GREAT</div>
+                  </div>
+                  <div class="sub" style="text-decoration: underline">Skip</div>
+                </div>
+                <div class="note">
+                  Emailed once after the service, once more 3 days later, then never again. Skipping is always visible.
+                </div>
+                <div class="note">
+                  For an ongoing role: one prompt, 7-10 days after acceptance — a single fixed check-in, not
+                  per-service, since we don't yet know if they've started or when their first service lands. Copy stays
+                  open-ended: "How's it going so far at Cornerstone Arlington?" rather than "How did Sunday go?"
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · MUSICIAN → CHURCH</div>
+                <div class="s m">
+                  <div class="rw"><span class="chip chipo">MUSICIAN → CHURCH</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd2">👍 What went well at Cornerstone?</div>
+                  <div class="rw">
+                    <span class="chip chipf">PAID PROMPTLY</span><span class="chip chipo">WELL ORGANIZED</span
+                    ><span class="chip chipf">CLEAR COMMUNICATION</span><span class="chip chipo">WELCOMING</span
+                    ><span class="chip chipo">RESPECTFUL OF MY TIME</span
+                    ><span class="chip chipo">WOULD PLAY AGAIN</span>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="hd2">👎 What went wrong?</div>
+                  <div class="rw">
+                    <span class="chip chipo">DIDN'T PAY</span><span class="chip chipo">PAID LATE / PARTIALLY</span
+                    ><span class="chip chipo">CANCELED LAST-MINUTE</span><span class="chip chipo">DISORGANIZED</span
+                    ><span class="chip chipo">DIFFERENT THAN DESCRIBED</span><span class="chip chipo">UNWELCOMING</span
+                    ><span class="chip chipo">OTHER…</span>
+                  </div>
+                  <div class="card">
+                    <div class="sub">Tell us more (optional)</div>
+                    <div class="ln"></div>
+                  </div>
+                  <div class="btn btnr">SEND PRIVATELY</div>
+                </div>
+                <div class="note">
+                  Both directions shown stacked here for comparison; in the real flow only one appears, chosen by the
+                  thumb.
+                </div>
+                <div class="note">
+                  "Didn't pay" is weighted heavily and is the trigger for the no-pay escalation path (Phase 3).
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · CHURCH → MUSICIAN</div>
+                <div class="s m">
+                  <div class="rw"><span class="chip chipo">CHURCH → MUSICIAN</span></div>
+                  <div class="hr2"></div>
+                  <div class="hd2">👍 What went well with Marcus?</div>
+                  <div class="rw">
+                    <span class="chip chipf">PUNCTUAL</span><span class="chip chipf">SKILLFUL</span
+                    ><span class="chip chipo">PREPARED</span><span class="chip chipo">EASY TO WORK WITH</span
+                    ><span class="chip chipo">GREAT ATTITUDE</span><span class="chip chipo">FLEXIBLE</span
+                    ><span class="chip chipf">WOULD BOOK AGAIN</span>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="hd2">👎 What went wrong?</div>
+                  <div class="rw">
+                    <span class="chip chipo">NO-SHOW</span><span class="chip chipo">LATE</span
+                    ><span class="chip chipo">UNPREPARED</span><span class="chip chipo">NOT THE RIGHT FIT</span
+                    ><span class="chip chipo">HARD TO REACH</span><span class="chip chipo">OTHER…</span>
+                  </div>
+                  <div class="card">
+                    <div class="sub">Tell us more (optional)</div>
+                    <div class="ln"></div>
+                  </div>
+                  <div class="btn btnr">SEND PRIVATELY</div>
+                </div>
+                <div class="note">
+                  "Not the right fit" is the deliberate low-conflict option, so a church doesn't have to accuse anyone
+                  of anything to answer honestly.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">04 · DONE</div>
+                <div class="s m">
+                  <div class="brand">THANK YOU</div>
+                  <div class="hr2"></div>
+                  <div class="hd">This stays between you and us.</div>
+                  <div class="sub">Marcus will never see this or know you left it.</div>
+                  <div class="hr1"></div>
+                  <div class="card" style="border-style: dashed">
+                    <div class="hd2">Want to work with Marcus again?</div>
+                    <div class="sub">You'll be able to invite past musicians directly&nbsp; soon.</div>
+                  </div>
+                </div>
+                <div class="note">Confidentiality restated on completion — it's the thing people will most doubt.</div>
+                <div class="note">
+                  Confirmed: thumbs-down surfaces to admin as a to-do at launch, not just stored/weighted — specifically
+                  an admin view for "didn't pay" and "no-show" reports.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2i">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2i">2i</a>Admin — first-post review, flag queue, self-dealing signals<span
+                class="tg tgr"
+                >PHASE 2</span
+              >
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="stepn">01 · REVIEW QUEUE</div>
+                <div class="s dd">
+                  <div class="bar">
+                    <span class="brand">ADMIN</span>
+                    <div class="rw">
+                      <span class="chip chipf">REVIEW · 3</span><span class="chip chipo">FLAGS · 1</span
+                      ><span class="chip chipo">SIGNALS · 2</span>
+                    </div>
+                  </div>
+                  <div class="hd2">First posts awaiting review</div>
+                  <div class="hr2"></div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 5px">
+                        <div class="rw">
+                          <span class="chip chipo">UNVERIFIED CHURCH</span
+                          ><span class="chip chipo">ACCOUNT 2H OLD</span>
+                        </div>
+                        <div class="hd2">Sunday Morning Drummer &amp; Bassist — Grace Fellowship Denton</div>
+                        <div class="sub">Denton · Paid $150/slot · 2 slots · Phone verified · No website on file</div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">VIEW</span><span class="chip chipo">REJECT</span
+                        ><span class="chip" style="background: #ec3013; border-color: #ec3013; color: #fff"
+                          >APPROVE</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="sp">
+                      <div class="col" style="gap: 5px">
+                        <div class="rw"><span class="chip">VERIFIED CHURCH</span></div>
+                        <div class="hd2">House Drummer — Cornerstone Arlington</div>
+                        <div class="sub">Website verified · Phone verified</div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">VIEW</span
+                        ><span class="chip" style="background: #ec3013; border-color: #ec3013; color: #fff"
+                          >APPROVE</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="note ww">
+                  Review is per-church-first-post only, so this queue should be near-empty in steady state. Everything a
+                  reviewer needs is on the row — no drilling in for the common case.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">02 · FLAG QUEUE</div>
+                <div class="s d">
+                  <div class="bar"><span class="brand">ADMIN · FLAGS</span><span class="chip chipo">1 OPEN</span></div>
+                  <div class="card" style="border-color: #ec3013">
+                    <div class="sp">
+                      <div class="col" style="gap: 5px">
+                        <div class="rw">
+                          <span class="chip chipo">SERVICE</span><span class="chip chipo">REPORTED BY 1</span>
+                        </div>
+                        <div class="hd2">"Worship Team Openings" — Praise House DFW</div>
+                        <div class="sub">Reason: not a real service / advertising · Reported 6h ago</div>
+                      </div>
+                      <div class="rw">
+                        <span class="chip chipo">DISMISS</span><span class="chip chipo">CONTACT</span
+                        ><span class="chip">UNLIST</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hr1"></div>
+                  <div class="sub">
+                    Flags are private and nothing is automatic. The reported party isn't notified unless an action is
+                    taken.
+                  </div>
+                </div>
+                <div class="note w">
+                  No automation, no strikes, no auto-suspension — matches spec §9. Actions are explicit and few.
+                </div>
+              </div>
+
+              <div class="arw">→</div>
+
+              <div class="col">
+                <div class="stepn">03 · SELF-DEALING SIGNALS</div>
+                <div class="s d">
+                  <div class="bar"><span class="brand">ADMIN · SIGNALS</span><span class="chip chipo">2</span></div>
+                  <div class="card">
+                    <div class="rw"><span class="chip chipo">SHARED DEVICE</span></div>
+                    <div class="hd2">Praise House DFW ↔ musician J. Alvarez</div>
+                    <div class="sub">
+                      Same device fingerprint · 3 completed services, all between these two · Church unverified · Stats
+                      already excluded
+                    </div>
+                    <div class="rw">
+                      <span class="chip chipo">DISMISS</span><span class="chip chipo">OPEN CASE</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="hd2">Flag-happy church</div>
+                    <div class="sub">
+                      Cornerstone Arlington has issued no-show flags on 4 of 5 services — 6× the platform average.
+                    </div>
+                    <div class="rw">
+                      <span class="chip chipo">DISMISS</span><span class="chip chipo">OPEN CASE</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="note w">
+                  Signals surface, they never act. Exclusion from trust stats already happened silently upstream; this
+                  screen is just for a human to look.
+                </div>
+                <div class="note w">
+                  Confirmed: a real admin UI exists from Phase 1, for internal testing with churches — not a spreadsheet
+                  placeholder.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-opt" id="2j">
+            <div class="dv-olabel">
+              <a class="dv-oid" href="#2j">2j</a>Monetization map — where money could sit, and what it would cost
+              you<span class="tg tgr">PHASE 2+</span>
+            </div>
+            <div class="row" style="gap: 28px; flex-wrap: wrap">
+              <div class="s d">
+                <div class="hd">Already in the spec</div>
+                <div class="hr2"></div>
+                <div class="mon">
+                  <strong>Boost</strong> — best placements: after posting (<a class="dv-oid" href="#2c">2c</a> step 04)
+                  and on a zero-applicant slot (<a class="dv-oid" href="#2f">2f</a> step 04). Sell it as a fix for a
+                  felt problem. Risk: too many featured cards and the top of the feed stops being trustworthy — cap per
+                  filtered view.
+                </div>
+                <div class="mon">
+                  <strong>Post cap → paid unlimited</strong> — the counter is visible from day one as a neutral fact (<a
+                    class="dv-oid"
+                    href="#1d"
+                    >1d</a
+                  >). Don't monetize it until a real church actually hits 4/month; before that it reads as an invented
+                  wall.
+                </div>
+                <div class="mon">
+                  <strong>Local sponsor placements</strong> — one card after result 5 in the feed (<a
+                    class="dv-oid"
+                    href="#2a"
+                    >2a</a
+                  >), plus the digest email. Music stores, lesson instructors, sound techs. Never above organic results,
+                  always labeled.
+                </div>
+                <div class="mon">
+                  <strong>Tip jar</strong> — footer from day one, one line, "Help keep this platform free."
+                </div>
+              </div>
+              <div class="s d">
+                <div class="hd">New ideas worth considering</div>
+                <div class="hr2"></div>
+                <div class="mon">
+                  <strong>Sponsored weekly digest</strong> — "12 new services in North Texas this week." Owns the
+                  retention loop and is the single most sellable inch of real estate you'll have. Build it for
+                  retention; monetize it second.
+                </div>
+                <div class="mon">
+                  <strong>Saved-search alerts as the priority-timing product</strong> — free = weekly digest, paid =
+                  instant. Build the timing switch now (<a class="dv-oid" href="#2a">2a</a> step 03) even if
+                  everything's free at launch.
+                </div>
+                <div class="mon">
+                  <strong>Church-side "urgent fill" badge</strong> — the one-time service inside 72 hours is where
+                  churches feel real pain. A time-boxed urgency boost is easier to justify than a generic one.
+                </div>
+                <div class="mon">
+                  <strong>Vendor directory (not ads)</strong> — a paid listing page for sound techs, AV installers, and
+                  instrument techs. Adjacent to your audience, doesn't touch the musician↔church loop, and can't
+                  cannibalize the free core.
+                </div>
+                <div class="mon">
+                  <strong>Regional expansion sponsorships</strong> — when you open region #2, a local music retailer
+                  sponsors the launch. Sells the audience, not access.
+                </div>
+                <div class="hr1"></div>
+                <div class="note w">
+                  The one thing I'd protect absolutely: never charge for, gate, or rank by pay type. Any monetization
+                  that makes a paid service more visible than a volunteer one breaks the equality principle the whole
+                  platform is built on.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="dv-next">
+          Try next: "expand 2c into the ongoing-service variant" · "show an alternate 2f that reviews applicants one at
+          a time" · "add the Phase 3 directory + black book flows"
+        </p>
+      </section>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props="{}"></script>
+  </body>
+</html>

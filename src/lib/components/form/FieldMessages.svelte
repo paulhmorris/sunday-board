@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fade } from "svelte/transition";
   import type { createField } from "./field.svelte";
 
   interface Props {
@@ -10,30 +11,18 @@
 </script>
 
 {#if description}
-  <p id={control.ids.descriptionId} class="description">{description}</p>
+  <p id={control.ids.descriptionId} class="mt-1 text-xs text-muted-foreground">
+    {description}
+  </p>
 {/if}
 
-{#if control.issues.length > 0}
-  <div id={control.ids.errorId}>
-    {#each control.issues as issue (issue.message)}
-      <p class="error">{issue.message}</p>
-    {/each}
-  </div>
-{/if}
-
-<style>
-  .description {
-    margin-top: var(--spacing);
-    font-size: var(--text-xs);
-    line-height: var(--text-xs--line-height);
-    color: var(--color-neutral-500);
-  }
-
-  .error {
-    margin-top: var(--spacing);
-    font-size: var(--text-xs);
-    line-height: var(--text-xs--line-height);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-red-600);
-  }
-</style>
+<div id={control.ids.errorId} role="alert" class="mt-1 min-h-4">
+  {#each control.issues as issue (issue.message)}
+    <p
+      transition:fade={{ duration: 25 }}
+      class="text-xs font-medium text-destructive"
+    >
+      {issue.message}
+    </p>
+  {/each}
+</div>

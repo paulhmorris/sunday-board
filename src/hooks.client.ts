@@ -16,3 +16,8 @@ function errorHandler({ error, event }: { error: unknown; event: RequestEvent })
   console.error("An error occurred on the client:", error, event);
 }
 export const handleError = Sentry.handleErrorWithSentry(errorHandler);
+
+// set dark mode based on prefers
+if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+  document.documentElement.classList.add("dark");
+}

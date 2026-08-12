@@ -1,0 +1,4 @@
+{
+  "*.{js,cjs,mjs,ts,cts,mts,svelte}": ["oxlint", "oxfmt -c oxfmt.config.ts --write"],
+  "*.{json,jsonc,css,md}": ["oxfmt -c oxfmt.config.ts --write"]
+}

@@ -15,14 +15,22 @@
   } from "$lib/components/form";
   import { nanoid } from "nanoid";
 
+  import Button from "$lib/components/ui/button/button.svelte";
   import { submitKitchenSink } from "./forms.remote";
-  import { genres, instruments, kitchenSinkSchema, languages, operatingSystems } from "./forms.schema";
+  import {
+    genres,
+    instruments,
+    kitchenSinkSchema,
+    languages,
+    operatingSystems,
+  } from "./forms.schema";
 
   const demoForm = submitKitchenSink.for(nanoid()).preflight(kitchenSinkSchema);
-  const { name, bio, instrument, subscribe, avatar, profile, tags } = demoForm.fields;
+  const { name, bio, instrument, subscribe, avatar, profile, tags } =
+    demoForm.fields;
 </script>
 
-<div class="mx-auto w-full max-w-lg space-y-6">
+<div class="mx-auto w-full max-w-lg space-y-6 mb-12">
   <h1>Form components</h1>
 
   <Form form={demoForm} enctype="multipart/form-data" class="space-y-5">
@@ -48,7 +56,11 @@
 
     <FormControl>
       <Label>Genres</Label>
-      <Select field={demoForm.fields.genres} multiple description="Hold cmd to pick several">
+      <Select
+        field={demoForm.fields.genres}
+        multiple
+        description="Hold cmd to pick several"
+      >
         {#each genres as option (option)}
           <option value={option}>{option}</option>
         {/each}
@@ -61,13 +73,18 @@
       {/each}
     </CheckboxGroup>
 
-    <RadioGroup field={demoForm.fields.operatingSystem} legend="Operating system">
+    <RadioGroup
+      field={demoForm.fields.operatingSystem}
+      legend="Operating system"
+    >
       {#each operatingSystems as option (option)}
         <Radio value={option}>{option}</Radio>
       {/each}
     </RadioGroup>
 
-    <Checkbox field={subscribe} description="We send one email a week, at most">Subscribe to updates</Checkbox>
+    <Checkbox field={subscribe} description="We send one email a week, at most"
+      >Subscribe to updates</Checkbox
+    >
 
     <FormControl>
       <Label>Avatar</Label>
@@ -86,19 +103,25 @@
       </FormControl>
     </Fieldset>
 
-    <Fieldset legend="Tags" field={tags} description="Three slots, and they have to be distinct">
+    <Fieldset
+      legend="Tags"
+      field={tags}
+      description="Three slots, and they have to be distinct"
+    >
       {#each [0, 1, 2] as index (index)}
         <Input field={tags[index]} aria-label="Tag {index + 1}" />
       {/each}
     </Fieldset>
 
-    <button type="submit" disabled={!!demoForm.pending}>
+    <Button type="submit" disabled={!!demoForm.pending}>
       {demoForm.pending ? "Submitting..." : "Submit"}
-    </button>
+    </Button>
   </Form>
 
   {#if demoForm.result}
-    <pre data-testid="result" class="overflow-x-auto rounded bg-neutral-100 p-3 text-xs">{JSON.stringify(
+    <pre
+      data-testid="result"
+      class="overflow-x-auto rounded bg-neutral-100 p-3 text-xs">{JSON.stringify(
         demoForm.result,
         null,
         2,

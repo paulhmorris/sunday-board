@@ -5,6 +5,7 @@
   import { Form, FormControl, Input, Label } from "$lib/components/form";
   import { nanoid } from "nanoid";
 
+  import Button from "$lib/components/ui/button/button.svelte";
   import { signUpEmail } from "../auth.remote";
   import { signUpEmailSchema } from "../auth.schema";
 
@@ -31,7 +32,12 @@
 
       <FormControl>
         <Label>Email</Label>
-        <Input field={email} type="email" autocomplete="email" description="We'll send a verification link here" />
+        <Input
+          field={email}
+          type="email"
+          autocomplete="email"
+          description="We'll send a verification link here"
+        />
       </FormControl>
 
       <FormControl>
@@ -44,9 +50,9 @@
         />
       </FormControl>
 
-      <button type="submit" disabled={!!registerForm.pending} class="w-full">
+      <Button type="submit" disabled={!!registerForm.pending} class="w-full">
         {registerForm.pending ? "Signing up..." : "Sign up"}
-      </button>
+      </Button>
     </Form>
 
     <p class="text-center text-sm">
