@@ -1,5 +1,29 @@
 # North Texas Worship Musicians Marketplace — Product Spec (MVP)
 
+> **What this file is.** Product narrative and rationale — the features, the
+> business rules, and the _why_ behind them. It is the reason a decision was
+> made, not the instructions for building it. Keep it current; don't delete it
+> when a phase ships.
+>
+> **What this file is not.** A build spec. Per-phase build specs are GitHub
+> issues on `paulhmorris/sunday-board`, labelled `ready-for-agent`. Where an
+> issue and this file disagree about _how_ something is built, the issue wins;
+> where they disagree about _why_, this file wins.
+>
+> - **Phase 1 (Early Access)** — [#25](https://github.com/paulhmorris/sunday-board/issues/25). Note it deliberately diverges on
+>   verification: email one-time code, no phone/SMS. §2 and §13 below are updated
+>   to match.
+> - **Phase 2 (Launch)** — not yet specced. Blocked on the mixed-pay feed-unit
+>   question in §6: is the feed's primary row a Service or a Role Slot? Settle it
+>   before writing the spec, because it determines the feed query, the filters,
+>   and the apply flow.
+> - **Phase 3 (Post-Launch)** — deliberately not specced. It is seven independent
+>   features on a flag-gated rollout, and §2 states the ordering is open until
+>   Phase 2 usage data exists. Each gets its own spec when it comes up.
+>
+> Domain vocabulary and the invariants that bind every phase live in
+> `CONTEXT.md` at the repo root.
+
 ## 1. Overview
 
 A web marketplace connecting churches needing musicians with musicians looking for services, replacing ad-hoc Facebook group posts. Core principle: **generous, not paywalled** — the entire matching loop (post, apply, accept, message) is free. Monetization is limited to optional visibility boosts.
@@ -13,7 +37,7 @@ Everything in this spec is real, but not everything ships at once. Three phases,
 Goal: get real churches and musicians signed up and building profiles before there's anything to _do_. No feed, no posting, no applying.
 
 - Account creation for both Church and Musician types (16+ minimum age)
-- Phone verification (mandatory, all accounts)
+- Email verification via one-time code (mandatory, all accounts). **No phone or SMS verification** — no SMS vendor is being signed up at this stage. This is a weaker Sybil defence than one-phone-one-account and is accepted deliberately: with no feed, no applications, and no trust stats in Phase 1, a duplicate account has nothing to gain. Revisit before Phase 2 opens the loop.
 - Musician profile: instruments/roles (fixed taxonomy, multi-select), bio, style tags, region, profile links
 - Church profile: name, city, region
 - Optional verified badges: Facebook-link (musicians), domain-verified email (churches) — safe to enable early since they're profile-only, no feed dependency
@@ -21,6 +45,7 @@ Goal: get real churches and musicians signed up and building profiles before the
 - Region lookup table in place (North Texas to start, structured for expansion)
 - Legal basics live from day one: ToS, privacy policy, account deletion
 - "How We Started" page and waitlist mechanics for the Facebook group announcement
+- Internal admin surface: overview stats (signups by type, profile completion, verification rates, role supply by region), musician and church tables with a shared row-detail drawer. Read-oriented; the Phase 2 review/flag/self-dealing queues come later. No impersonation.
 
 ### Phase 2 — Launch (core loop only)
 
@@ -56,7 +81,7 @@ Goal: everything that depends on Phase 2 data existing, or that carries enough r
 
 - **Church account** — creates and manages services, reviews applicants
 - **Musician account** — browses services/directory, applies, manages own applications
-- **Linking:** A musician can be added as a co-admin of a church account via an invite link/code sent by the church, and can switch between their musician view and church view. No approval queue needed.
+- **Linking:** A musician can be added as a co-admin of a church account via an invite link/code sent by the church, and can switch between their musician view and church view. No approval queue needed. **Deferred out of Phase 1** — the invite mechanism is cheaper to build once the Invite concept exists in Phase 2, so Phase 1 assumes one owner per Church.
 - **Minimum age:** 16+ to create an account. Platform does not perform background checks or vetting — that responsibility is explicitly the church's, stated clearly in onboarding/ToS.
 
 ## 4. Core Entities (conceptual, not implementation)
@@ -66,7 +91,7 @@ Goal: everything that depends on Phase 2 data existing, or that carries enough r
 - **Region** — stored in its own lookup table (not hardcoded), starting with "North Texas," expandable to new regions over time. No geocoding or radius search in MVP — region is a simple filterable value.
 - **Service** — belongs to a church; has a title, `serviceType` (One-Time or Ongoing/Permanent), description, one or more **Role Slots**. Pay is _not_ set at the Service level — see Role Slot. One-Time services have a scheduled date/time; Ongoing services instead have a free-text typical schedule (e.g. "Sundays 9am + Wednesdays") and no fixed date.
 - **Role Slot** — a single role within a service (e.g. "Drummer," "Vocalist"), each with its own **pay type and exact amount**, status, and applicants. A service is considered filled when all its role slots are filled. Pay is per-slot because a church prices roles differently within one posting — a drummer, an electric guitarist, and an audio engineer on the same Sunday are not necessarily worth the same rate, and forcing separate Service posts per rate would be busywork against the post cap. Since a slot is exactly one seat, its amount is unambiguously per-musician; there is no "total to split" concept.
-- **Application** — a musician applying to a specific role slot (not the service as a whole). Status: Applied → Accepted / Rejected.
+- **Application** — a musician applying to a specific role slot (not the service as a whole). Nine statuses: Applied, Accepted, Not Selected, Service Filled, Service Canceled, Auto-Withdrawn, Withdrawn by Musician, Expired, Completed. Musicians are never shown the word "Rejected" — the user-facing term is "Not Selected".
 - **Invite** — a church-initiated outreach to a musician from the directory. Always creates a lightweight service/role-slot behind the scenes (not a raw contact exchange) so it flows through the same application/acceptance system.
 - **Flag/Report** — raised by any user against a service, church, or musician profile; visible only to platform admin.
 - **Feedback Signal** — private post-service thumbs up/down from both church and musician, visible only to platform admin, feeds trust stats but is never shown publicly or to the other party.
@@ -191,8 +216,8 @@ Philosophy: trust markers should be earned from objective behavior, not subjecti
 - **Self-dealing / fake trust-stat inflation** (e.g. one person creates a fake church and "services" themselves to pad their own musician stats): new churches are "unverified" by default — services from an unverified church don't count toward a musician's trust stats until the church clears review or a minimum active period with no reports. Flag accounts where the same person/device/payment method links a church and the musician benefiting from its services.
 - **Free-advertising / junk postings:** a monthly post cap (also serving as the premium-tier gate) limits how much free inventory any single account can spam. Combined with the manual first-post review and flag/report system.
 - **Sybil accounts (duplicate accounts to game applications or stats):**
-  - **Dedup:** phone number verification required for all accounts (free, one phone = one account) — friction-based, not payment-based, to catch bulk fake-account creation at scale without feeling like a paywall.
-  - **Verified badge (musicians):** optional, free — link a Facebook account to earn a "Verified" badge, since this community already trusts Facebook identity. To resist fresh-fake-account gaming, the badge only grants if the linked Facebook account exceeds an age threshold (e.g. 1+ year old) — raises the effort bar without charging anyone.
+  - **Dedup:** email verification required for all accounts (one verified address = one account). Phone verification was the original plan here — free, one phone = one account, friction-based rather than payment-based — and remains the intended tightening if bulk fake-account creation becomes real. It is deferred out of Phase 1 to avoid signing up an SMS vendor before there is anything worth gaming.
+  - **Verified badge (musicians):** optional, free — link a Facebook account to earn a "Verified" badge, since this community already trusts Facebook identity. The badge attests only that the person controls a Facebook account. An earlier version of this spec additionally required the linked account to be over a year old, as friction against freshly-created fakes; that is **not implementable** — the Graph API exposes no account creation date under a standard login permission set — and has been dropped rather than carried as an aspiration. The link must request the minimum identifying scope: musicians are told it reads and posts nothing, and that promise binds the scope.
   - **Verified badge (churches):** optional, free — church provides their organization's domain (e.g. gracechurch.org) and verifies an email address at that domain (e.g. staff@gracechurch.org) via a confirmation link/code sent to it. A generic email (gmail, yahoo, etc.) doesn't qualify. Zero-cost, hard for a fake church to fake since it requires actually controlling the domain's mail.
 - **Report/flag abuse (mass-flagging to bury someone):** flags remain private and require admin action to have any visible effect — abuse creates admin review workload but not direct harm to the flagged party, since nothing is automatically actioned.
 - **Ban evasion:** not fully solvable at MVP scale without harder identity verification; accepted risk for now, revisit (e.g. phone-number-based re-ban detection) if it becomes a real pattern.
@@ -207,7 +232,7 @@ Not architecture, but operational guidance for the build phase: these features c
 - **Earned trust badges:** these need real completed-Service volume to mean anything. Launch with only the "New" tag and "Founding Member" badge on for everyone; gate the stats-based earned badges (Reliable, Fast Responder, etc.) behind a flag until there's enough data for them to be meaningful rather than misleading.
 - **No-show flagging / escalation flow:** sensitive by nature — consider soft-launching to a small cohort first to catch edge cases (false flags, unclear UI) before it's live for every church/musician pair.
 - **Local sponsor placements:** test with a limited region or a handful of sponsors before treating it as a standard revenue line.
-- **Verified badges (Facebook link, church domain verification):** phone verification should be mandatory for everyone from day one (not a toggle), but the optional Facebook/domain verification badges can be rolled out to a cohort first to watch for edge cases (e.g. legitimate churches without a custom domain).
+- **Verified badges (Facebook link, church domain verification):** email verification should be mandatory for everyone from day one (not a toggle), but the optional Facebook/domain verification badges can be rolled out to a cohort first to watch for edge cases (e.g. legitimate churches without a custom domain).
 - **Connection history ("black book"):** inherently depends on churches/musicians having completed Services together — natural to gate behind a flag that auto-enables per-account once they have real history, rather than showing an empty feature to everyone immediately.
 - **Post cap value:** keep the exact cap (currently 4/month) behind a flag/config value, not hardcoded, so it can be tuned per cohort or over time without a redeploy.
 - **Tip jar & subscription tier (future):** low-risk but easy wins to flag simply for a clean on/off switch and easy experimentation on placement/copy.

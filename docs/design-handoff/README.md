@@ -1,10 +1,13 @@
 # Handoff: North Texas Worship Musicians Marketplace — Phase 1 & 2 Wireframes
 
-> **Amended 2026-08-05.** As delivered, this file stated that pay is set at the
-> Service level. That was incorrect and contradicted both `product-spec.md` (the
-> authoritative spec) and `CONTEXT.md`. **Pay is per Role Slot.** The pay
-> statements below have been corrected in place; see
-> `docs/adr/0001-pay-is-per-role-slot.md`. The wireframe file itself
+> **Pay is per Role Slot, never per Service.**
+>
+> **There is no phone or SMS verification.** Verification is an emailed one-time
+> code. The phone-entry and code screens in flow `1b`, and the duplicate-phone
+> error state, are stale — build email verification in their place. See
+> `product-spec.md` §2.
+>
+> The wireframe file
 > (`Worship Marketplace Wireframes.dc.html`) still shows a service-level pay step
 > in flow `2c` and has not been regenerated — build from this README, not from
 > that screen.
@@ -34,11 +37,11 @@ Single scrollable canvas, top to bottom, in numbered "turns" (`t0`, `t1`, `t2`) 
 - **t0** — Legend + two cross-cutting principles that apply to every screen (see below).
 - **t1 — Phase 1 (Early Access):**
   - `1a` Landing/waitlist — 3 sequential states: pre-launch waitlist → Early Access (profiles open, no feed) → post-launch (feed live, logged out)
-  - `1b` Sign up flow — account type picker, account+age, phone entry, code verification (incl. duplicate-phone error), branch to profile creation
+  - `1b` Sign up flow — account type picker, account+age, email one-time-code verification (incl. already-registered-email error), branch to profile creation
   - `1c` Musician profile creation — roles multi-select, region + style tags, bio + links, optional Facebook verification, finished profile + edge case
   - `1d` Church profile creation — church details, optional domain email verification, church home/empty state
-  - `1e` Co-admin invite + musician/church view switcher
-  - `1f` Admin — overview stats, musicians table, churches table, shared row-detail drawer
+  - `1e` Co-admin invite + musician/church view switcher — **deferred out of Phase 1** (see issue #25); build when the Invite concept lands in Phase 2
+  - `1f` Admin — overview stats, musicians table, churches table, shared row-detail drawer. **In scope for Phase 1**, in full. View-only impersonate is **not** in scope.
 - **t2 — Phase 2 (Launch, core loop):**
   - `2a` Public service feed — desktop, mobile + filter sheet, over-filtered empty state, cold-start empty board
   - `2b` Service detail — one-time service, ongoing service, filled/expired/canceled states
@@ -58,8 +61,8 @@ Single scrollable canvas, top to bottom, in numbered "turns" (`t0`, `t1`, `t2`) 
 
 ## Interactions & Behavior (key flows)
 
-- **Signup:** account type (Musician/Church) → email/password/age+ToS checkbox (age self-attested, no vetting disclaimer) → phone entry → 6-digit code (duplicate-phone number shows inline error with login/support path, not a dead end) → branches to profile creation. Badges (Founding Member, New Here) are additive-only — never a greyed-out/missing state.
-- **Musician profile:** roles are a fixed multi-select taxonomy (not free text) so church-side filters stay reliable; "Other" opens a text field that is NOT filterable. Style tags never block applying. Bio/links have a "profile strength" nudge meter (not shown to churches). Facebook link is optional, explicitly stated as posting/reading nothing but account age; skip is equal-weight to link.
+- **Signup:** account type (Musician/Church) → email/password/age+ToS checkbox (age self-attested, no vetting disclaimer) → 6-digit one-time code emailed to that address (an email already registered shows an inline error with a login/support path, not a dead end) → branches to profile creation. Badges (Founding Member, New Here) are additive-only — never a greyed-out/missing state.
+- **Musician profile:** roles are a fixed multi-select taxonomy (not free text) so church-side filters stay reliable; "Other" opens a text field that is NOT filterable. Style tags never block applying. Bio/links have a "profile strength" nudge meter (not shown to churches). Facebook link is optional and explicitly states that it reads and posts nothing; skip is equal-weight to link. It attests account control only — there is no account-age check (the Graph API can't provide one).
 - **Church profile:** name, city, region only — no denomination field. Optional domain-email verification; failing (e.g. gmail.com) must not read as "not a real church" — copy explicitly says they can still post and verify later. First service post from any church goes into a manual review queue (`2i`/`1f`) before going live; disclosed to the church up front with a time expectation.
 - **Feed & filters:** filter facets are region, role, musical style, pay type, service type (one-time/ongoing) — never pay amount, never sort-by-pay. Filtering by pay type means "this Service has an **open** slot of that pay type" — a Service whose only Paid slot is already filled must stop appearing under a Paid filter. Mobile uses a bottom filter sheet with a result-count-on-apply-button pattern. Empty states must always show the unfiltered result count and a one-tap way to widen filters, never a bare "no results."
 - **Service detail:** pay TYPE is always shown, per slot in the role list rather than as one service-level line; pay AMOUNT is withheld and only revealed inside the apply flow, in the same visual slot the amount would occupy ("Amount shown when you apply"). Filled/expired/canceled services stay reachable at their URL with an explanation and a "see open services" path (their links get shared externally and must not 404).
@@ -75,7 +78,7 @@ Single scrollable canvas, top to bottom, in numbered "turns" (`t0`, `t1`, `t2`) 
 
 Key entities and states a real implementation will need to model:
 
-- **Account:** type (Musician | Church), phone-verified (bool, required), age-attested (bool), optional Facebook link (age-in-years, verified bool), badges (Founding Member, Verified — additive/derived, never stored as a "missing" state).
+- **Account:** type (Musician | Church), email-verified (bool, required), age-attested (bool), optional Facebook link (verified bool — no account age; the Graph API doesn't expose it), badges (Founding Member, Verified — additive/derived, never stored as a "missing" state).
 - **Musician profile:** roles (multi-select from fixed taxonomy + free-text "other," non-filterable), regions (multi-select from lookup list), musical style tags (multi-select), bio, profile links (list), "actively looking" toggle, profile-completeness (derived %).
 - **Church profile:** name, city, region, optional About text, optional domain-verification (domain, verifying email, verified bool), post count this billing period vs. cap, admin list (owner + co-admins), co-admin invite (pending/accepted, revocable link or email).
 - **Service:** type (One-Time | Ongoing), title, description, date+time (One-Time) or free-text schedule + renewal date (Ongoing), musical style tags, status (Pending Review | Open | Partially Filled | Filled | Expired | Canceled), review status for first-post-per-church. **No pay fields** — pay lives on the Role slot.
@@ -104,16 +107,17 @@ No real photography, icons, or brand assets are used — all imagery is a labele
 These are flagged as blue handwritten notes at their screen in the wireframe file and have **not** been resolved — confirm with product before implementation:
 
 - Whether "liturgical"/"gospel" stay as musical style tags or get trimmed to purely musical descriptors, given their denominational overtones.
-- Whether churches can draft/save services during Early Access to auto-post at launch.
-- Full musician role taxonomy (spec lists 6 + Other — likely missing worship leader, sound/AV, strings, horns).
+- ~~Whether churches can draft/save services during Early Access to auto-post at launch~~ **Resolved: no.** Phase 1 ships no Service entity at all, so there is nothing to draft.
+- ~~Full musician role taxonomy~~ **Resolved.** Roles and musical style tags are seeded lookup tables (not enums, not free text); the seed lists are in the Phase 1 spec and incorporate the missing worship leader, sound/AV, strings, and horns flagged here.
 - Whether unverified churches show any (even neutral) indicator on the feed, or the badge is purely additive/invisible when absent.
 - Whether a co-admin can remove the owner or post beyond the church's post cap.
 - Whether applicant counts per slot are shown publicly on the feed/detail page.
 - Whether role-slot names must come from the fixed taxonomy only, or allow free text (breaks filtering if so).
 - Whether a musician's applying to a slot outside their listed roles is blocked, warned, or unrestricted.
-- Whether pay amount is required for Negotiable slots (fixed figure vs. range); whether Volunteer can carry a stipend amount. (The per-musician-vs-total-to-split half of this is **resolved** — a slot is one seat, so its amount is always per-musician. See `docs/adr/0001-pay-is-per-role-slot.md`.)
+- Whether pay amount is required for Negotiable slots (fixed figure vs. range); whether Volunteer can carry a stipend amount. (The per-musician-vs-total-to-split half of this is **resolved** — a slot is one seat, so its amount is always per-musician.)
 - Whether "Undo" on an acceptance is offered (and for how long), given it requires reviving auto-withdrawn applications.
 - Whether a musician can withdraw an already-ACCEPTED application (a de facto cancellation on the church).
 - Whether/when a feedback prompt fires for Ongoing services, which have no natural end date.
 - Whether admin gets a UI at all in Phase 2 or runs on internal tooling for the first months.
-- Whether view-only "impersonate" is in scope for Phase 1 admin, given its trust/risk profile.
+- ~~Whether view-only "impersonate" is in scope for Phase 1 admin~~ **Resolved: no.** Not built in Phase 1; the trust/risk profile isn't worth it before there is anything to inspect.
+- ~~Whether admin gets a UI at all in Phase 2~~ **Resolved: yes, in Phase 1** — the full `1f` surface. The Phase 2 queues (`2i`) remain Phase 2.

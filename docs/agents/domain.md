@@ -23,9 +23,9 @@ If any of these files don't exist, **proceed silently**. Don't flag their absenc
 ```
 
 Related product/design source material lives in `docs/design-handoff/` (the
-authoritative product spec) and `docs/schema/` (incremental schema design
-rounds). `CONTEXT.md` summarises both; read the source docs when you need detail
-beyond the glossary.
+authoritative product spec and the wireframe handoff). `CONTEXT.md` summarises
+it; read the source docs when you need detail beyond the glossary. Per-phase
+build specs are GitHub issues labelled `ready-for-agent`.
 
 ## Use the glossary's vocabulary
 

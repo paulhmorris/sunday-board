@@ -24,8 +24,11 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
   its own pay type and exact amount, status, and applicants. A Service is Filled
   when every Role Slot is filled. Avoid "position", "role" alone, "seat".
 - **Application** — a Musician applying to one specific Role Slot, never to a
-  Service as a whole. Status: Applied → Accepted / Rejected / Service Canceled /
-  Withdrawn.
+  Service as a whole. Nine distinct statuses: Applied, Accepted, **Not
+  Selected**, Service Filled, Service Canceled, Auto-Withdrawn, Withdrawn by
+  Musician, Expired (the Church never responded), Completed. **Never show a
+  Musician the word "Rejected"** — the user-facing term is "Not Selected".
+  "Rejected" may appear only in Church-side internal copy and code.
 - **Invite** — a Church-initiated outreach to a Musician from the directory. It
   always creates a real Service + Role Slot behind the scenes, so it flows
   through the ordinary Application/acceptance path. Not a raw contact exchange,
@@ -49,10 +52,10 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
 
 ## Invariants worth knowing before you change anything
 
-- **Pay is per Role Slot**, never per Service. A slot is one seat, so its amount
-  is unambiguously per-musician; there is no "total to split". See
-  `docs/adr/0001-pay-is-per-role-slot.md` — the design handoff says otherwise and
-  the ADR supersedes it.
+- **Pay is per Role Slot**, never per Service. There is no pay field of any kind
+  on a Service. A slot is one seat, so its amount is unambiguously per-musician;
+  there is no "total to split". A Church posting a paid drummer and a volunteer
+  vocalist posts **one** Service, not two.
 - **No sort-by-pay, structurally.** Exact amounts are revealed only at the moment
   a Musician clicks Apply, and only for that one slot. Pay-type chips render with
   equal weight in a fixed canonical order — ordering by amount would leak the
@@ -79,7 +82,8 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
 - SvelteKit (Svelte 5) + TypeScript, Tailwind, shadcn-svelte, adapter-node.
 - Prisma with the `@prisma/adapter-pg` driver adapter; models split under
   `prisma/models/`.
-- **Better Auth** owns users, sessions, and phone verification. Its schema is
+- **Better Auth** owns users, sessions, and email one-time-code verification.
+  There is no phone or SMS verification. Its schema is
   generated into `prisma/auth.prisma` — do not hand-edit that file. Our own
   tables reference the auth user id as an opaque `userId` string, **not** a
   foreign key into the auth schema.
@@ -90,22 +94,28 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
   happen" is a nullable `DateTime` (present = true, `null` = false) rather than a
   boolean — free "when" for later. A field the user toggles back and forth
   (e.g. `activelyLooking`) stays a plain boolean.
-- Feature-flag-first for risky surfaces (PostHog): boost, directory invites,
-  earned badges, no-show escalation, post cap value.
+- Feature-flag-first for risky surfaces: boost, directory invites, earned
+  badges, no-show escalation, post cap value. Phase 1 uses server-side config
+  flags; PostHog is the intended Phase 2 home, not a Phase 1 dependency.
 
 ## Phase
 
-**Phase 1 (Early Access)** — accounts, phone verification, profiles, regions,
+**Phase 1 (Early Access)** — accounts, email verification, profiles, regions,
 legal basics. No feed, no posting, no applying yet. Phase 2 adds the core
 marketplace loop; Phase 3 is everything depending on Phase 2 data.
 
-Current state: auth flow and form components built; core tables specced through
-Round 1 (`Region`, `Musician`, `Church`) in `docs/schema/`.
+Current state: auth flow and form components built; no domain tables exist yet.
+The Phase 1 spec (#25) defines the schema to build.
 
 ## Source docs
 
-- `docs/design-handoff/product-spec.md` — the authoritative product spec.
-- `docs/schema/` — incremental schema design rounds.
+- `docs/design-handoff/product-spec.md` — product narrative and rationale: the
+  features, the business rules, and why each decision was made. Authoritative on
+  _why_.
+- GitHub issues labelled `ready-for-agent` — the per-phase build specs.
+  Authoritative on _what to build_. Phase 1 is #25.
+- `docs/design-handoff/README.md` — wireframe handoff. The bundled `.dc.html`
+  canvas is stale in places; the README banner lists which screens.
 
 ## Open questions (unresolved in the spec)
 
@@ -113,4 +123,7 @@ Round 1 (`Region`, `Musician`, `Church`) in `docs/schema/`.
   Must be decided before the feed query is built.
 - **"Scrape and leave":** Churches mining the directory for contacts then
   leaving. Mitigated for now by hiding contact info until a Musician accepts.
-- **Role taxonomy** not yet fixed — blocks the Musician roles/style-tags tables.
+
+_Settled since: the role/style-tag taxonomy. `Role` and `StyleTag` are seeded
+lookup tables — never Postgres enums, never free text — carrying `slug`, `name`,
+`sortOrder`, and a nullable `retiredAt`. Seed lists are in the Phase 1 spec._
