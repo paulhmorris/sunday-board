@@ -21,7 +21,13 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
     });
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedIn, { distinctId: user.id });
-    return { user: { id: user.id, email: user.email, name: user.name } };
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    };
   } catch (error) {
     if (isAPIError(error)) {
       logger.warn("Sign in failed", { message: error.message });
@@ -41,7 +47,13 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
     });
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedUp, { distinctId: user.id });
-    return { user: { id: user.id, email: user.email, name: user.name } };
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    };
   } catch (error) {
     if (isAPIError(error)) {
       logger.warn("Registration failed", { message: error.message });
@@ -54,7 +66,9 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
 
 export const signOut = form(async () => {
   const { request, locals } = getRequestEvent();
-  if (locals.user) trackEvent(EVENTS.signedOut, { distinctId: locals.user.id });
+  if (locals.user) {
+    trackEvent(EVENTS.signedOut, { distinctId: locals.user.id });
+  }
   await auth.api.signOut({ headers: request.headers });
   redirect(303, "/auth/sign-in");
 });
