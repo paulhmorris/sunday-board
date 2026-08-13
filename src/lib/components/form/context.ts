@@ -1,4 +1,4 @@
-import type { RemoteFormIssue } from "@sveltejs/kit";
+import type { RemoteFormEnhanceCallback, RemoteFormIssue } from "@sveltejs/kit";
 import { nanoid } from "nanoid";
 import { getContext, setContext } from "svelte";
 
@@ -14,6 +14,12 @@ export interface AnyRemoteForm {
   method: "POST";
   action: string;
   validate(options?: { includeUntouched?: boolean; preflightOnly?: boolean }): Promise<void>;
+  /** Returns the attributes to spread in place of the form itself. See `<Form enhance={...} />`. */
+  enhance(callback: RemoteFormEnhanceCallback): {
+    [attachment: symbol]: (node: HTMLFormElement) => void;
+    method: "POST";
+    action: string;
+  };
   get submitted(): boolean;
   get pending(): number;
   fields: { allIssues(): RemoteFormIssue[] | undefined };

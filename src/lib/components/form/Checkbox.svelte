@@ -1,13 +1,12 @@
 <script lang="ts">
+  import { cn } from "$lib/utils";
   import type { RemoteFormField } from "@sveltejs/kit";
   import { type Snippet, untrack } from "svelte";
   import type { HTMLInputAttributes } from "svelte/elements";
 
-  import { cn } from "$lib/utils";
-
   import { createControlIds, getFieldGroupContext } from "./context";
-  import FieldMessages from "./FieldMessages.svelte";
   import { asField, createField } from "./field.svelte";
+  import FieldMessages from "./FieldMessages.svelte";
 
   type Props = Omit<HTMLInputAttributes, "name" | "type" | "value" | "checked"> & {
     children: Snippet;
@@ -28,8 +27,18 @@
         }
     );
 
-  let { children, description, value, field, checked, class: className, onblur, onchange, oninput, ...rest }: Props =
-    $props();
+  let {
+    children,
+    description,
+    value,
+    field,
+    checked,
+    class: className,
+    onblur,
+    onchange,
+    oninput,
+    ...rest
+  }: Props = $props();
 
   const group = getFieldGroupContext();
 
@@ -63,7 +72,7 @@
     aria-describedby={group ? undefined : control.describedBy}
     aria-errormessage={!group && control.invalid ? ids.errorId : undefined}
     {...control.events({ onblur, onchange, oninput })}
-    class="size-4 shrink-0 rounded-[5px] border-transparent bg-input/90 text-primary outline-none transition-shadow focus:ring-3 focus:ring-ring/30 focus:ring-offset-0 checked:border-transparent aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 disabled:cursor-not-allowed disabled:opacity-50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
+    class="bg-input/90 text-primary focus:ring-ring/30 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 size-4 shrink-0 rounded-[5px] border-transparent transition-shadow outline-none checked:border-transparent focus:ring-3 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-3"
   />
   <label for={ids.id} class="select-none">{@render children()}</label>
 </div>

@@ -29,6 +29,8 @@
     "better-auth": "^1.6.26",
     "nanoid": "^6.0.1",
     "pg": "^8.22.0",
+    "posthog-js": "^1.413.2",
+    "posthog-node": "^5.48.0",
     "prisma": "^7.9.1"
   },
   "devDependencies": {
@@ -77,9 +79,10 @@
   "allowScripts": {
     "@sentry/cli@2.58.6": true,
     "esbuild@0.28.1": true,
-    "prisma@7.9.0": true,
-    "@prisma/engines@7.9.0": true,
     "esbuild@0.18.20": true,
-    "esbuild@0.25.12": true
+    "esbuild@0.25.12": true,
+    "@prisma/engines@7.9.1": true,
+    "core-js@3.50.0": true,
+    "prisma@7.9.1": true
   }
 }

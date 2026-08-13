@@ -1,8 +1,7 @@
 <script lang="ts">
+  import { cn } from "$lib/utils";
   import type { Snippet } from "svelte";
   import type { HTMLLabelAttributes } from "svelte/elements";
-
-  import { cn } from "$lib/utils";
 
   import { getControlContext } from "./context";
 

@@ -4,8 +4,8 @@
   import type { HTMLFieldsetAttributes } from "svelte/elements";
 
   import { setFieldGroupContext } from "./context";
-  import Fieldset from "./Fieldset.svelte";
   import { asField, createField } from "./field.svelte";
+  import Fieldset from "./Fieldset.svelte";
 
   type Props = Omit<HTMLFieldsetAttributes, "name"> & {
     /** An array field — each `<Checkbox value="..." />` inside contributes one entry */

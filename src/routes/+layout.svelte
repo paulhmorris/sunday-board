@@ -1,6 +1,7 @@
 <script lang="ts">
   import favicon from "$lib/assets/favicon.svg";
   import Navbar from "$lib/components/Navbar.svelte";
+
   import "./layout.css";
 
   let { children } = $props();
@@ -10,7 +11,7 @@
 
 <div class="flex h-dvh">
   <Navbar />
-  <main class="flex-1 p-8 overflow-y-auto">
+  <main class="flex-1 overflow-y-auto p-8">
     {@render children()}
   </main>
 </div>
