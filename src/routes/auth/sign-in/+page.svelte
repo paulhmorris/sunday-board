@@ -1,22 +1,24 @@
 <script lang="ts">
-  import type { RemoteFormEnhanceInstance } from "@sveltejs/kit";
-
   import { identifyUser } from "$lib/analytics";
   import { Form, FormControl, Input, Label } from "$lib/components/form";
+  import { Button } from "$lib/components/ui/button";
+  import type { RemoteFormEnhanceInstance } from "@sveltejs/kit";
   import { nanoid } from "nanoid";
 
-  import { Button } from "$lib/components/ui/button";
   import { signInEmail } from "../auth.remote";
   import { signInEmailSchema } from "../auth.schema";
 
   const loginForm = signInEmail.for(nanoid()).preflight(signInEmailSchema);
   const { email, password } = loginForm.fields;
 
-  /** `form` is an untyped copy of the instance; `loginForm.result` is the same state, typed. */
   async function submit(form: RemoteFormEnhanceInstance) {
-    if (!(await form.submit())) return;
+    if (!(await form.submit())) {
+      return;
+    }
     const user = loginForm.result?.user;
-    if (user) identifyUser(user.id, { email: user.email, name: user.name });
+    if (user) {
+      identifyUser(user.id, { email: user.email, name: user.name });
+    }
   }
 </script>
 
@@ -32,11 +34,7 @@
 
       <FormControl>
         <Label>Password</Label>
-        <Input
-          field={password}
-          type="password"
-          autocomplete="current-password"
-        />
+        <Input field={password} type="password" autocomplete="current-password" />
       </FormControl>
 
       <Button type="submit" disabled={!!loginForm.pending} class="w-full">

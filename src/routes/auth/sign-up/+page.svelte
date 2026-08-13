@@ -1,22 +1,24 @@
 <script lang="ts">
-  import type { RemoteFormEnhanceInstance } from "@sveltejs/kit";
-
   import { identifyUser } from "$lib/analytics";
   import { Form, FormControl, Input, Label } from "$lib/components/form";
+  import Button from "$lib/components/ui/button/button.svelte";
+  import type { RemoteFormEnhanceInstance } from "@sveltejs/kit";
   import { nanoid } from "nanoid";
 
-  import Button from "$lib/components/ui/button/button.svelte";
   import { signUpEmail } from "../auth.remote";
   import { signUpEmailSchema } from "../auth.schema";
 
   const registerForm = signUpEmail.for(nanoid()).preflight(signUpEmailSchema);
   const { name, email, password } = registerForm.fields;
 
-  /** `form` is an untyped copy of the instance; `registerForm.result` is the same state, typed. */
   async function submit(form: RemoteFormEnhanceInstance) {
-    if (!(await form.submit())) return;
+    if (!(await form.submit())) {
+      return;
+    }
     const user = registerForm.result?.user;
-    if (user) identifyUser(user.id, { email: user.email, name: user.name });
+    if (user) {
+      identifyUser(user.id, { email: user.email, name: user.name });
+    }
   }
 </script>
 
@@ -32,12 +34,7 @@
 
       <FormControl>
         <Label>Email</Label>
-        <Input
-          field={email}
-          type="email"
-          autocomplete="email"
-          description="We'll send a verification link here"
-        />
+        <Input field={email} type="email" autocomplete="email" description="We'll send a verification link here" />
       </FormControl>
 
       <FormControl>
