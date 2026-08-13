@@ -1,4 +1,5 @@
-import { BETTER_AUTH_SECRET, BETTER_AUTH_URL } from "$app/env/private";
+import { BETTER_AUTH_SECRET } from "$app/env/private";
+import { BETTER_AUTH_URL } from "$app/env/public";
 import { getRequestEvent } from "$app/server";
 import { db } from "$lib/server/db";
 import { prismaAdapter } from "better-auth/adapters/prisma";

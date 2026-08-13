@@ -1,8 +1,7 @@
 <script lang="ts">
+  import { cn } from "$lib/utils";
   import type { Snippet } from "svelte";
   import type { HTMLInputAttributes } from "svelte/elements";
-
-  import { cn } from "$lib/utils";
 
   import { createControlIds, getFieldGroupContext } from "./context";
 
@@ -30,7 +29,7 @@
     id={ids.id}
     aria-invalid={group.control.invalid ? "true" : undefined}
     {...group.control.events({ onblur, onchange, oninput })}
-    class="size-4 shrink-0 border-transparent bg-input/90 text-primary outline-none transition-shadow focus:ring-3 focus:ring-ring/30 focus:ring-offset-0 checked:border-transparent aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 disabled:cursor-not-allowed disabled:opacity-50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
+    class="bg-input/90 text-primary focus:ring-ring/30 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 size-4 shrink-0 border-transparent transition-shadow outline-none checked:border-transparent focus:ring-3 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-3"
   />
   <label for={ids.id} class="select-none">{@render children()}</label>
 </div>

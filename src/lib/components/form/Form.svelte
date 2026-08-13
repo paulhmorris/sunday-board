@@ -47,6 +47,6 @@
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
     font-weight: var(--font-weight-medium);
-    color: var(--color-red-600);
+    color: var(--color-destructive);
   }
 </style>

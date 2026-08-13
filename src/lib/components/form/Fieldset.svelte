@@ -1,12 +1,11 @@
 <script lang="ts">
+  import { cn } from "$lib/utils";
   import { type Snippet, untrack } from "svelte";
   import type { HTMLFieldsetAttributes } from "svelte/elements";
 
-  import { cn } from "$lib/utils";
-
   import { setTouchSink } from "./context";
-  import FieldMessages from "./FieldMessages.svelte";
   import { asField, createField, type FieldController } from "./field.svelte";
+  import FieldMessages from "./FieldMessages.svelte";
 
   type Props = Omit<HTMLFieldsetAttributes, "name"> & {
     legend: string;
