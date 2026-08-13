@@ -1,5 +1,5 @@
+import { HOSTNAME, POSTHOG_HOST, POSTHOG_PROJECT_TOKEN } from "$app/env/public";
 import { dev } from "$app/environment";
-import { PUBLIC_POSTHOG_HOST, PUBLIC_POSTHOG_KEY } from "$env/static/public";
 import type { AnalyticsEvent } from "$lib/analytics/events";
 import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
 import { Sentry } from "$lib/sentry";
@@ -22,9 +22,10 @@ class PostHogBrowserProvider implements AnalyticsProvider {
 let provider: AnalyticsProvider = new NoopAnalyticsProvider();
 
 export function initAnalytics() {
-  if (!dev && PUBLIC_POSTHOG_KEY) {
-    posthog.init(PUBLIC_POSTHOG_KEY, {
-      api_host: PUBLIC_POSTHOG_HOST,
+  if (!dev && POSTHOG_PROJECT_TOKEN) {
+    posthog.init(POSTHOG_PROJECT_TOKEN, {
+      api_host: POSTHOG_HOST,
+      tracing_headers: [HOSTNAME],
       // SvelteKit's client router navigates via history.pushState, which this captures.
       capture_pageview: "history_change",
       capture_pageleave: true,

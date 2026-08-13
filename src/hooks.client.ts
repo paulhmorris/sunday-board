@@ -4,8 +4,8 @@ import type { RequestEvent } from "@sveltejs/kit";
 
 Sentry.init({
   enabled: import.meta.env.PROD,
-  dsn: import.meta.env.PUBLIC_SENTRY_DSN,
-  environment: import.meta.env.PUBLIC_SENTRY_ENVIRONMENT,
+  dsn: import.meta.env.SENTRY_DSN,
+  environment: import.meta.env.SENTRY_ENVIRONMENT,
   tracesSampleRate: 1.0,
   enableLogs: true,
 });

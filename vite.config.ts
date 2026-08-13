@@ -11,7 +11,7 @@ export default defineConfig({
       adapter: "node",
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
+      authToken: process.env.ENTRY_AUTH_TOKEN,
     }),
     tailwindcss(),
     sveltekit({
@@ -24,6 +24,7 @@ export default defineConfig({
         remoteFunctions: true,
         tracing: { server: true },
         instrumentation: { server: true },
+        explicitEnvironmentVariables: true,
       },
       typescript: {
         config: (config) => {
