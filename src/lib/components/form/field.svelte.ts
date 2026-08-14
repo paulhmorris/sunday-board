@@ -37,6 +37,10 @@ interface FieldOptions {
  * SvelteKit's `validate()` is form-wide, and it ignores fields it considers untouched — so blurring a
  * field the user never typed into produces no issues at all. We therefore always validate with
  * `includeUntouched`, and track touched state per field to decide what actually gets rendered.
+ *
+ * `preflightOnly` keeps validation on the client: without it, data that passes preflight is POSTed
+ * to the remote endpoint on every keystroke, and the response *replaces* the form's issues rather
+ * than merging, discarding server issues raised by `invalid()` on the real submission.
  */
 export function createField(options: FieldOptions) {
   const formContext = getFormContext();
@@ -52,7 +56,7 @@ export function createField(options: FieldOptions) {
   const describedBy = $derived(options.description() ? ids.descriptionId : undefined);
 
   function validate() {
-    void formContext?.form.validate({ includeUntouched: true });
+    void formContext?.form.validate({ includeUntouched: true, preflightOnly: true });
   }
 
   /** Touching a control also touches the fieldset around it, which owns any container-level issues. */
