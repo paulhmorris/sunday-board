@@ -5,15 +5,16 @@ import tailwindcss from "@tailwindcss/vite";
 import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
-    sentrySvelteKit({
-      adapter: "node",
-      authToken: process.env.ENTRY_AUTH_TOKEN,
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      telemetry: false,
-    }),
+    mode !== "development" &&
+      sentrySvelteKit({
+        adapter: "node",
+        authToken: process.env.ENTRY_AUTH_TOKEN,
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+        telemetry: false,
+      }),
     tailwindcss(),
     sveltekit({
       adapter: adapter(),
@@ -37,7 +38,7 @@ export default defineConfig({
         }),
       },
     }),
-  ],
+  ].filter(Boolean),
   test: {
     globals: true,
     expect: { requireAssertions: true },
@@ -67,4 +68,4 @@ export default defineConfig({
       },
     ],
   },
-});
+}));

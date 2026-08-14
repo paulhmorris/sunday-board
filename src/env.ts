@@ -9,11 +9,20 @@ export const variables = defineEnvVars({
   DIRECT_URL: { description: "Non-pooled Postgres connection string, used for migrations.", schema: url },
   DATABASE_URL: { description: "Pooled Postgres connection string, used at runtime.", schema: url },
 
-  SENTRY_ORG: { description: "Sentry organization slug, used for sourcemap uploads.", schema: nonEmptyString },
-  SENTRY_PROJECT: { description: "Sentry project slug, used for sourcemap uploads.", schema: nonEmptyString },
+  SENTRY_ORG: {
+    description: "Sentry organization slug, used for sourcemap uploads.",
+    schema: nonEmptyString,
+    static: true,
+  },
+  SENTRY_PROJECT: {
+    description: "Sentry project slug, used for sourcemap uploads.",
+    schema: nonEmptyString,
+    static: true,
+  },
   SENTRY_AUTH_TOKEN: {
     description: "Sentry auth token for uploading sourcemaps at build time.",
     schema: nonEmptyString,
+    static: true,
   },
 
   BETTER_AUTH_SECRET: {
@@ -27,9 +36,15 @@ export const variables = defineEnvVars({
     description: "Base URL of the app, used by Better Auth for callbacks and redirects.",
     public: true,
     schema: url,
+    static: true,
   },
 
-  SENTRY_DSN: { description: "Sentry DSN for error reporting.", public: true, schema: url },
+  SENTRY_DSN: {
+    description: "Sentry DSN for error reporting.",
+    public: true,
+    schema: url,
+    static: true,
+  },
   SENTRY_ENVIRONMENT: {
     description: "Environment name reported to client-side Sentry.",
     public: true,
