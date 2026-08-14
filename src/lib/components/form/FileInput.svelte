@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { dev } from "$app/environment";
+  import { dev } from "$app/env";
   import { cn } from "$lib/utils";
   import type { RemoteFormField } from "@sveltejs/kit";
   import type { HTMLInputAttributes } from "svelte/elements";

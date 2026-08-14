@@ -40,7 +40,7 @@ export const variables = defineEnvVars({
   POSTHOG_PROJECT_TOKEN: {
     public: true,
     static: true,
-    schema: url,
+    schema: nonEmptyString,
     description: "PostHog ingestion host used by the client SDK.",
   },
   POSTHOG_HOST: {

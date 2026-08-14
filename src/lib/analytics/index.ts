@@ -1,5 +1,5 @@
+import { dev } from "$app/env";
 import { HOSTNAME, POSTHOG_HOST, POSTHOG_PROJECT_TOKEN } from "$app/env/public";
-import { dev } from "$app/environment";
 import type { AnalyticsEvent } from "$lib/analytics/events";
 import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
 import { Sentry } from "$lib/sentry";
