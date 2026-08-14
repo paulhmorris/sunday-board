@@ -23,8 +23,8 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
     trackEvent(EVENTS.signedIn, { distinctId: user.id });
     return {
       user: {
-        id: user.id,
         email: user.email,
+        id: user.id,
         name: user.name,
       },
     };
@@ -49,8 +49,8 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
     trackEvent(EVENTS.signedUp, { distinctId: user.id });
     return {
       user: {
-        id: user.id,
         email: user.email,
+        id: user.id,
         name: user.name,
       },
     };

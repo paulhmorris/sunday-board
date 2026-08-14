@@ -3,7 +3,8 @@
   import type { Snippet } from "svelte";
   import type { HTMLFormAttributes } from "svelte/elements";
 
-  import { type AnyRemoteForm, setFormContext } from "./context";
+  import { setFormContext } from "./context";
+  import type { AnyRemoteForm } from "./context";
 
   type Props = Omit<HTMLFormAttributes, "method" | "action"> & {
     form: AnyRemoteForm;

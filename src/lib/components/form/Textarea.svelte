@@ -3,8 +3,8 @@
   import type { RemoteFormField } from "@sveltejs/kit";
   import type { HTMLTextareaAttributes } from "svelte/elements";
 
+  import FieldMessages from "./field-messages.svelte";
   import { asField, createField } from "./field.svelte";
-  import FieldMessages from "./FieldMessages.svelte";
 
   type Props = Omit<HTMLTextareaAttributes, "name" | "value"> & {
     field: RemoteFormField<Value>;
@@ -16,9 +16,9 @@
   let { field, value, description, onblur, onchange, oninput, class: className, ...rest }: Props = $props();
 
   const control = createField({
-    issues: () => field.issues(),
-    id: () => rest.id ?? undefined,
     description: () => description,
+    id: () => rest.id ?? undefined,
+    issues: () => field.issues(),
   });
 </script>
 

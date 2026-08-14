@@ -96,5 +96,5 @@ export function getTouchSink(): TouchSink | undefined {
 }
 
 export function createControlIds(id = `f-${nanoid(8)}`): ControlContext {
-  return { id, descriptionId: `${id}-description`, errorId: `${id}-error` };
+  return { descriptionId: `${id}-description`, errorId: `${id}-error`, id };
 }

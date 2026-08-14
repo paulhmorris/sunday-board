@@ -21,8 +21,8 @@ export const kitchenSinkSchema = v.object({
   ),
   avatar: v.optional(v.file("Avatar must be a file")),
   profile: v.object({
-    height: v.pipe(v.number("Height is required"), v.minValue(1, "Height must be greater than zero")),
     city: v.pipe(v.string("City is required"), v.trim(), v.minLength(1, "City is required")),
+    height: v.pipe(v.number("Height is required"), v.minValue(1, "Height must be greater than zero")),
   }),
   // The `check` issue belongs to the array itself rather than any one entry
   tags: v.pipe(

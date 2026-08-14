@@ -1,7 +1,8 @@
 import { dev } from "$app/env";
 import { HOSTNAME, POSTHOG_HOST, POSTHOG_PROJECT_TOKEN } from "$app/env/public";
 import type { AnalyticsEvent } from "$lib/analytics/events";
-import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
+import type { AnalyticsProperties, AnalyticsProvider } from "$lib/analytics/types";
+import { NoopAnalyticsProvider } from "$lib/analytics/types";
 import { Sentry } from "$lib/sentry";
 import {
   AnalyticsExtensions,
@@ -26,26 +27,26 @@ class PostHogBrowserProvider implements AnalyticsProvider {
 
 let provider: AnalyticsProvider = new NoopAnalyticsProvider();
 
-export function initAnalytics() {
+function initAnalytics() {
   if (!dev && POSTHOG_PROJECT_TOKEN) {
     posthog.init(POSTHOG_PROJECT_TOKEN, {
-      api_host: POSTHOG_HOST,
-      defaults: "2026-06-25",
-      tracing_headers: [HOSTNAME],
-      // SvelteKit's client router navigates via history.pushState, which this captures.
-      capture_pageview: "history_change",
-      capture_pageleave: true,
       __extensionClasses: {
         ...AnalyticsExtensions,
         ...FeatureFlagsExtensions,
         ...SessionReplayExtensions,
       },
+      api_host: POSTHOG_HOST,
+      // SvelteKit's client router navigates via history.pushState, which this captures.
+      capture_pageleave: true,
+      capture_pageview: "history_change",
+      defaults: "2026-06-25",
+      tracing_headers: [HOSTNAME],
     });
     provider = new PostHogBrowserProvider();
   }
 }
 
-export function trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperties) {
+function trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperties) {
   provider.trackEvent(event, properties);
 }
 
@@ -53,12 +54,14 @@ export function trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperti
  * Call at the point a user signs in or signs up — PostHog's guidance is to identify at the
  * auth transition, which also binds the browser's existing anonymous distinct_id to them.
  */
-export function identifyUser(userId: string, traits?: AnalyticsProperties) {
+function identifyUser(userId: string, traits?: AnalyticsProperties) {
   provider.identify(userId, traits);
   Sentry.setUser({ id: userId, ...traits });
 }
 
-export function resetAnalytics() {
+function resetAnalytics() {
   provider.reset();
   Sentry.setUser(null);
 }
+
+export { identifyUser, initAnalytics, resetAnalytics, trackEvent };

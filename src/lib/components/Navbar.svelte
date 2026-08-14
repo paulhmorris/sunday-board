@@ -18,7 +18,7 @@
   const routes = Object.keys(pageModules)
     .map((path) => path.replace("/src/routes", "").replace("/+page.svelte", "") || "/")
     .filter((route) => !route.includes("["))
-    .sort();
+    .toSorted();
 
   function initials(name: string) {
     return name

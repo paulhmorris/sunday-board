@@ -9,58 +9,60 @@ export default defineConfig({
   plugins: [
     sentrySvelteKit({
       adapter: "node",
-      telemetry: false,
+      authToken: process.env.ENTRY_AUTH_TOKEN,
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
-      authToken: process.env.ENTRY_AUTH_TOKEN,
+      telemetry: false,
     }),
     tailwindcss(),
     sveltekit({
       adapter: adapter(),
+      alias: {
+        "$db/*": "./prisma/generated/*",
+      },
       compilerOptions: {
-        runes: ({ filename }) => (filename.split(/[/\\]/).includes("node_modules") ? undefined : true),
         experimental: { async: true },
+        runes: ({ filename }) => (filename.split(/[/\\]/).includes("node_modules") ? undefined : true),
       },
       experimental: {
+        explicitEnvironmentVariables: true,
+        instrumentation: { server: true },
         remoteFunctions: true,
         tracing: { server: true },
-        instrumentation: { server: true },
-        explicitEnvironmentVariables: true,
       },
       typescript: {
-        config: (config) => {
-          return {
-            ...config,
-            include: [...config.include, "prisma.config.ts", "vite.config.ts"],
-          };
-        },
+        config: (config) => ({
+          ...config,
+          include: [...config.include, "prisma.config.ts", "vite.config.ts"],
+        }),
       },
     }),
   ],
   test: {
+    globals: true,
     expect: { requireAssertions: true },
     projects: [
       {
         extends: "./vite.config.ts",
         test: {
-          name: "client",
           browser: {
             enabled: true,
-            provider: playwright(),
             instances: [{ browser: "chromium", headless: true }],
+            provider: playwright(),
           },
-          include: ["src/**/*.svelte.{test,spec}.{js,ts}"],
           exclude: ["src/lib/server/**"],
+          include: ["src/**/*.svelte.{test,spec}.{js,ts}"],
+          name: "client",
         },
       },
 
       {
         extends: "./vite.config.ts",
         test: {
-          name: "server",
           environment: "node",
-          include: ["src/**/*.{test,spec}.{js,ts}"],
           exclude: ["src/**/*.svelte.{test,spec}.{js,ts}"],
+          include: ["src/**/*.{test,spec}.{js,ts}"],
+          name: "server",
         },
       },
     ],

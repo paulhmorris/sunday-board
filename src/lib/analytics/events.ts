@@ -2,8 +2,8 @@
 // passing raw strings to trackEvent() at call sites.
 export const EVENTS = {
   signedIn: "signed_in",
-  signedUp: "signed_up",
   signedOut: "signed_out",
+  signedUp: "signed_up",
 } as const;
 
 export type AnalyticsEvent = (typeof EVENTS)[keyof typeof EVENTS];

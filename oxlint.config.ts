@@ -1,12 +1,24 @@
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
-  plugins: ["typescript", "unicorn", "oxc", "import", "vitest"],
   categories: {
     correctness: "error",
+    pedantic: "off",
+    perf: "warn",
+    suspicious: "warn",
   },
-  rules: {},
   env: {
     builtin: true,
+  },
+  ignorePatterns: ["prisma/generated/**"],
+  overrides: [
+    {
+      files: ["src/**/*.test.ts"],
+      plugins: ["vitest"],
+    },
+  ],
+  plugins: ["typescript", "unicorn", "oxc", "import"],
+  rules: {
+    "import/no-unassigned-import": ["warn", { allow: ["**/*.css"] }],
   },
 });

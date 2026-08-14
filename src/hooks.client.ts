@@ -1,20 +1,28 @@
 import { SENTRY_DSN, SENTRY_ENVIRONMENT } from "$app/env/public";
 import { initAnalytics } from "$lib/analytics";
+import { Logger } from "$lib/logger";
 import * as Sentry from "@sentry/sveltekit";
-import type { RequestEvent } from "@sveltejs/kit";
+import type { HandleClientError } from "@sveltejs/kit";
+
+const logger = new Logger("Client");
 
 Sentry.init({
-  enabled: import.meta.env.PROD,
   dsn: SENTRY_DSN,
-  environment: SENTRY_ENVIRONMENT,
-  tracesSampleRate: 1.0,
   enableLogs: true,
+  enabled: import.meta.env.PROD,
+  environment: SENTRY_ENVIRONMENT,
+  tracesSampleRate: 1,
 });
 
 initAnalytics();
 
-function errorHandler({ error, event }: { error: unknown; event: RequestEvent }) {
-  console.error("An error occurred on the client:", error, event);
+function errorHandler({ error, event, status }: Parameters<HandleClientError>[0]): App.Error {
+  // `handleErrorWithSentry` skips `captureException` for 4xx, so `lastEventId()` would
+  // otherwise hand back a stale id from an earlier error.
+  const errorId = (status >= 500 ? Sentry.lastEventId() : undefined) ?? crypto.randomUUID();
+  logger.error("An error occurred on the client:", { error, errorId, event });
+
+  return { errorId, message: "An error occurred on the client." };
 }
 export const handleError = Sentry.handleErrorWithSentry(errorHandler);
 

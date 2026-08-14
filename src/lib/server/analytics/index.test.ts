@@ -1,5 +1,3 @@
-import { describe, expect, it } from "vitest";
-
 import { identifyUser, resetAnalytics, trackEvent } from "./index";
 
 // Tests run outside a production build, so the module falls back to

@@ -62,27 +62,17 @@ export function createField(options: FieldOptions) {
   }
 
   return {
-    touch,
-    get ids() {
-      return ids;
-    },
-    get issues() {
-      return issues;
-    },
-    get describedBy() {
-      return describedBy;
-    },
-    get invalid() {
-      return invalid;
-    },
     /** Spread last, so it wins over the `aria-invalid` that `field.as(...)` sets unconditionally. */
     get attributes() {
       return {
-        id: ids.id,
-        "aria-invalid": invalid ? ("true" as const) : undefined,
         "aria-describedby": describedBy,
         "aria-errormessage": invalid ? ids.errorId : undefined,
+        "aria-invalid": invalid ? ("true" as const) : undefined,
+        id: ids.id,
       };
+    },
+    get describedBy() {
+      return describedBy;
     },
     /**
      * Validation timing, spread onto the control. The caller's own handlers, if any, run after ours.
@@ -101,10 +91,22 @@ export function createField(options: FieldOptions) {
           handlers.onchange?.(event);
         },
         oninput: (event: Event & { currentTarget: EventTarget & Target }) => {
-          if (touched) validate();
+          if (touched) {
+            validate();
+          }
           handlers.oninput?.(event);
         },
       };
     },
+    get ids() {
+      return ids;
+    },
+    get invalid() {
+      return invalid;
+    },
+    get issues() {
+      return issues;
+    },
+    touch,
   };
 }

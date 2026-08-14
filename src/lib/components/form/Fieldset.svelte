@@ -1,11 +1,13 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
-  import { type Snippet, untrack } from "svelte";
+  import { untrack } from "svelte";
+  import type { Snippet } from "svelte";
   import type { HTMLFieldsetAttributes } from "svelte/elements";
 
   import { setTouchSink } from "./context";
-  import { asField, createField, type FieldController } from "./field.svelte";
-  import FieldMessages from "./FieldMessages.svelte";
+  import FieldMessages from "./field-messages.svelte";
+  import { asField, createField } from "./field.svelte";
+  import type { FieldController } from "./field.svelte";
 
   type Props = Omit<HTMLFieldsetAttributes, "name"> & {
     legend: string;
@@ -23,9 +25,9 @@
   const control =
     untrack(() => provided) ??
     createField({
-      issues: () => (field ? asField(field).issues() : undefined),
-      id: () => rest.id ?? undefined,
       description: () => description,
+      id: () => rest.id ?? undefined,
+      issues: () => (field ? asField(field).issues() : undefined),
     });
 
   // Touching anything inside marks the fieldset touched too, so container-level issues can surface.

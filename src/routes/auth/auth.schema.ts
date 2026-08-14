@@ -18,6 +18,6 @@ export const signInEmailSchema = v.object({
 
 export const signUpEmailSchema = v.object({
   email: emailSchema,
-  password: passwordSchema,
   name: v.pipe(v.string("Name is required"), v.trim(), v.minLength(1, "Name is required")),
+  password: passwordSchema,
 });

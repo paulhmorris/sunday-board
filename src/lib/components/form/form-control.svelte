@@ -18,14 +18,14 @@
   const ids = $derived(createControlIds(id));
 
   setControlContext({
-    get id() {
-      return ids.id;
-    },
     get descriptionId() {
       return ids.descriptionId;
     },
     get errorId() {
       return ids.errorId;
+    },
+    get id() {
+      return ids.id;
     },
   });
 </script>

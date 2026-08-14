@@ -29,6 +29,23 @@ npm run dev
 npm run dev -- --open
 ```
 
+## Testing
+
+```sh
+npm run test        # everything, once
+npm run test:unit   # watch mode
+```
+
+Two vitest projects run: `client` (component tests in the browser, `*.svelte.test.ts`)
+and `server` (node, every other `*.test.ts`). Both need a populated `.env` — some
+modules read `$app/env` at import time — but nothing else: no database is provisioned
+or reached, since server tests inject a mocked `PrismaClient` via `mockDb()` from
+`$lib/server/testing/mock-db`.
+
+Server-side behaviour is tested at the service seam. Read
+[ADR 0001](docs/adr/0001-service-layer-and-test-seam.md) before adding a service or a
+test for one; `src/lib/server/services/account.ts` and its test are the reference pair.
+
 ## Building
 
 To create a production version of your app:

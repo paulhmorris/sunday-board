@@ -1,12 +1,20 @@
 import { building, dev } from "$app/env";
+import { Logger } from "$lib/logger";
 import { auth } from "$lib/server/auth";
 import * as Sentry from "@sentry/sveltekit";
-import type { Handle, RequestEvent } from "@sveltejs/kit";
+import type { Handle, HandleServerError } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { svelteKitHandler } from "better-auth/svelte-kit";
 
-function errorHandler({ error, event }: { error: unknown; event: RequestEvent }) {
-  console.error("An error occurred on the server:", error, event);
+const logger = new Logger("Server");
+
+function errorHandler({ error, event, status }: Parameters<HandleServerError>[0]): App.Error {
+  // `handleErrorWithSentry` skips `captureException` for 4xx, so `lastEventId()` would
+  // otherwise hand back a stale id from an earlier error.
+  const errorId = (status >= 500 ? Sentry.lastEventId() : undefined) ?? crypto.randomUUID();
+  logger.error("An error occurred on the server:", { error, errorId, event });
+
+  return { errorId, message: "An error occurred on the server." };
 }
 
 export const handleError = Sentry.handleErrorWithSentry(errorHandler);
@@ -33,7 +41,7 @@ const authHandler: Handle = async ({ event, resolve }) => {
     event.locals.user = session.user;
   }
 
-  return svelteKitHandler({ event, resolve, auth, building });
+  return svelteKitHandler({ auth, building, event, resolve });
 };
 
 export const handle = dev
@@ -41,8 +49,14 @@ export const handle = dev
   : sequence(Sentry.sentryHandle(), authHandler);
 
 function statusColor(status: number) {
-  if (status >= 500) return "\x1b[31m"; // red
-  if (status >= 400) return "\x1b[33m"; // yellow
-  if (status >= 300) return "\x1b[36m"; // cyan
+  if (status >= 500) {
+    return "\x1b[31m";
+  } // red
+  if (status >= 400) {
+    return "\x1b[33m";
+  } // yellow
+  if (status >= 300) {
+    return "\x1b[36m";
+  } // cyan
   return "\x1b[32m"; // green
 }

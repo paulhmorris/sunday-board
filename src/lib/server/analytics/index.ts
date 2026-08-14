@@ -1,7 +1,8 @@
 import { dev } from "$app/env";
 import { POSTHOG_HOST, POSTHOG_PROJECT_TOKEN } from "$app/env/public";
 import type { AnalyticsEvent } from "$lib/analytics/events";
-import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
+import { NoopAnalyticsProvider } from "$lib/analytics/types";
+import type { AnalyticsProperties, AnalyticsProvider } from "$lib/analytics/types";
 import { PostHog } from "posthog-node";
 
 class PostHogServerProvider implements AnalyticsProvider {

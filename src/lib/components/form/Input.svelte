@@ -3,8 +3,8 @@
   import type { RemoteFormField, RemoteFormFieldType } from "@sveltejs/kit";
   import type { HTMLInputAttributes } from "svelte/elements";
 
+  import FieldMessages from "./field-messages.svelte";
   import { asField, createField } from "./field.svelte";
-  import FieldMessages from "./FieldMessages.svelte";
 
   type Props = Omit<HTMLInputAttributes, "name" | "type" | "value"> & {
     field: RemoteFormField<Value>;
@@ -29,9 +29,9 @@
   }: Props = $props();
 
   const control = createField({
-    issues: () => field.issues(),
-    id: () => rest.id ?? undefined,
     description: () => description,
+    id: () => rest.id ?? undefined,
+    issues: () => field.issues(),
   });
 </script>
 

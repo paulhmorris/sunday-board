@@ -4,8 +4,8 @@
   import type { RemoteFormField } from "@sveltejs/kit";
   import type { HTMLInputAttributes } from "svelte/elements";
 
+  import FieldMessages from "./field-messages.svelte";
   import { asField, createField } from "./field.svelte";
-  import FieldMessages from "./FieldMessages.svelte";
 
   type Props = Omit<HTMLInputAttributes, "name" | "type" | "value" | "files" | "multiple"> & {
     description?: string;
@@ -14,15 +14,17 @@
   let { field, multiple = false, description, onblur, onchange, oninput, class: className, ...rest }: Props = $props();
 
   const control = createField({
-    issues: () => asField(field).issues(),
-    id: () => rest.id ?? undefined,
     description: () => description,
+    id: () => rest.id ?? undefined,
+    issues: () => asField(field).issues(),
   });
 
   // A file only survives a submission without JavaScript if the form is multipart-encoded, and the
   // form can't infer that from its children during SSR — so say so loudly in dev.
   function warnUnlessMultipart(node: HTMLInputElement) {
-    if (!dev || !node.form || node.form.enctype === "multipart/form-data") return;
+    if (!dev || !node.form || node.form.enctype === "multipart/form-data") {
+      return;
+    }
 
     console.warn(
       `<FileInput /> for "${node.name}" is inside a form without enctype="multipart/form-data". ` +
