@@ -2,7 +2,8 @@
   import type { ButtonVariant } from "$lib/components/ui/button/index.js";
   import { cn } from "$lib/utils.js";
   import type { WithoutChildrenOrChild } from "$lib/utils.types.js";
-  import { isEqualMonth, type DateValue } from "@internationalized/date";
+  import { isEqualMonth } from "@internationalized/date";
+  import type { DateValue } from "@internationalized/date";
   import { RangeCalendar as RangeCalendarPrimitive } from "bits-ui";
   import type { Snippet } from "svelte";
 
@@ -35,8 +36,12 @@
   } = $props();
 
   const monthFormat = $derived.by(() => {
-    if (monthFormatProp) return monthFormatProp;
-    if (captionLayout.startsWith("dropdown")) return "short";
+    if (monthFormatProp) {
+      return monthFormatProp;
+    }
+    if (captionLayout.startsWith("dropdown")) {
+      return "short";
+    }
     return "long";
   });
 </script>
@@ -48,7 +53,7 @@
   {weekdayFormat}
   {disableDaysOutsideMonth}
   class={cn(
-    "group/calendar bg-background p-3 p-3 [--cell-radius:var(--radius-2xl)] [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+    "group/calendar bg-background p-3  [--cell-radius:var(--radius-2xl)] [--cell-size:--spacing(8)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
     className,
   )}
   {locale}

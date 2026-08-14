@@ -1,64 +1,49 @@
-import { HOSTNAME, POSTHOG_HOST, POSTHOG_PROJECT_TOKEN } from "$app/env/public";
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
+import { POSTHOG_PROJECT_TOKEN } from "$app/env/public";
 import type { AnalyticsEvent } from "$lib/analytics/events";
-import { type AnalyticsProperties, type AnalyticsProvider, NoopAnalyticsProvider } from "$lib/analytics/types";
-import { Sentry } from "$lib/sentry";
-import {
-  AnalyticsExtensions,
-  FeatureFlagsExtensions,
-  SessionReplayExtensions,
-} from "posthog-js/dist/extension-bundles";
-import posthog from "posthog-js/dist/module.slim";
-
-class PostHogBrowserProvider implements AnalyticsProvider {
-  trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperties) {
-    posthog.capture(event, properties);
-  }
-
-  identify(userId: string, traits?: AnalyticsProperties) {
-    posthog.identify(userId, traits);
-  }
-
-  reset() {
-    posthog.reset();
-  }
-}
+import type { AnalyticsProperties, AnalyticsProvider } from "$lib/analytics/types";
+import { NoopAnalyticsProvider } from "$lib/analytics/types";
 
 let provider: AnalyticsProvider = new NoopAnalyticsProvider();
 
-export function initAnalytics() {
-  if (!dev && POSTHOG_PROJECT_TOKEN) {
-    posthog.init(POSTHOG_PROJECT_TOKEN, {
-      api_host: POSTHOG_HOST,
-      defaults: "2026-06-25",
-      tracing_headers: [HOSTNAME],
-      // SvelteKit's client router navigates via history.pushState, which this captures.
-      capture_pageview: "history_change",
-      capture_pageleave: true,
-      __extensionClasses: {
-        ...AnalyticsExtensions,
-        ...FeatureFlagsExtensions,
-        ...SessionReplayExtensions,
-      },
-    });
-    provider = new PostHogBrowserProvider();
+/**
+ * `$lib/analytics/posthog` is imported dynamically so posthog-js and its extension bundles
+ * (session replay, feature flags) only enter the bundle when analytics actually runs —
+ * a static import dragged them into every dev build, including SSR-only requests.
+ */
+async function initAnalytics() {
+  if (dev || !POSTHOG_PROJECT_TOKEN) {
+    return;
   }
+
+  const { createPostHogProvider } = await import("$lib/analytics/posthog");
+  provider = createPostHogProvider(POSTHOG_PROJECT_TOKEN);
 }
 
-export function trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperties) {
+function trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperties) {
   provider.trackEvent(event, properties);
+}
+
+async function setSentryUser(user: ({ id: string } & AnalyticsProperties) | null) {
+  if (dev) {
+    return;
+  }
+  const { Sentry } = await import("$lib/sentry");
+  Sentry.setUser(user);
 }
 
 /**
  * Call at the point a user signs in or signs up — PostHog's guidance is to identify at the
  * auth transition, which also binds the browser's existing anonymous distinct_id to them.
  */
-export function identifyUser(userId: string, traits?: AnalyticsProperties) {
+async function identifyUser(userId: string, traits?: AnalyticsProperties) {
   provider.identify(userId, traits);
-  Sentry.setUser({ id: userId, ...traits });
+  await setSentryUser({ id: userId, ...traits });
 }
 
-export function resetAnalytics() {
+async function resetAnalytics() {
   provider.reset();
-  Sentry.setUser(null);
+  await setSentryUser(null);
 }
+
+export { identifyUser, initAnalytics, resetAnalytics, trackEvent };

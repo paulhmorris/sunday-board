@@ -1,12 +1,13 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
   import type { RemoteFormField } from "@sveltejs/kit";
-  import { type Snippet, untrack } from "svelte";
+  import { untrack } from "svelte";
+  import type { Snippet } from "svelte";
   import type { HTMLInputAttributes } from "svelte/elements";
 
   import { createControlIds, getFieldGroupContext } from "./context";
+  import FieldMessages from "./field-messages.svelte";
   import { asField, createField } from "./field.svelte";
-  import FieldMessages from "./FieldMessages.svelte";
 
   type Props = Omit<HTMLInputAttributes, "name" | "type" | "value" | "checked"> & {
     children: Snippet;
@@ -51,9 +52,9 @@
   const control =
     group?.control ??
     createField({
-      issues: () => asField(field).issues(),
-      id: () => rest.id ?? undefined,
       description: () => description,
+      id: () => rest.id ?? undefined,
+      issues: () => asField(field).issues(),
     });
 
   const ids = $derived(group ? createControlIds(rest.id ?? undefined) : control.ids);

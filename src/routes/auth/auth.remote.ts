@@ -15,23 +15,26 @@ const logger = new Logger("Auth");
 /** Returns the user so the client can identify them too — see `identifyUser` in `$lib/analytics`. */
 export const signInEmail = form(signInEmailSchema, async (data) => {
   await delay(1000);
+  logger.debug("Attempting sign in with email", { email: data.email });
   try {
     const { user } = await auth.api.signInEmail({
       body: { ...data, callbackURL: "/auth/verification-success" },
     });
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedIn, { distinctId: user.id });
+    logger.debug("Sign in successful", { email: user.email });
     return {
       user: {
-        id: user.id,
         email: user.email,
+        id: user.id,
         name: user.name,
       },
     };
   } catch (error) {
+    logger.debug("Sign in failed", { error });
     if (isAPIError(error)) {
       logger.warn("Sign in failed", { message: error.message });
-      invalid();
+      invalid("Invalid email or password");
     }
     Sentry.captureException(error);
     invalid("Unexpected error");
@@ -49,8 +52,8 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
     trackEvent(EVENTS.signedUp, { distinctId: user.id });
     return {
       user: {
-        id: user.id,
         email: user.email,
+        id: user.id,
         name: user.name,
       },
     };

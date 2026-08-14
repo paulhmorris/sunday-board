@@ -3,7 +3,8 @@
   import type { Snippet } from "svelte";
   import type { HTMLFormAttributes } from "svelte/elements";
 
-  import { type AnyRemoteForm, setFormContext } from "./context";
+  import { setFormContext } from "./context";
+  import type { AnyRemoteForm } from "./context";
 
   type Props = Omit<HTMLFormAttributes, "method" | "action"> & {
     form: AnyRemoteForm;
@@ -32,21 +33,12 @@
 
 <form {...attributes} novalidate {...rest}>
   {#if formIssues.length > 0}
-    <div role="alert">
+    <div role="alert" class="bg-destructive/10 border-destructive rounded-2xl p-2">
       {#each formIssues as issue (issue.message)}
-        <p class="error">{issue.message}</p>
+        <p class="text-destructive text-sm font-medium">{issue.message}</p>
       {/each}
     </div>
   {/if}
 
   {@render children()}
 </form>
-
-<style>
-  .error {
-    font-size: var(--text-sm);
-    line-height: var(--text-sm--line-height);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-destructive);
-  }
-</style>

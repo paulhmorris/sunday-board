@@ -4,12 +4,12 @@ import { describe, expect, it } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { page } from "vitest/browser";
 
-import Checkbox from "./Checkbox.svelte";
-import CheckboxGroup from "./CheckboxGroup.svelte";
-import FileInput from "./FileInput.svelte";
-import RadioGroup from "./RadioGroup.svelte";
-import Select from "./Select.svelte";
-import Textarea from "./Textarea.svelte";
+import CheckboxGroup from "./checkbox-group.svelte";
+import Checkbox from "./checkbox.svelte";
+import FileInput from "./file-input.svelte";
+import RadioGroup from "./radio-group.svelte";
+import Select from "./select.svelte";
+import Textarea from "./textarea.svelte";
 
 /** The field components only use `as()` and `issues()`, so a stub is enough to render them. */
 function stubField(messages: string[] = []) {
@@ -22,9 +22,9 @@ function stubField(messages: string[] = []) {
       // Kit's `as()` exposes `value` as a getter that is undefined until the field has a value
       ...(type === "select" || type === "select multiple" ? { value: undefined } : {}),
       ...(type === "select multiple" ? { multiple: true } : {}),
-      ...(type === "file multiple" ? { type: "file", multiple: true } : {}),
+      ...(type === "file multiple" ? { multiple: true, type: "file" } : {}),
       ...(type === "file" ? { type: "file" } : {}),
-      ...(type === "checkbox" || type === "radio" ? { type, value, checked: false } : {}),
+      ...(type === "checkbox" || type === "radio" ? { checked: false, type, value } : {}),
     }),
     issues: () => (messages.length > 0 ? messages.map((message) => ({ message, path: ["answer"] })) : undefined),
   } as unknown as RemoteFormField<never>;
@@ -36,7 +36,7 @@ const label = snippet(`<span>Subscribe</span>`);
 
 describe("field components", () => {
   it("links a description to the control", async () => {
-    render(Select, { field: stubField(), children: options, description: "Pick your instrument" });
+    render(Select, { children: options, description: "Pick your instrument", field: stubField() });
 
     const select = page.getByRole("combobox");
     const description = page.getByText("Pick your instrument");
@@ -46,7 +46,7 @@ describe("field components", () => {
   });
 
   it("hides issues until the control is touched, then links them", async () => {
-    render(Select, { field: stubField(["Required"]), children: options });
+    render(Select, { children: options, field: stubField(["Required"]) });
 
     const select = page.getByRole("combobox");
     await expect.element(select).not.toHaveAttribute("aria-invalid");
@@ -62,7 +62,7 @@ describe("field components", () => {
   });
 
   it("renders a multi-select as an array field", async () => {
-    render(Select, { field: stubField(), children: options, multiple: true });
+    render(Select, { children: options, field: stubField(), multiple: true });
 
     const select = page.getByRole("listbox");
     await expect.element(select).toHaveAttribute("name", "answer[]");
@@ -71,11 +71,10 @@ describe("field components", () => {
 
   it("keeps a placeholder option selected when the field has no value yet", async () => {
     render(Select, {
-      field: stubField(["Required"]),
-      // A raw snippet has to render a single element, hence the optgroup wrapper
       children: snippet(
         `<optgroup label="Instruments"><option value="">Choose one</option><option value="drums">Drums</option></optgroup>`,
       ),
+      field: stubField(["Required"]),
     });
 
     const select = page.getByRole("combobox").element() as HTMLSelectElement;
@@ -96,7 +95,7 @@ describe("field components", () => {
   });
 
   it("renders a standalone checkbox with its own label and messages", async () => {
-    render(Checkbox, { field: stubField(["Please accept"]), children: label });
+    render(Checkbox, { children: label, field: stubField(["Please accept"]) });
 
     const checkbox = page.getByRole("checkbox");
     await expect.element(checkbox).toHaveAttribute("name", "answer");
@@ -108,9 +107,9 @@ describe("field components", () => {
 
   it("renders grouped checkboxes that share the group's issues", async () => {
     render(CheckboxGroup, {
+      children: snippet("<span>choices</span>"),
       field: stubField(["Pick at least one"]),
       legend: "Languages",
-      children: snippet("<span>choices</span>"),
     });
 
     await expect.element(page.getByRole("group", { name: "Languages" })).toBeInTheDocument();
@@ -118,7 +117,7 @@ describe("field components", () => {
   });
 
   it("renders a radio group as a fieldset", async () => {
-    render(RadioGroup, { field: stubField(), legend: "Operating system", children: snippet("<span>choices</span>") });
+    render(RadioGroup, { children: snippet("<span>choices</span>"), field: stubField(), legend: "Operating system" });
 
     await expect.element(page.getByRole("group", { name: "Operating system" })).toBeInTheDocument();
   });

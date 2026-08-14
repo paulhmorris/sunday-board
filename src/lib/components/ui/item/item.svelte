@@ -1,23 +1,24 @@
 <script lang="ts" module>
-  import { tv, type VariantProps } from "tailwind-variants";
+  import { tv } from "tailwind-variants";
+  import type { VariantProps } from "tailwind-variants";
 
   export const itemVariants = tv({
     base: "rounded-2xl border text-sm [a]:hover:bg-muted group/item flex w-full flex-wrap items-center transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors",
+    defaultVariants: {
+      size: "default",
+      variant: "default",
+    },
     variants: {
-      variant: {
-        default: "border-transparent",
-        outline: "border-border",
-        muted: "border-transparent bg-muted/50",
-      },
       size: {
         default: "gap-3.5 px-4 py-3.5",
         sm: "gap-3.5 px-3.5 py-3",
         xs: "gap-2 px-2.5 py-2 in-data-[slot=dropdown-menu-content]:p-0",
       },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: {
+        default: "border-transparent",
+        muted: "border-transparent bg-muted/50",
+        outline: "border-border",
+      },
     },
   });
 
@@ -45,10 +46,10 @@
   } = $props();
 
   const mergedProps = $derived({
-    class: cn(itemVariants({ variant, size }), className),
+    class: cn(itemVariants({ size, variant }), className),
+    "data-size": size,
     "data-slot": "item",
     "data-variant": variant,
-    "data-size": size,
     ...restProps,
   });
 </script>

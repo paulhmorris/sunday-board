@@ -5,8 +5,8 @@
   import type { Snippet } from "svelte";
   import type { HTMLSelectAttributes } from "svelte/elements";
 
+  import FieldMessages from "./field-messages.svelte";
   import { asField, createField } from "./field.svelte";
-  import FieldMessages from "./FieldMessages.svelte";
 
   type Props = Omit<HTMLSelectAttributes, "name" | "multiple" | "value"> & {
     /** The `<option>` elements */
@@ -27,9 +27,9 @@
   }: Props = $props();
 
   const control = createField({
-    issues: () => asField(field).issues(),
-    id: () => rest.id ?? undefined,
     description: () => description,
+    id: () => rest.id ?? undefined,
+    issues: () => asField(field).issues(),
   });
 
   function attributes() {

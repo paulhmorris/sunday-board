@@ -17,12 +17,12 @@ export function requireUser(locals: App.Locals) {
  */
 export function requireGuest(
   locals: App.Locals,
-  opts: { status: Parameters<typeof redirect>[0]; location: string } = { status: 302, location: "/" },
+  opts: { status: Parameters<typeof redirect>[0]; location: string } = { location: "/", status: 302 },
 ) {
   if (locals.user) {
     logger.debug("User is authenticated, redirecting", {
-      status: opts.status,
       location: opts.location,
+      status: opts.status,
       userId: locals.user.id,
     });
     redirect(opts.status, opts.location);

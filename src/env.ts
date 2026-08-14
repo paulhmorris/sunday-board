@@ -6,47 +6,62 @@ const url = v.pipe(v.string(), v.url());
 
 export const variables = defineEnvVars({
   // Private
-  DIRECT_URL: { schema: url, description: "Non-pooled Postgres connection string, used for migrations." },
-  DATABASE_URL: { schema: url, description: "Pooled Postgres connection string, used at runtime." },
+  DIRECT_URL: { description: "Non-pooled Postgres connection string, used for migrations.", schema: url },
+  DATABASE_URL: { description: "Pooled Postgres connection string, used at runtime.", schema: url },
 
-  SENTRY_ORG: { schema: nonEmptyString, description: "Sentry organization slug, used for sourcemap uploads." },
-  SENTRY_PROJECT: { schema: nonEmptyString, description: "Sentry project slug, used for sourcemap uploads." },
-  SENTRY_AUTH_TOKEN: {
+  SENTRY_ORG: {
+    description: "Sentry organization slug, used for sourcemap uploads.",
     schema: nonEmptyString,
+    static: true,
+  },
+  SENTRY_PROJECT: {
+    description: "Sentry project slug, used for sourcemap uploads.",
+    schema: nonEmptyString,
+    static: true,
+  },
+  SENTRY_AUTH_TOKEN: {
     description: "Sentry auth token for uploading sourcemaps at build time.",
+    schema: nonEmptyString,
+    static: true,
   },
 
   BETTER_AUTH_SECRET: {
-    schema: nonEmptyString,
     description: "Secret key used to sign and encrypt Better Auth sessions and tokens.",
+    schema: nonEmptyString,
   },
 
   // Public
-  HOSTNAME: { public: true, schema: url, description: "Hostname of the deployment." },
+  HOSTNAME: { description: "Hostname of the deployment.", public: true, schema: nonEmptyString },
   BETTER_AUTH_URL: {
+    description: "Base URL of the app, used by Better Auth for callbacks and redirects.",
     public: true,
     schema: url,
-    description: "Base URL of the app, used by Better Auth for callbacks and redirects.",
+    static: true,
   },
 
-  SENTRY_DSN: { public: true, schema: url, description: "Sentry DSN for error reporting." },
-  SENTRY_ENVIRONMENT: {
+  SENTRY_DSN: {
+    description: "Sentry DSN for error reporting.",
     public: true,
+    schema: url,
     static: true,
-    schema: nonEmptyString,
+  },
+  SENTRY_ENVIRONMENT: {
     description: "Environment name reported to client-side Sentry.",
+    public: true,
+    schema: nonEmptyString,
+    static: true,
   },
 
   POSTHOG_PROJECT_TOKEN: {
-    public: true,
-    static: true,
-    schema: url,
     description: "PostHog ingestion host used by the client SDK.",
+    public: true,
+    schema: nonEmptyString,
+    static: true,
   },
   POSTHOG_HOST: {
-    public: true,
-    static: true,
-    schema: url,
     description: "PostHog ingestion host used by the SDK.",
+    public: true,
+    schema: url,
+    static: true,
   },
 });

@@ -5,12 +5,12 @@
 
   import { setFieldGroupContext } from "./context";
   import { asField, createField } from "./field.svelte";
-  import Fieldset from "./Fieldset.svelte";
+  import Fieldset from "./fieldset.svelte";
 
   type Props = Omit<HTMLFieldsetAttributes, "name"> & {
-    field: RemoteFormField<string>;
+    /** An array field — each `<Checkbox value="..." />` inside contributes one entry */
+    field: RemoteFormField<string[]>;
     legend: string;
-    /** The `<Radio />` buttons */
     children: Snippet;
     description?: string;
   };
@@ -18,16 +18,16 @@
   let { field, legend, children, description, ...rest }: Props = $props();
 
   const control = createField({
-    issues: () => asField(field).issues(),
-    id: () => rest.id ?? undefined,
     description: () => description,
+    id: () => rest.id ?? undefined,
+    issues: () => asField(field).issues(),
   });
 
   setFieldGroupContext({
+    control,
     get field() {
       return asField(field);
     },
-    control,
   });
 </script>
 

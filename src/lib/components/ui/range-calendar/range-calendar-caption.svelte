@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { DateFormatter, getLocalTimeZone, type DateValue } from "@internationalized/date";
+  import { DateFormatter, getLocalTimeZone } from "@internationalized/date";
+  import type { DateValue } from "@internationalized/date";
   import type { ComponentProps } from "svelte";
 
   import RangeCalendarMonthSelect from "./range-calendar-month-select.svelte";
@@ -30,13 +31,17 @@
 
   function formatYear(date: DateValue) {
     const dateObj = date.toDate(getLocalTimeZone());
-    if (typeof yearFormat === "function") return yearFormat(dateObj.getFullYear());
+    if (typeof yearFormat === "function") {
+      return yearFormat(dateObj.getFullYear());
+    }
     return new DateFormatter(locale, { year: yearFormat }).format(dateObj);
   }
 
   function formatMonth(date: DateValue) {
     const dateObj = date.toDate(getLocalTimeZone());
-    if (typeof monthFormat === "function") return monthFormat(dateObj.getMonth() + 1);
+    if (typeof monthFormat === "function") {
+      return monthFormat(dateObj.getMonth() + 1);
+    }
     return new DateFormatter(locale, { month: monthFormat }).format(dateObj);
   }
 </script>
