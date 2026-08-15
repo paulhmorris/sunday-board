@@ -1,7 +1,9 @@
 model RoleTag {
   id        Int       @id @default(autoincrement())
   slug      String    @unique
-  name      String
-  sortOrder Int
+  name      String    @unique
+  sortOrder Int       @unique
   retiredAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 }

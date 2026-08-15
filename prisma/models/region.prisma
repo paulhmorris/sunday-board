@@ -2,6 +2,8 @@ model Region {
   id        Int       @id @default(autoincrement())
   slug      String    @unique
   name      String    @unique
-  sortOrder Int
+  sortOrder Int       @unique
   retiredAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 }
