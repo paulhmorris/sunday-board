@@ -16,7 +16,7 @@
     "prepare": "husky && (svelte-kit sync || echo '')",
     "test:unit": "vitest",
     "test": "npm run test:unit -- --run",
-    "db:push": "prisma push",
+    "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate",
     "db:seed": "prisma db seed",
