@@ -19,7 +19,9 @@ reads a database.
   connection pool for the process, and threading it through every call site bought
   a seam we get from the module boundary instead.
 - Nothing ambient: services never call `getRequestEvent()`, never read `$env`,
-  never import from `$app/*`. **The current time is a parameter**, not
+  never import from `$app/*`. `$lib/server/db` is the one exception, and it reads
+  `$app/env/private` itself — which is why the mock below is what makes a service
+  loadable under test at all, not merely convenient. **The current time is a parameter**, not
   `new Date()` inside the function — the Founding Member window and code expiry
   are boundary rules that must be callable at a chosen instant.
 - Expected failures come back as a discriminated `Result` from

@@ -96,7 +96,10 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
   foreign key into the auth schema.
 - **PK/FK convention:** `id` is an autoincrement integer for internal joins.
   Anything referenced in a URL or form action also gets a unique, indexed `uuid`
-  column so internal ids never leak.
+  column so internal ids never leak. Seeded lookup tables (`Region`, `RoleTag`,
+  `StyleTag`) are the deliberate exception: their public handle is `slug`, which
+  is already unique, indexed, and reveals nothing a picker doesn't render anyway.
+  A `uuid` there would be a second opaque key with no reader.
 - **Boolean-as-timestamp convention:** a field that is conceptually "did this
   happen" is a nullable `DateTime` (present = true, `null` = false) rather than a
   boolean — free "when" for later. A field the user toggles back and forth

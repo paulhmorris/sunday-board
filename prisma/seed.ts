@@ -32,28 +32,28 @@ function slugify(name: string) {
     .replace(/^-|-$/g, "");
 }
 
-interface Display {
-  name: string;
-  sortOrder: number;
-}
-
 interface LookupDelegate {
-  upsert(args: { create: Display & { slug: string }; update: Display; where: { slug: string } }): Promise<unknown>;
+  upsert(args: {
+    create: { name: string; slug: string; sortOrder: number };
+    update: Record<string, never>;
+    where: { slug: string };
+  }): Promise<unknown>;
 }
 
 /**
- * Upserts on `slug`, so re-running only reconciles wording and order. `retiredAt` is never in the
- * payload: a value the operator retired stays retired across every later seed run.
- *
- * `sortOrder` is gapped by 10 so an operator can slot a new value between two existing ones
- * without renumbering the rest.
+ * Creates a row only where its slug is absent. The database is authoritative once seeded — this is
+ * the taxonomy the operator edits without a deploy — so a rewording, reorder, or retirement they
+ * made survives every later run. `sortOrder` gaps by 10 to leave room to slot a value between two.
  */
 function seedLookup(delegate: LookupDelegate, names: string[]) {
   return Promise.all(
     names.map((name, index) => {
-      const display = { name, sortOrder: (index + 1) * 10 };
       const slug = slugify(name);
-      return delegate.upsert({ create: { ...display, slug }, update: display, where: { slug } });
+      return delegate.upsert({
+        create: { name, slug, sortOrder: (index + 1) * 10 },
+        update: {},
+        where: { slug },
+      });
     }),
   );
 }
