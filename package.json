@@ -19,6 +19,7 @@
     "db:push": "prisma push",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate",
+    "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "auth:schema": "better-auth generate --config src/lib/server/auth.ts --output prisma/auth.prisma --yes"
   },
