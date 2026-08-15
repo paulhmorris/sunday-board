@@ -34,7 +34,8 @@ export default defineConfig(({ mode }) => ({
       typescript: {
         config: (config) => ({
           ...config,
-          include: [...config.include, "prisma.config.ts", "vite.config.ts"],
+          // Relative to `.svelte-kit/`, where the generated tsconfig lives.
+          include: [...config.include, "../prisma.config.ts", "../prisma/seed.ts"],
         }),
       },
     }),
@@ -64,6 +65,7 @@ export default defineConfig(({ mode }) => ({
           exclude: ["src/**/*.svelte.{test,spec}.{js,ts}"],
           include: ["src/**/*.{test,spec}.{js,ts}"],
           name: "server",
+          setupFiles: ["./src/lib/server/testing/setup.ts"],
         },
       },
     ],

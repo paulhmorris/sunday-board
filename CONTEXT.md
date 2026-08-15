@@ -13,7 +13,7 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
 - **Church** — an account that posts Services and reviews applicants. Has name,
   city, a single Region, and a verification status.
 - **Musician** — an account that browses Services, applies to Role Slots, and
-  manages its own applications. Holds one or more roles from a fixed taxonomy.
+  manages its own applications. Holds one or more Role Tags.
 - **Region** — a lookup-table value (not hardcoded, no geocoding, no radius
   search). "North Texas" to start. A Musician may serve several; a Church has one.
 - **Service** — a posting owned by a Church, containing one or more Role Slots.
@@ -23,6 +23,13 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
 - **Role Slot** — exactly one seat within a Service (e.g. "Drummer"), carrying
   its own pay type and exact amount, status, and applicants. A Service is Filled
   when every Role Slot is filled. Avoid "position", "role" alone, "seat".
+- **Role Tag** — a seeded lookup value naming what someone plays or does
+  ("Drums", "Audio Engineer"). A Musician holds several; a Role Slot names one.
+  The model is `RoleTag`, never `Role` — bare "role" is reserved above, and
+  `User.role` is better-auth's admin flag.
+- **Style Tag** — a seeded lookup value naming a _musical_ tradition
+  ("Gospel", "Liturgical"). A musical descriptor only; the no-denomination rule
+  bars affiliation and theology, not the name of a tradition.
 - **Application** — a Musician applying to one specific Role Slot, never to a
   Service as a whole. Nine distinct statuses: Applied, Accepted, **Not
   Selected**, Service Filled, Service Canceled, Auto-Withdrawn, Withdrawn by
@@ -89,7 +96,10 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
   foreign key into the auth schema.
 - **PK/FK convention:** `id` is an autoincrement integer for internal joins.
   Anything referenced in a URL or form action also gets a unique, indexed `uuid`
-  column so internal ids never leak.
+  column so internal ids never leak. Seeded lookup tables (`Region`, `RoleTag`,
+  `StyleTag`) are the deliberate exception: their public handle is `slug`, which
+  is already unique, indexed, and reveals nothing a picker doesn't render anyway.
+  A `uuid` there would be a second opaque key with no reader.
 - **Boolean-as-timestamp convention:** a field that is conceptually "did this
   happen" is a nullable `DateTime` (present = true, `null` = false) rather than a
   boolean — free "when" for later. A field the user toggles back and forth
@@ -104,8 +114,9 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
 legal basics. No feed, no posting, no applying yet. Phase 2 adds the core
 marketplace loop; Phase 3 is everything depending on Phase 2 data.
 
-Current state: auth flow and form components built; no domain tables exist yet.
-The Phase 1 spec (#25) defines the schema to build.
+Current state: auth flow and form components built; the `Region` / `RoleTag` /
+`StyleTag` lookup tables exist and are seeded (`prisma db seed`), and nothing
+consumes them yet. The Phase 1 spec (#25) defines the rest of the schema.
 
 ## Source docs
 
@@ -124,6 +135,8 @@ The Phase 1 spec (#25) defines the schema to build.
 - **"Scrape and leave":** Churches mining the directory for contacts then
   leaving. Mitigated for now by hiding contact info until a Musician accepts.
 
-_Settled since: the role/style-tag taxonomy. `Role` and `StyleTag` are seeded
+_Settled since: the role/style-tag taxonomy. `RoleTag` and `StyleTag` are seeded
 lookup tables — never Postgres enums, never free text — carrying `slug`, `name`,
-`sortOrder`, and a nullable `retiredAt`. Seed lists are in the Phase 1 spec._
+`sortOrder`, and a nullable `retiredAt`. Seed lists are in the Phase 1 spec.
+The entity is `RoleTag`, not `Role`: the glossary already reserves bare "role",
+and `User.role` is better-auth's admin flag._

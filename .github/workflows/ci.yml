@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+# No token scopes by default; the one job below opts into exactly what it needs.
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint, check, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+
+    # `src/env.ts` validates these at build time, so the build cannot run without them. Every value
+    # below is a placeholder: nothing here connects to a database or reaches Sentry or PostHog, and
+    # no repository secret is exposed to pull request CI. SENTRY_AUTH_TOKEN is absent on purpose —
+    # setting one would make sentry-cli attempt a real source map upload from a PR build.
+    env:
+      HUSKY: "0"
+      DIRECT_URL: postgresql://ci:ci@127.0.0.1:5432/ci
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci
+      SENTRY_ORG: ci
+      SENTRY_PROJECT: ci
+      SENTRY_DSN: https://ci@o0.ingest.sentry.io/0
+      SENTRY_ENVIRONMENT: ci
+      BETTER_AUTH_SECRET: ci-placeholder-not-a-secret
+      BETTER_AUTH_URL: http://localhost:5173
+      HOSTNAME: ci.invalid
+      POSTHOG_PROJECT_TOKEN: phc_ci
+      POSTHOG_HOST: https://us.i.posthog.com
+
+    steps:
+      - name: Check out the pull request
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Leave no usable credential in .git/config for any later step to pick up.
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: package.json
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The client is gitignored, so nothing typechecks or builds until it exists.
+      - name: Generate the Prisma client
+        run: npm run db:generate
+
+      - name: Lint
+        run: npm run lint:check
+
+      - name: Svelte and type check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
