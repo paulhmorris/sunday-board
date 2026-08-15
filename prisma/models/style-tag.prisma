@@ -1,0 +1,7 @@
+model StyleTag {
+  id        Int       @id @default(autoincrement())
+  slug      String    @unique
+  name      String
+  sortOrder Int
+  retiredAt DateTime?
+}

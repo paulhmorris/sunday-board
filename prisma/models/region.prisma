@@ -1,0 +1,7 @@
+model Region {
+  id        Int       @id @default(autoincrement())
+  slug      String    @unique
+  name      String    @unique
+  sortOrder Int
+  retiredAt DateTime?
+}

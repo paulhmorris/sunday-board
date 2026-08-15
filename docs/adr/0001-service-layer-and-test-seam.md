@@ -5,16 +5,19 @@
 ## Decision
 
 Decision logic lives in services under `$lib/server/services/`, and those services
-are the only thing unit tested. Tests inject a mocked `PrismaClient`; no test
-provisions, migrates, or reads a database.
+are the only thing unit tested. Services import the `db` singleton directly; tests
+swap that one module for a mocked `PrismaClient`. No test provisions, migrates, or
+reads a database.
 
 ## Conventions
 
 - One file per domain area — `musician-profile.ts`, `verification.ts`,
   `admin-stats.ts` — with a colocated `*.test.ts`. `$lib/server/` is already
   server-only to SvelteKit, so no `.server` suffix.
-- Signature: `fn(db: PrismaClient, input: ParsedInput, actor?: Actor)`. Input
-  arrives already parsed by the caller's Valibot schema.
+- Signature: `fn(input: ParsedInput, actor?: Actor)`. Input arrives already parsed
+  by the caller's Valibot schema. The client is not a parameter — there is one
+  connection pool for the process, and threading it through every call site bought
+  a seam we get from the module boundary instead.
 - Nothing ambient: services never call `getRequestEvent()`, never read `$env`,
   never import from `$app/*`. **The current time is a parameter**, not
   `new Date()` inside the function — the Founding Member window and code expiry
@@ -64,10 +67,13 @@ testing, that is the signal its logic belongs in a service.
 
 ## Writing the tests
 
-Use `mockDb()` from `$lib/server/testing/mock-db`, which is
-[Prisma's dependency-injection mocking pattern](https://www.prisma.io/docs/orm/prisma-client/testing/unit-testing)
-on `vitest-mock-extended`. One mock per test; nothing is shared and no module of
-ours is mocked.
+`src/lib/server/testing/setup.ts` runs as the server project's `setupFiles`. It
+replaces `$lib/server/db` with a `mockDeep<PrismaClient>()` for every server test
+and resets it in a `beforeEach`, so a test file writes no `vi.mock` of its own and
+never leaks a stub into the next test. Import `mockDb` from
+`$lib/server/testing/mock-db` to stub a query — it is that same singleton, typed as
+the mock. `$lib/server/db` is the **only** module of ours that is mocked; mocking a
+second one is the signal that a service is reaching for something ambient.
 
 Assert **the value the service returned** and **the write it decided to
 perform**. Do not assert call ordering, incidental reads, or a call count —
