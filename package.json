@@ -45,7 +45,7 @@
     "@types/node": "^26",
     "@types/pg": "^8.21.0",
     "@vitest/browser-playwright": "^4.1.10",
-    "auth": "^1.6.26",
+    "auth": "^1.7.2",
     "better-auth": "^1.6.26",
     "bits-ui": "^2.18.1",
     "clsx": "^2.1.1",
