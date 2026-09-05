@@ -1,13 +1,11 @@
 import type { PrismaClient } from "$db/client.js";
-import { mockDeep } from "vitest-mock-extended";
+import { db } from "$lib/server/db";
 import type { DeepMockProxy } from "vitest-mock-extended";
 
 export type MockDb = DeepMockProxy<PrismaClient>;
 
 /**
- * A type-safe `PrismaClient` mock, per Prisma's dependency-injection testing pattern:
- * @see https://www.prisma.io/docs/orm/prisma-client/testing/unit-testing
+ * The `db` singleton, typed as the mock that `testing/setup.ts` swapped it for. Import this in a
+ * test to stub a query; the service under test imports the real module path and gets the same object.
  */
-export function mockDb(): MockDb {
-  return mockDeep<PrismaClient>();
-}
+export const mockDb = db as unknown as MockDb;
