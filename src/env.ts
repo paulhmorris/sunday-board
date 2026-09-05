@@ -19,11 +19,6 @@ export const variables = defineEnvVars({
     schema: nonEmptyString,
     static: true,
   },
-  /*
-   * SENTRY_AUTH_TOKEN is deliberately absent: sentry-cli reads it from the environment itself, so
-   * declaring it here only forces every build — CI included — to hold a credential it never uses.
-   * Without one the plugin warns and skips the upload.
-   */
 
   BETTER_AUTH_SECRET: {
     description: "Secret key used to sign and encrypt Better Auth sessions and tokens.",
