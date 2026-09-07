@@ -19,11 +19,6 @@ export const variables = defineEnvVars({
     schema: nonEmptyString,
     static: true,
   },
-  SENTRY_AUTH_TOKEN: {
-    description: "Sentry auth token for uploading sourcemaps at build time.",
-    schema: nonEmptyString,
-    static: true,
-  },
 
   BETTER_AUTH_SECRET: {
     description: "Secret key used to sign and encrypt Better Auth sessions and tokens.",
