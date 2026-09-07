@@ -25,6 +25,15 @@ export const variables = defineEnvVars({
     schema: nonEmptyString,
   },
 
+  RESEND_API_KEY: {
+    description: "Resend API key. Unset in development and test, where mail is captured in memory instead.",
+    schema: v.optional(nonEmptyString),
+  },
+  EMAIL_FROM: {
+    description: "Sender address for all outbound mail, on a domain verified in Resend.",
+    schema: nonEmptyString,
+  },
+
   // Public
   HOSTNAME: { description: "Hostname of the deployment.", public: true, schema: nonEmptyString },
   BETTER_AUTH_URL: {
