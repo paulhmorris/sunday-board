@@ -6,7 +6,7 @@ import {
   FeatureFlagsExtensions,
   SessionReplayExtensions,
 } from "posthog-js/dist/extension-bundles";
-import posthog from "posthog-js/dist/module.slim";
+import { posthog } from "posthog-js/dist/module.slim";
 
 class PostHogBrowserProvider implements AnalyticsProvider {
   trackEvent(event: AnalyticsEvent, properties?: AnalyticsProperties) {
