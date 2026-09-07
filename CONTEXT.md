@@ -87,6 +87,10 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
   generated into `prisma/auth.prisma` — do not hand-edit that file. Our own
   tables reference the auth user id as an opaque `userId` string, **not** a
   foreign key into the auth schema.
+- **Transactional email** goes through one seam, `sendEmail()` in `$lib/server/email`.
+  Resend is the vendor; without `RESEND_API_KEY` the in-memory transport captures
+  mail instead. Resend owns retention, delivery events, and bounce suppression —
+  we store none of it.
 - **PK/FK convention:** `id` is an autoincrement integer for internal joins.
   Anything referenced in a URL or form action also gets a unique, indexed `uuid`
   column so internal ids never leak.
