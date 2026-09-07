@@ -1,7 +1,23 @@
 import { ErrorReason } from "$lib/server/errors";
 import { mockDb } from "$lib/server/testing/mock-db";
 
-import { renameAccount } from "./account";
+import { emailIsTaken, renameAccount } from "./account";
+
+describe("emailIsTaken", () => {
+  it("reports an address that already has an account", async () => {
+    const db = mockDb();
+    db.user.count.mockResolvedValue(1);
+
+    await expect(emailIsTaken(db, { email: "ada@example.com" })).resolves.toBe(true);
+  });
+
+  it("reports an address that is free", async () => {
+    const db = mockDb();
+    db.user.count.mockResolvedValue(0);
+
+    await expect(emailIsTaken(db, { email: "ada@example.com" })).resolves.toBe(false);
+  });
+});
 
 describe("renameAccount", () => {
   it("writes the name the user submitted and returns it", async () => {

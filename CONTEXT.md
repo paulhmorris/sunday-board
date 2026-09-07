@@ -87,6 +87,14 @@ Use these terms exactly. Where a synonym is listed as avoided, don't drift to it
   generated into `prisma/auth.prisma` — do not hand-edit that file. Our own
   tables reference the auth user id as an opaque `userId` string, **not** a
   foreign key into the auth schema.
+- **Email verification is mandatory and behind no feature flag.** Better Auth's
+  email-OTP plugin owns code generation, expiry, single use and attempt limits;
+  `requireVerifiedUser` in `$lib/server/auth-guards` is the gate on every
+  signed-in surface. Resend throttling is ours (`$lib/server/rate-limit`),
+  because Better Auth only rate-limits its own HTTP handler and we call
+  `auth.api` directly. `createAuth` in `$lib/server/auth-config` takes the
+  database and the mail transport as arguments so the real configuration can be
+  exercised against in-memory versions of both.
 - **Transactional email** goes through one seam, `sendEmail()` in `$lib/server/email`.
   Resend is the vendor; without `RESEND_API_KEY` the in-memory transport captures
   mail instead. Resend owns retention, delivery events, and bounce suppression —

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import { identifyUser } from "$lib/analytics";
   import { Form, FormControl, Input, Label } from "$lib/components/form";
   import Button from "$lib/components/ui/button/button.svelte";
@@ -19,6 +20,7 @@
     if (user) {
       identifyUser(user.id, { email: user.email, name: user.name });
     }
+    await goto("/auth/verify-email");
   }
 </script>
 
@@ -34,7 +36,7 @@
 
       <FormControl>
         <Label>Email</Label>
-        <Input field={email} type="email" autocomplete="email" description="We'll send a verification link here" />
+        <Input field={email} type="email" autocomplete="email" description="We'll send a verification code here" />
       </FormControl>
 
       <FormControl>

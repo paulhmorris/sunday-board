@@ -1,7 +1,14 @@
+import { VERIFICATION_CODE_LENGTH } from "$lib/verification";
 import * as v from "valibot";
 
-// User.email
-const emailSchema = v.pipe(v.string("Email is required"), v.trim(), v.email("Please enter a valid email"));
+// User.email. Lowercased to match how Better Auth stores and looks addresses up, so our own
+// lookups — `emailIsTaken`, say — agree with its answer.
+const emailSchema = v.pipe(
+  v.string("Email is required"),
+  v.trim(),
+  v.toLowerCase(),
+  v.email("Please enter a valid email"),
+);
 
 const passwordSchema = v.pipe(
   v.string("Password is required"),
@@ -14,6 +21,19 @@ const passwordSchema = v.pipe(
 export const signInEmailSchema = v.object({
   email: emailSchema,
   password: v.pipe(v.string("Password is required"), v.nonEmpty("Password is required")),
+});
+
+export const verifyEmailSchema = v.object({
+  code: v.pipe(
+    v.string("Enter the code we emailed you"),
+    v.trim(),
+    v.length(VERIFICATION_CODE_LENGTH, `The code is ${VERIFICATION_CODE_LENGTH} digits`),
+    v.digits("The code is digits only"),
+  ),
+});
+
+export const changeEmailSchema = v.object({
+  email: emailSchema,
 });
 
 export const signUpEmailSchema = v.object({
