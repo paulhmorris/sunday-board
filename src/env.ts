@@ -28,19 +28,23 @@ export const variables = defineEnvVars({
   BETTER_AUTH_SECRET: {
     description: "Secret key used to sign and encrypt Better Auth sessions and tokens.",
     schema: nonEmptyString,
+    static: true,
   },
 
   RESEND_API_KEY: {
     description: "Resend API key. Unset in development and test, where mail is captured in memory instead.",
-    schema: v.optional(nonEmptyString),
-  },
-  EMAIL_FROM: {
-    description: "Sender address for all outbound mail, on a domain verified in Resend.",
     schema: nonEmptyString,
+    static: true,
   },
 
   // Public
   HOSTNAME: { description: "Hostname of the deployment.", public: true, schema: nonEmptyString },
+  EMAIL_FROM: {
+    description: "Sender address for all outbound mail, on a domain verified in Resend.",
+    schema: nonEmptyString,
+    public: true,
+    static: true,
+  },
   BETTER_AUTH_URL: {
     description: "Base URL of the app, used by Better Auth for callbacks and redirects.",
     public: true,

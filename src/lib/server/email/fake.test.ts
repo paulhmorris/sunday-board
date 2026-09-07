@@ -6,7 +6,7 @@ const message: EmailMessage = {
   idempotencyKey: "verify-email/token-1",
   subject: "Verify your email",
   text: "Hello",
-  to: "musician@example.com",
+  to: ["musician@example.com"],
 };
 
 describe("createFakeTransport", () => {

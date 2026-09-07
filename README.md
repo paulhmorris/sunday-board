@@ -51,13 +51,17 @@ test for one; `src/lib/server/services/account.ts` and its test are the referenc
 All outbound mail goes through one seam, `sendEmail()` in `$lib/server/email`, which picks a
 transport once at startup:
 
-- `RESEND_API_KEY` set → Resend, with `EMAIL_FROM` as the sender. That address must be on a
-  domain verified in Resend (DKIM, SPF, and DMARC records in place).
+- `RESEND_API_KEY` set → Resend via its official SDK, with `EMAIL_FROM` as the sender. That
+  address must be on a domain verified in Resend (DKIM, SPF, and DMARC records in place).
 - unset → the in-memory transport in `$lib/server/email/fake`, exported as `fakeTransport` so a
   test can read its outbox. This is what local dev gets; outside development a missing key is
   fatal at startup rather than silently swallowing mail.
 
-Each send carries an `Idempotency-Key` derived from what is being sent (`verify-email/<token>`),
+A message is `to`, `cc`, and `bcc` as `string[]`, plus subject and both bodies. Nothing above the
+transport names a vendor, so swapping providers means writing one more `EmailTransport` and
+changing the branch in `$lib/server/email/index.ts`.
+
+Each send carries an idempotency key derived from what is being sent (`verify-email/<token>`),
 so a retry within Resend's 24-hour window cannot deliver twice. A failed send is logged, reported
 to Sentry, and returned as `{ ok: false, reason: "email_send_failed" }` for the caller to map to
 copy.

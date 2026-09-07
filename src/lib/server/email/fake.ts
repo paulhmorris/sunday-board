@@ -10,11 +10,6 @@ export interface FakeEmailTransport extends EmailTransport {
   clear(): void;
 }
 
-/**
- * Captures outbound mail in memory instead of reaching Resend, so tests can read a
- * one-time code and no suite makes a network call. Dedupes on `idempotencyKey` the way
- * Resend does, so a retry is indistinguishable from the real transport.
- */
 export function createFakeTransport(): FakeEmailTransport {
   const outbox: EmailMessage[] = [];
   const sent = new Map<string, SendEmailResult>();

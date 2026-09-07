@@ -1,4 +1,7 @@
 import { ErrorReason } from "$lib/server/errors";
+import type { Resend } from "resend";
+import { mockDeep } from "vitest-mock-extended";
+import type { DeepMockProxy } from "vitest-mock-extended";
 
 import { createResendTransport } from "./resend";
 import type { EmailMessage } from "./types";
@@ -8,60 +11,78 @@ const message: EmailMessage = {
   idempotencyKey: "verify-email/token-1",
   subject: "Verify your email",
   text: "Hello",
-  to: "musician@example.com",
+  to: ["musician@example.com"],
 };
 
-function transportWith(fetch: typeof globalThis.fetch) {
-  return createResendTransport({ apiKey: "re_test", fetch, from: "Sunday Board <hello@example.com>" });
+function transportWith(client: DeepMockProxy<Resend>) {
+  return createResendTransport({ client, from: "Sunday Board <hello@example.com>" });
 }
 
-function jsonResponse(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), { headers: { "content-type": "application/json" }, status });
+function mockResend() {
+  return mockDeep<Resend>();
 }
 
 describe("createResendTransport", () => {
-  it("posts the message to Resend and returns the id it assigned", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>().mockResolvedValue(jsonResponse({ id: "email-1" }));
+  it("sends the message through Resend and returns the id it assigned", async () => {
+    const client = mockResend();
+    client.emails.send.mockResolvedValue({ data: { id: "email-1" }, error: null, headers: null });
 
-    const result = await transportWith(fetch).send(message);
+    const result = await transportWith(client).send(message);
 
     expect(result).toStrictEqual({ data: { id: "email-1" }, ok: true });
-
-    const [url, init] = fetch.mock.calls[0]!;
-    expect(url).toBe("https://api.resend.com/emails");
-    expect(init?.method).toBe("POST");
-    expect(JSON.parse(String(init?.body))).toStrictEqual({
-      from: "Sunday Board <hello@example.com>",
-      html: "<p>Hello</p>",
-      subject: "Verify your email",
-      text: "Hello",
-      to: "musician@example.com",
-    });
+    expect(client.emails.send).toHaveBeenCalledWith(
+      {
+        bcc: undefined,
+        cc: undefined,
+        from: "Sunday Board <hello@example.com>",
+        html: "<p>Hello</p>",
+        subject: "Verify your email",
+        text: "Hello",
+        to: ["musician@example.com"],
+      },
+      { idempotencyKey: "verify-email/token-1" },
+    );
   });
 
-  it("authenticates and sends the message's idempotency key so a retry cannot deliver twice", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>().mockResolvedValue(jsonResponse({ id: "email-1" }));
+  it("passes every recipient list through so cc and bcc reach the provider", async () => {
+    const client = mockResend();
+    client.emails.send.mockResolvedValue({ data: { id: "email-1" }, error: null, headers: null });
 
-    await transportWith(fetch).send(message);
+    await transportWith(client).send({
+      ...message,
+      bcc: ["archive@example.com"],
+      cc: ["manager@example.com", "agent@example.com"],
+      to: ["musician@example.com", "drummer@example.com"],
+    });
 
-    expect(new Headers(fetch.mock.calls[0]![1]?.headers).get("authorization")).toBe("Bearer re_test");
-    expect(new Headers(fetch.mock.calls[0]![1]?.headers).get("idempotency-key")).toBe("verify-email/token-1");
+    expect(client.emails.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        bcc: ["archive@example.com"],
+        cc: ["manager@example.com", "agent@example.com"],
+        to: ["musician@example.com", "drummer@example.com"],
+      }),
+      expect.anything(),
+    );
   });
 
   it("fails with a reason rather than throwing when Resend rejects the send", async () => {
-    const fetch = vi
-      .fn<typeof globalThis.fetch>()
-      .mockResolvedValue(jsonResponse({ message: "Invalid `from` field", name: "validation_error" }, 422));
+    const client = mockResend();
+    client.emails.send.mockResolvedValue({
+      data: null,
+      error: { message: "Invalid `from` field", name: "validation_error", statusCode: 422 },
+      headers: null,
+    });
 
-    const result = await transportWith(fetch).send(message);
+    const result = await transportWith(client).send(message);
 
     expect(result).toStrictEqual({ ok: false, reason: ErrorReason.EmailSendFailed });
   });
 
-  it("fails with a reason rather than throwing when the request never reaches Resend", async () => {
-    const fetch = vi.fn<typeof globalThis.fetch>().mockRejectedValue(new Error("ECONNRESET"));
+  it("fails with a reason rather than throwing when the send throws outright", async () => {
+    const client = mockResend();
+    client.emails.send.mockRejectedValue(new Error("ECONNRESET"));
 
-    const result = await transportWith(fetch).send(message);
+    const result = await transportWith(client).send(message);
 
     expect(result).toStrictEqual({ ok: false, reason: ErrorReason.EmailSendFailed });
   });

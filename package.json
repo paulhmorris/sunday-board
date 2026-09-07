@@ -31,7 +31,8 @@
     "pg": "^8.22.0",
     "posthog-js": "^1.413.2",
     "posthog-node": "^5.48.0",
-    "prisma": "^7.9.1"
+    "prisma": "^7.9.1",
+    "resend": "^6.25.0"
   },
   "devDependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",

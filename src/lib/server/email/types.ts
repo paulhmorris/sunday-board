@@ -8,13 +8,9 @@ export interface EmailContent {
 }
 
 export interface EmailMessage extends EmailContent {
-  to: string;
-  /**
-   * Sent to Resend as `Idempotency-Key`, which dedupes identical payloads for 24 hours.
-   * Derive it from the thing being sent (`verify-email/<token>`) so a retry is suppressed
-   * but a freshly requested email is not. Treat it as a secret — it embeds a one-time
-   * token, so it is never logged.
-   */
+  to: string[];
+  cc?: string[];
+  bcc?: string[];
   idempotencyKey: string;
 }
 

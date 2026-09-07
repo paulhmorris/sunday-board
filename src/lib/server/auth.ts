@@ -23,14 +23,11 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    // Better Auth logs and swallows whatever a mail callback throws, so a failed send cannot
-    // fail the request that triggered it. `sendEmail` has already logged it and reported it to
-    // Sentry; the user's recourse is to ask for another email.
     sendResetPassword: async ({ token, url, user }) => {
       await sendEmail({
         ...passwordResetEmail({ name: user.name, url }),
         idempotencyKey: `reset-password/${token}`,
-        to: user.email,
+        to: [user.email],
       });
     },
   },
@@ -40,7 +37,7 @@ export const auth = betterAuth({
       await sendEmail({
         ...verificationEmail({ name: user.name, url }),
         idempotencyKey: `verify-email/${token}`,
-        to: user.email,
+        to: [user.email],
       });
     },
   },
