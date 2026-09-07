@@ -1,6 +1,7 @@
 import { BETTER_AUTH_SECRET } from "$app/env/private";
 import { BETTER_AUTH_URL } from "$app/env/public";
 import { getRequestEvent } from "$app/server";
+import { Logger } from "$lib/logger";
 import { db } from "$lib/server/db";
 import { sendEmail } from "$lib/server/email";
 import { passwordResetEmail, verificationEmail } from "$lib/server/email/templates";
@@ -9,6 +10,8 @@ import { betterAuth } from "better-auth/minimal";
 import { sveltekitCookies } from "better-auth/svelte-kit";
 
 const COOKIE_AGE = 60 * 60 * 24 * 7;
+
+const logger = new Logger("BetterAuth");
 
 export const auth = betterAuth({
   advanced: {
@@ -40,6 +43,13 @@ export const auth = betterAuth({
         to: user.email,
       });
     },
+  },
+  /**
+   * Better Auth catches everything its background tasks throw — the mail callbacks among them —
+   * and reports it here and nowhere else. Without this it would reach a console and stop there.
+   */
+  logger: {
+    log: (level, message, ...args) => logger[level](message, { args }),
   },
   plugins: [sveltekitCookies(getRequestEvent)],
   secret: BETTER_AUTH_SECRET,
