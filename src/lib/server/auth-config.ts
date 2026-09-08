@@ -26,6 +26,13 @@ export function createAuth({ baseURL, database, getRequestEvent, secret, sendEma
   return betterAuth({
     advanced: {
       cookiePrefix: "sb",
+      ipAddress: {
+        // Cloudflare fronts Railway, so `x-forwarded-for` arrives as a multi-hop chain that Better
+        // Auth refuses to read without every proxy's address. `cf-connecting-ip` is the one client
+        // address Cloudflare sets, and a single-value header needs no proxy list. Without a
+        // resolvable IP, rate limiting falls back to one bucket shared by every user.
+        ipAddressHeaders: ["cf-connecting-ip"],
+      },
     },
     baseURL,
     database,
