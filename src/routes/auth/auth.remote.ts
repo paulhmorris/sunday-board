@@ -4,21 +4,14 @@ import { Logger } from "$lib/logger";
 import { Sentry } from "$lib/sentry";
 import { identifyUser, trackEvent } from "$lib/server/analytics";
 import { auth } from "$lib/server/auth";
+import { callAuthEndpoint } from "$lib/server/auth-endpoint";
 import { requireUser } from "$lib/server/auth-guards";
-import { db } from "$lib/server/db";
-import { ErrorReason } from "$lib/server/errors";
-import { createRateLimiter } from "$lib/server/rate-limit";
-import { emailIsTaken } from "$lib/server/services/account";
-import { delay } from "$lib/utils";
-import { VERIFICATION_RESEND_LIMIT } from "$lib/verification";
 import { invalid, redirect } from "@sveltejs/kit";
 import { isAPIError } from "better-auth/api";
 
 import { changeEmailSchema, signInEmailSchema, signUpEmailSchema, verifyEmailSchema } from "./auth.schema";
 
 const logger = new Logger("Auth");
-
-const resendLimiter = createRateLimiter(VERIFICATION_RESEND_LIMIT);
 
 /** The one surface an unverified account may use, so every function here resolves its own user. */
 function requireUnverifiedUser() {
@@ -36,20 +29,22 @@ const CODE_REFUSALS: Record<string, string> = {
   TOO_MANY_ATTEMPTS: "Too many wrong codes. Send yourself a new one.",
 };
 
-/** Every path that mails a code goes through here, so correcting the address is not a way around it. */
-function refuseIfRateLimited(userId: string) {
-  if (!resendLimiter.check(userId, new Date()).ok) {
-    logger.info("Verification code request refused", { reason: ErrorReason.RateLimited, userId });
-    invalid("Too many codes requested. Wait a minute, then try again.");
+/**
+ * The router refuses with a 429 before the endpoint runs, so this comes back with no error code and
+ * has to be recognised ahead of whatever the endpoint itself would have said.
+ */
+function refuseIfRateLimited(error: unknown) {
+  if (isAPIError(error) && error.statusCode === 429) {
+    logger.info("Auth request refused by rate limit");
+    invalid("Too many attempts. Wait a minute, then try again.");
   }
 }
 
 /** Returns the user so the client can identify them too — see `identifyUser` in `$lib/analytics`. */
 export const signInEmail = form(signInEmailSchema, async (data) => {
-  await delay(1000);
   logger.debug("Attempting sign in with email", { email: data.email });
   try {
-    const { user } = await auth.api.signInEmail({ body: data });
+    const { user } = await callAuthEndpoint(auth.api.signInEmail, data);
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedIn, { distinctId: user.id });
     logger.debug("Sign in successful", { email: user.email });
@@ -61,6 +56,7 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
       },
     };
   } catch (error) {
+    refuseIfRateLimited(error);
     logger.debug("Sign in failed", { error });
     if (isAPIError(error)) {
       logger.warn("Sign in failed", { message: error.message });
@@ -73,9 +69,8 @@ export const signInEmail = form(signInEmailSchema, async (data) => {
 
 /** Returns the user so the client can identify them too — see `identifyUser` in `$lib/analytics`. */
 export const signUpEmail = form(signUpEmailSchema, async (data) => {
-  await delay(1000);
   try {
-    const { user } = await auth.api.signUpEmail({ body: data });
+    const { user } = await callAuthEndpoint(auth.api.signUpEmail, data);
     identifyUser(user.id, { email: user.email, name: user.name });
     trackEvent(EVENTS.signedUp, { distinctId: user.id });
     return {
@@ -86,6 +81,7 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
       },
     };
   } catch (error) {
+    refuseIfRateLimited(error);
     if (isAPIError(error)) {
       logger.warn("Registration failed", { code: error.body?.code });
       if (error.body?.code?.startsWith("USER_ALREADY_EXISTS")) {
@@ -101,12 +97,12 @@ export const signUpEmail = form(signUpEmailSchema, async (data) => {
 /** Proves the address on the account. The address comes from the session, never from the form. */
 export const verifyEmail = form(verifyEmailSchema, async ({ code }) => {
   const user = requireUnverifiedUser();
-  const { request } = getRequestEvent();
   try {
-    // The headers matter: with the session in context, Better Auth refreshes the cached session
-    // cookie, so the guard on the next request sees a verified user rather than bouncing them back.
-    await auth.api.verifyEmailOTP({ body: { email: user.email, otp: code }, headers: request.headers });
+    // The session travels with the call, so Better Auth refreshes the cached session cookie and the
+    // guard on the next request sees a verified user rather than bouncing them back.
+    await callAuthEndpoint(auth.api.verifyEmailOTP, { email: user.email, otp: code });
   } catch (error) {
+    refuseIfRateLimited(error);
     if (isAPIError(error)) {
       logger.info("Verification refused", { code: error.body?.code, userId: user.id });
       invalid(CODE_REFUSALS[error.body?.code ?? ""] ?? "That code isn't right. Check it and try again.");
@@ -123,9 +119,14 @@ export const verifyEmail = form(verifyEmailSchema, async ({ code }) => {
 
 export const resendVerificationCode = form(async () => {
   const user = requireUnverifiedUser();
-  refuseIfRateLimited(user.id);
 
-  await auth.api.sendVerificationOTP({ body: { email: user.email, type: "email-verification" } });
+  try {
+    await callAuthEndpoint(auth.api.sendVerificationOTP, { email: user.email, type: "email-verification" });
+  } catch (error) {
+    refuseIfRateLimited(error);
+    Sentry.captureException(error);
+    invalid("We couldn't send a new code. Try again in a moment.");
+  }
 
   return { sentTo: user.email };
 });
@@ -133,19 +134,17 @@ export const resendVerificationCode = form(async () => {
 /**
  * Moves an unverified account to a corrected address. Better Auth updates the address outright and
  * mails the new one a code, so a user stranded at an inbox they cannot read is not stuck.
+ *
+ * An address that already has an account is answered exactly like one that does not, and no mail
+ * is sent — Better Auth's own behaviour, kept so this screen cannot be used to enumerate accounts.
  */
 export const changeVerificationEmail = form(changeEmailSchema, async ({ email }) => {
   const user = requireUnverifiedUser();
 
-  if (await emailIsTaken(db, { email })) {
-    invalid("An account already uses that email address. Sign in with it instead.");
-  }
-  refuseIfRateLimited(user.id);
-
-  const { request } = getRequestEvent();
   try {
-    await auth.api.changeEmail({ body: { newEmail: email }, headers: request.headers });
+    await callAuthEndpoint(auth.api.changeEmail, { newEmail: email });
   } catch (error) {
+    refuseIfRateLimited(error);
     if (isAPIError(error)) {
       logger.warn("Email correction failed", { code: error.body?.code, userId: user.id });
       invalid("We couldn't change your email address. Check it and try again.");
@@ -160,10 +159,10 @@ export const changeVerificationEmail = form(changeEmailSchema, async ({ email })
 });
 
 export const signOut = form(async () => {
-  const { request, locals } = getRequestEvent();
+  const { locals } = getRequestEvent();
   if (locals.user) {
     trackEvent(EVENTS.signedOut, { distinctId: locals.user.id });
   }
-  await auth.api.signOut({ headers: request.headers });
+  await callAuthEndpoint(auth.api.signOut);
   redirect(303, "/auth/sign-in");
 });

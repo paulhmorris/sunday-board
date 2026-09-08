@@ -11,15 +11,6 @@ interface RenameAccountInput {
 type RenameAccountResult = Result<{ name: string }, typeof ErrorReason.AccountNotFound>;
 
 /**
- * Better Auth refuses to say whether an address is taken — `changeEmail` returns success and mails
- * nothing — which would strand a user waiting for a code. One email maps to one account and we
- * already say so at sign-up, so there is no enumeration left to protect here.
- */
-export async function emailIsTaken(db: PrismaClient, input: { email: string }): Promise<boolean> {
-  return (await db.user.count({ where: { email: input.email } })) > 0;
-}
-
-/**
  * Reference implementation of the service conventions — see
  * `docs/adr/0001-service-layer-and-test-seam.md`. Kept deliberately small; the Phase 1
  * domain services replace it as examples.

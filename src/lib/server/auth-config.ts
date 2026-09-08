@@ -7,9 +7,6 @@ import { betterAuth } from "better-auth/minimal";
 import { emailOTP } from "better-auth/plugins/email-otp";
 import { sveltekitCookies } from "better-auth/svelte-kit";
 
-const SESSION_AGE = 60 * 60 * 24 * 7;
-const COOKIE_CACHE_AGE = 60 * 5;
-
 const logger = new Logger("BetterAuth");
 
 interface CreateAuthInput {
@@ -80,15 +77,20 @@ export function createAuth({ baseURL, database, getRequestEvent, secret, sendEma
       }),
       ...(getRequestEvent ? [sveltekitCookies(getRequestEvent)] : []),
     ],
+    /**
+     * Only runs for calls that go through the router — see `callAuthEndpoint`. Better Auth's own
+     * rules already cover the endpoints that mail a code; `/change-email` is here because
+     * `updateEmailWithoutVerification` makes it mail one too, and its default rule is the looser
+     * sign-in-shaped 3 per 10 seconds.
+     */
+    rateLimit: {
+      customRules: {
+        "/change-email": { max: 3, window: 60 },
+      },
+    },
     secret,
     session: {
-      cookieCache: {
-        enabled: true,
-        // Short, because `requireVerifiedUser` reads `emailVerified` off this cache: a longer one
-        // would leave a browser that verified elsewhere bouncing off the verification screen.
-        maxAge: COOKIE_CACHE_AGE,
-      },
-      expiresIn: SESSION_AGE,
+      cookieCache: { enabled: true },
     },
     user: {
       additionalFields: {

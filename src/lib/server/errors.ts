@@ -4,7 +4,6 @@
 export const ErrorReason = {
   AccountNotFound: "account_not_found",
   EmailSendFailed: "email_send_failed",
-  RateLimited: "rate_limited",
 } as const;
 
 export type ErrorReason = (typeof ErrorReason)[keyof typeof ErrorReason];

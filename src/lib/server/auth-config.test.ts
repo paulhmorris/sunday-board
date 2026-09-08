@@ -8,6 +8,8 @@ import type { FakeEmailTransport } from "./email/fake";
 
 const signUp = { email: "musician@example.com", name: "Ada", password: "sunday-board-1!" };
 
+type TestAuth = ReturnType<typeof createAuth>;
+
 function testAuth() {
   const transport = createFakeTransport();
 
@@ -135,5 +137,38 @@ describe("correcting a mistyped address before verifying", () => {
     await expect(
       auth.api.verifyEmailOTP({ body: { email: "corrected@example.com", otp: latestCode(transport) } }),
     ).resolves.toMatchObject({ user: { email: "corrected@example.com", emailVerified: true } });
+  });
+});
+
+/**
+ * `callAuthEndpoint` reaches these endpoints by their registered `path` rather than through
+ * `auth.api`, so a path that no longer resolves would only show up here.
+ */
+describe("the endpoints reached through the router", () => {
+  it.each([
+    ["signUpEmail", (auth: TestAuth) => auth.api.signUpEmail, signUp],
+    ["signInEmail", (auth: TestAuth) => auth.api.signInEmail, signUp],
+    ["signOut", (auth: TestAuth) => auth.api.signOut, {}],
+    ["changeEmail", (auth: TestAuth) => auth.api.changeEmail, { newEmail: "corrected@example.com" }],
+    [
+      "sendVerificationOTP",
+      (auth: TestAuth) => auth.api.sendVerificationOTP,
+      { email: signUp.email, type: "email-verification" },
+    ],
+    ["verifyEmailOTP", (auth: TestAuth) => auth.api.verifyEmailOTP, { email: signUp.email, otp: "000000" }],
+  ])("routes %s", async (_name, endpoint, body) => {
+    const { auth } = testAuth();
+    await auth.api.signUpEmail({ body: signUp });
+    const { baseURL } = await auth.$context;
+
+    const response = await auth.handler(
+      new Request(`${baseURL}${endpoint(auth).path}`, {
+        body: JSON.stringify(body),
+        headers: { "content-type": "application/json" },
+        method: "POST",
+      }),
+    );
+
+    expect(response.status).not.toBe(404);
   });
 });
